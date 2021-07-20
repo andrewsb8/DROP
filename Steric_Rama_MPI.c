@@ -1,4 +1,4 @@
-//Current compilation command: mpicc Steric_Rama_MPI.c -o steric dihedralRotation.c vector_calculus.c readProtein.c stericClash.c -lm
+//Current compilation command: mpicc Steric_Rama_MPI.c -o steric dihedralRotation.c vectorCalculus.c readProtein.c stericClash.c -lm
 //Current run command: mpirun -n 4 steric GGG_COOH_hydrogens_connect.pdb
 
 #include <stdio.h>
