@@ -4,7 +4,7 @@
 #include <math.h>
 #include "readProtein.h"
 #include "dihedralRotation.h"
-#include "vector_calculus.h"
+#include "vectorCalculus.h"
 
 long double PI = 3.14159265358979323846264338327950288419716939937510L;
 
@@ -53,7 +53,7 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
   //translate all atoms such that the second atom of the dihedral of interest is at the origin
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1];
   int atom_rotation_index = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2];
-  
+
   double translation[3]; //copy of translation vector
   for(int i = 0; i < 3; i++)
   {

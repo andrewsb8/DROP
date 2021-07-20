@@ -11,7 +11,7 @@
 //my includes
 #include "readProtein.h"
 #include "dihedralRotation.h"
-#include "vector_calculus.h"
+#include "vectorCalculus.h"
 #include "stericClash.h"
 
 int main(int argc, char *argv[])

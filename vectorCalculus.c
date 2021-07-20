@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "vector_calculus.h"
+#include "vectorCalculus.h"
 
 //Calculates the magnitude of a vector
 double vectorMagnitude(double vector1[3])
