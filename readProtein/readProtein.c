@@ -4,7 +4,7 @@
 #include <math.h>
 #include <mpi.h>
 #include "readProtein.h"
-#include "dihedralRotation.h"
+#include "../dihedralRotation/dihedralRotation.h"
 
 void readPDB(struct protein *prot, char *filename)
 {

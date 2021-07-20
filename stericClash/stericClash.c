@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "readProtein.h"
+#include "../readProtein/readProtein.h"
 #include "stericClash.h"
-#include "vectorCalculus.h"
+#include "../vectorCalculus/vectorCalculus.h"
 
 struct VDW radii = {1, 1.5, 1.35, 1.35};
 

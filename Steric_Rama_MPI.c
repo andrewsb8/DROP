@@ -9,10 +9,10 @@
 #include <string.h>
 
 //my includes
-#include "readProtein.h"
-#include "dihedralRotation.h"
-#include "vectorCalculus.h"
-#include "stericClash.h"
+#include "readProtein/readProtein.h"
+#include "dihedralRotation/dihedralRotation.h"
+#include "vectorCalculus/vectorCalculus.h"
+#include "stericClash/stericClash.h"
 
 int main(int argc, char *argv[])
 {
