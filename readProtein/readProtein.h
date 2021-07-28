@@ -29,7 +29,8 @@ struct protein
   int number_of_residues;
   int number_of_atoms;
   int number_of_bonds;
-  int number_of_dihedrals;
+  int number_of_dihedrals; //count of dihedrals **only backbone dihedrals for now**
+  int expected_num_dihedrals; //in an unblocked polypeptide, this should be equal to number_of_dihedrals
 };
 
 void readPDB(struct protein *prot,char *filename);

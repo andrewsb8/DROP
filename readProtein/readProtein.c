@@ -152,8 +152,8 @@ void readPDBbonds(struct protein *prot, char *filename)
 
 void identifyDihedrals(struct protein *prot)
 {
-  //the number of dihedrals a protein has is 2*number of residues - 2 (N and C terminal only typically have 1 dihedral angle each)
-  prot->number_of_dihedrals = (prot->number_of_residues*2)-2;
+  //the number of dihedrals a protein has is 2*number of residues - 2 (N and C terminal only typically have 1 dihedral angle each in unblocked polypeptides)
+  prot->expected_num_dihedrals = (prot->number_of_residues*2)-2;
 
   //dihedral definitions
   const int numberDihedralTypes = 2;
@@ -166,7 +166,7 @@ void identifyDihedrals(struct protein *prot)
   //no need to use realloc this time around because the number of
   //dihedrals is known
   size_t size = sizeof(struct _dihedrals);
-  prot->dihedrals = (struct _dihedrals*) malloc(size*(prot->number_of_dihedrals));
+  prot->dihedrals = (struct _dihedrals*) malloc(size);
 
   //check variable to compare strings
   int check;
@@ -175,9 +175,7 @@ void identifyDihedrals(struct protein *prot)
   int pairOne_index;
   int pairTwo_index;
 
-  //keep track of index to store
-  int dihedral_count = 0;
-
+  prot->number_of_dihedrals = 0;
 
   for(int m = 0; m < numberDihedralTypes; m++)
   {
@@ -199,20 +197,24 @@ void identifyDihedrals(struct protein *prot)
             {
               if(prot->bonds[pairOne_index].bond_atomNumbers[1] == prot->bonds[r].bond_atomNumbers[0] && prot->bonds[pairTwo_index].bond_atomNumbers[0] == prot->bonds[r].bond_atomNumbers[1])
               {
-                prot->dihedrals[dihedral_count].dihedral_atomNumbers[0] = prot->bonds[n].bond_atomNumbers[0];
-                prot->dihedrals[dihedral_count].dihedral_atomNumbers[1] = prot->bonds[n].bond_atomNumbers[1];
-                prot->dihedrals[dihedral_count].dihedral_atomNumbers[2] = prot->bonds[p].bond_atomNumbers[0];
-                prot->dihedrals[dihedral_count].dihedral_atomNumbers[3] = prot->bonds[p].bond_atomNumbers[1];
+                prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[0] = prot->bonds[n].bond_atomNumbers[0];
+                prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[1] = prot->bonds[n].bond_atomNumbers[1];
+                prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] = prot->bonds[p].bond_atomNumbers[0];
+                prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[3] = prot->bonds[p].bond_atomNumbers[1];
                 if(m==0)
                 {
-                  prot->dihedrals[dihedral_count].phi_or_psi[3] = "Phi";
+                  prot->dihedrals[prot->number_of_dihedrals].phi_or_psi[3] = "Phi";
                 }
                 else
                 {
-                  prot->dihedrals[dihedral_count].phi_or_psi[3] = "Psi";
+                  prot->dihedrals[prot->number_of_dihedrals].phi_or_psi[3] = "Psi";
                 }
 
-                dihedral_count++;
+                prot->number_of_dihedrals += 1;
+                if(prot->number_of_dihedrals > 0)
+                {
+                  prot->dihedrals = (struct _dihedrals*) realloc(prot->dihedrals, size*(prot->number_of_dihedrals + 1));
+                }
               }
             }
 
