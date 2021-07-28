@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
     //for readPDB instead of its own method
     readPDBbonds(&prot, filename);
      //more test outputs
+    printf("num atoms: %d\n", prot.number_of_atoms);
     printf("num res: %d\n", prot.number_of_residues);
     printf("num bonds: %d\n", prot.number_of_bonds);
     printf("%d %d\n", prot.bonds[0].bond_atomNumbers[0], prot.bonds[0].bond_atomNumbers[1]);

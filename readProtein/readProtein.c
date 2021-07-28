@@ -147,6 +147,30 @@ void readPDBbonds(struct protein *prot, char *filename)
 
   prot->number_of_bonds = line_number;
 
+  makeBondMatrix(prot);
+
+}
+
+void makeBondMatrix(struct protein *prot)
+{
+  for(int t = 0; t < prot->number_of_atoms; t++)
+  {
+    prot->bonds[t].len_covalent_bondArray = prot->number_of_atoms - (t+1);
+    prot->bonds[t].covalent_bondArray = (int*) calloc(prot->number_of_atoms, sizeof(int*));
+
+    //now need to search through bonds to count the number of covalent bonds between two atom numbers
+    for(int u = t+1; u < prot->number_of_atoms; u++)
+    {
+      prot->bonds[t].covalent_bondArray[u] = countCovalentBonds(&prot, prot->atoms[t].atom_number, prot->atoms[u].atom_number)
+    }
+  }
+}
+
+int countCovalentBonds(struct protein *prot, int atom1, int atom2)
+{
+  //I think this function is going to have to be recursive....... and oh my god I didn't even consider proline....
+
+  return 0;
 }
 
 
@@ -163,8 +187,6 @@ void identifyDihedrals(struct protein *prot)
   };
 
   //allocate memory for the dihedrals struct to store information
-  //no need to use realloc this time around because the number of
-  //dihedrals is known
   size_t size = sizeof(struct _dihedrals);
   prot->dihedrals = (struct _dihedrals*) malloc(size);
 

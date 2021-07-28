@@ -11,6 +11,8 @@ struct _atoms
 struct _bonds
 {
   int bond_atomNumbers[2];
+  int* covalent_bondArray; //stores number of covalent bonds between atoms i and j where *!*j > i*!* which cuts memory required for this in half!!!
+  int len_covalent_bondArray; //stores the length of the above array so that it is convenient to retrieve
 };
 
 struct _dihedrals
@@ -35,6 +37,8 @@ struct protein
 
 void readPDB(struct protein *prot,char *filename);
 void readPDBbonds(struct protein *prot, char *filename);
+void makeBondMatrix(struct protein *prot);
+int countCovalentBonds(struct protein *prot, int atom1, int atom2);
 void identifyDihedrals(struct protein *prot);
 void printXYZ(struct protein *prot);
 void writeXYZ(struct protein *prot, char *filename, char *comment, char type, int frame, int rank);
