@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     printf("%d %d\n", prot.bonds[0].bond_atomNumbers[0], prot.bonds[0].bond_atomNumbers[1]);
 
     //***NOTE***: again, identifyDihedrals should be a part of readPDB
-    identifyDihedrals(&prot);
+    /*identifyDihedrals(&prot);
 
     printf("num dih: %d\n", prot.number_of_dihedrals);
     for(int i=0; i<prot.number_of_dihedrals; i++)
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
       sprintf(frame, "%s %d", "Frame ", i*j);
       writeXYZ(&prot, "trialanine.xyz", frame, 'm', i*j, myrank);
       //printXYZ(&prot);
-    }
+    }*/
 
     //Next up: want to adjust all of the angles to the following specifications for 4 nodes
     //-179,-179,-179,-179

@@ -148,29 +148,77 @@ void readPDBbonds(struct protein *prot, char *filename)
   prot->number_of_bonds = line_number;
 
   makeBondMatrix(prot);
+  countCovalentBonds(prot);
 
 }
 
 void makeBondMatrix(struct protein *prot)
 {
-  for(int t = 0; t < prot->number_of_atoms; t++)
+  for(int t = 0; t < prot->number_of_atoms-1; t++) //last atom will not be considered to avoid weird memory artifacts
   {
-    prot->bonds[t].len_covalent_bondArray = prot->number_of_atoms - (t+1);
-    prot->bonds[t].covalent_bondArray = (int*) calloc(prot->number_of_atoms, sizeof(int*));
+    prot->atoms[t].len_covalent_bondArray = prot->number_of_atoms - (t+1);
+    prot->atoms[t].covalent_bondArray = (int*) calloc(prot->atoms[t].len_covalent_bondArray, sizeof(int*));
 
-    //now need to search through bonds to count the number of covalent bonds between two atom numbers
-    for(int u = t+1; u < prot->number_of_atoms; u++)
+    //going through and using bonds list to identify atoms that have 1 covalent bond between them
+    for(int u = 0; u < prot->number_of_bonds; u++)
     {
-      prot->bonds[t].covalent_bondArray[u] = countCovalentBonds(&prot, prot->atoms[t].atom_number, prot->atoms[u].atom_number)
+      if(prot->bonds[u].bond_atomNumbers[0] == t+1) //if first atom in bond is the atom currently looking at, put a 1 in the location of the second atom in bond
+      {
+        //printf("%d %d\n", t+1, prot->bonds[u].bond_atomNumbers[1]);
+        prot->atoms[t].covalent_bondArray[prot->bonds[u].bond_atomNumbers[1] - (t+2)] = 1; //see readProtein.h for confusing indexing of this data structure
+      }
+    }
+  }
+
+  /*
+  //I'm leaving this as a comment for debugging purposes while writing the recursive countCovalentBonds method below
+  for(int v = 0; v < prot->atoms[22].len_covalent_bondArray; v++)
+  {
+    printf("%d\n", prot->atoms[22].covalent_bondArray[v]);
+  }*/
+}
+
+void countCovalentBonds(struct protein *prot)
+{
+  //start by looping through all atom pairs
+  for(int h = 0; h < prot->number_of_atoms; h++)
+  {
+    for(int p = h+1; p < prot->number_of_atoms; p++)
+    {
+      if(prot->atoms[h].covalent_bondArray[p-h-1] != 1) //only want to call this search function for pairs of atoms that aren't directly covalently bonded to one another
+      {
+        //start recursive search here
+        printf("New search begins HERE.\n");
+        //prot->atoms[h].covalent_bondArray[p-h-1] = recursivePairSearch(prot, h+1, p+1, 0);
+        recursivePairSearch(prot, h+1, p+1, 0);
+      }
     }
   }
 }
 
-int countCovalentBonds(struct protein *prot, int atom1, int atom2)
+//This function still has problems. It runs recursively correctly. But it only terminates correctly sometimes?
+//It also does not keep count of the bonds yet. That will happen once everything terminates correctly.
+int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found)
 {
-  //I think this function is going to have to be recursive....... and oh my god I didn't even consider proline....
-
-  return 0;
+  int covalentBondCount;
+  printf("Recursive Search: %d %d %d %d\n", atom1, atom2, covalentBondCount, found);
+  for(int z = 0; z < prot->number_of_bonds; z++)
+  {
+    if(prot->bonds[z].bond_atomNumbers[0] == atom1)
+    {
+      if(prot->bonds[z].bond_atomNumbers[1] == atom2) //condition for killing recursion
+      {
+        found = 1;
+      }
+      if(found == 1)
+      {
+        printf("FOUND IT: %d %d %d\n", atom1, atom2, found);
+        return 1;
+      }
+      printf("%d %d\n", prot->bonds[z].bond_atomNumbers[0], prot->bonds[z].bond_atomNumbers[1]);
+      found = recursivePairSearch(prot, prot->bonds[z].bond_atomNumbers[1], atom2, found);
+    }
+  }
 }
 
 

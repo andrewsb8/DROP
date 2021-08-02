@@ -6,13 +6,30 @@ struct _atoms
   int residue_number;
   double coordinates[3];
   char atom_name[1];
+
+  /*
+  This section will describe the covalent_bondArray below. For atom i, it is an array of ints from
+  j = i+1 to prot->number_of_atoms - 1. Each int is the number of covalent bonds between atom i and
+  atom j.
+
+  Since each atom i has one and j must be great than i, this is a visualization of the arrays
+
+  i(atom number) array
+  1 [covalent bonds between 1 and 2, ... , covalent bonds between 1 and last atom]
+  2 [covalent bonds between 2 and 3, ... , covalent bonds between 2 and last atom]
+  .
+  .
+  .
+  last atom -1 [covalent bonds between 2 and last atom]
+  */
+
+  int* covalent_bondArray; //stores number of covalent bonds between atoms i and j where *!*j > i*!* which cuts memory required for this in half!!!
+  int len_covalent_bondArray; //stores the length of the above array so that it is convenient to retrieve
 };
 
 struct _bonds
 {
   int bond_atomNumbers[2];
-  int* covalent_bondArray; //stores number of covalent bonds between atoms i and j where *!*j > i*!* which cuts memory required for this in half!!!
-  int len_covalent_bondArray; //stores the length of the above array so that it is convenient to retrieve
 };
 
 struct _dihedrals
@@ -38,7 +55,8 @@ struct protein
 void readPDB(struct protein *prot,char *filename);
 void readPDBbonds(struct protein *prot, char *filename);
 void makeBondMatrix(struct protein *prot);
-int countCovalentBonds(struct protein *prot, int atom1, int atom2);
+void countCovalentBonds(struct protein *prot);
+int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found);
 void identifyDihedrals(struct protein *prot);
 void printXYZ(struct protein *prot);
 void writeXYZ(struct protein *prot, char *filename, char *comment, char type, int frame, int rank);
