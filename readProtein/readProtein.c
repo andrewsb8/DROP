@@ -80,8 +80,6 @@ void readPDB(struct protein *prot, char *filename)
 
 }
 
-
-
 void readPDBbonds(struct protein *prot, char *filename)
 {
   FILE *fp;
@@ -150,6 +148,11 @@ void readPDBbonds(struct protein *prot, char *filename)
   makeBondMatrix(prot);
   countCovalentBonds(prot);
 
+  for(int v = 0; v < prot->atoms[6].len_covalent_bondArray; v++)
+  {
+    printf("%d\n", prot->atoms[6].covalent_bondArray[v]);
+  }
+
 }
 
 void makeBondMatrix(struct protein *prot)
@@ -169,17 +172,11 @@ void makeBondMatrix(struct protein *prot)
       }
     }
   }
-
-  /*
-  //I'm leaving this as a comment for debugging purposes while writing the recursive countCovalentBonds method below
-  for(int v = 0; v < prot->atoms[22].len_covalent_bondArray; v++)
-  {
-    printf("%d\n", prot->atoms[22].covalent_bondArray[v]);
-  }*/
 }
 
 void countCovalentBonds(struct protein *prot)
 {
+  static int covalentBondCount = 0;
   //start by looping through all atom pairs
   for(int h = 0; h < prot->number_of_atoms; h++)
   {
@@ -190,7 +187,9 @@ void countCovalentBonds(struct protein *prot)
         //start recursive search here
         printf("New search begins HERE.\n");
         //prot->atoms[h].covalent_bondArray[p-h-1] = recursivePairSearch(prot, h+1, p+1, 0);
-        recursivePairSearch(prot, h+1, p+1, 0);
+        recursivePairSearch(prot, h+1, p+1, 0, &covalentBondCount);
+        prot->atoms[h].covalent_bondArray[p-h-1] = covalentBondCount;
+        covalentBondCount = 0;
       }
     }
   }
@@ -198,10 +197,9 @@ void countCovalentBonds(struct protein *prot)
 
 //This function still has problems. It runs recursively correctly. But it only terminates correctly sometimes?
 //It also does not keep count of the bonds yet. That will happen once everything terminates correctly.
-int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found)
+int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found, int *covalentBondCount)
 {
-  int covalentBondCount;
-  printf("Recursive Search: %d %d %d %d\n", atom1, atom2, covalentBondCount, found);
+  printf("Recursive Search: %d %d %d\n", atom1, atom2, found);
   for(int z = 0; z < prot->number_of_bonds; z++)
   {
     if(prot->bonds[z].bond_atomNumbers[0] == atom1)
@@ -213,12 +211,24 @@ int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found)
       if(found == 1)
       {
         printf("FOUND IT: %d %d %d\n", atom1, atom2, found);
-        return 1;
+        *covalentBondCount+=1;
+        printf("CBC: %d\n", *covalentBondCount);
+        return found;
       }
-      printf("%d %d\n", prot->bonds[z].bond_atomNumbers[0], prot->bonds[z].bond_atomNumbers[1]);
-      found = recursivePairSearch(prot, prot->bonds[z].bond_atomNumbers[1], atom2, found);
+      printf("%d %d %d\n", prot->bonds[z].bond_atomNumbers[0], prot->bonds[z].bond_atomNumbers[1], found);
+      found = recursivePairSearch(prot, prot->bonds[z].bond_atomNumbers[1], atom2, found, covalentBondCount);
     }
   }
+
+  printf("end of loops reached\n");
+  if(found == 1)
+  {
+    printf("FOUND IT LAST: %d %d %d\n", atom1, atom2, found);
+    *covalentBondCount+=1;
+  }
+
+  printf("CBC: %d\n", *covalentBondCount);
+  return found;
 }
 
 
