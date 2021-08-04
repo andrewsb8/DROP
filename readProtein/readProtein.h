@@ -56,6 +56,8 @@ void readPDB(struct protein *prot,char *filename);
 void readPDBbonds(struct protein *prot, char *filename);
 void makeBondMatrix(struct protein *prot);
 void countCovalentBonds(struct protein *prot);
+int isAtomInColumnOne(struct protein *prot, int atom1);
+int recursivePairSearchSecondColumn(struct protein *prot, int atom1, int atom2, int found, int *covalentBondCount);
 int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found, int *covalentBondCount);
 void identifyDihedrals(struct protein *prot);
 void printXYZ(struct protein *prot);

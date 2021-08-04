@@ -148,11 +148,16 @@ void readPDBbonds(struct protein *prot, char *filename)
   makeBondMatrix(prot);
   countCovalentBonds(prot);
 
-  for(int v = 0; v < prot->atoms[6].len_covalent_bondArray; v++)
+  /*for(int u = 0; u < prot->number_of_atoms; u++)
   {
-    printf("%d\n", prot->atoms[6].covalent_bondArray[v]);
+    for(int v = 0; v < prot->atoms[u].len_covalent_bondArray; v++)
+    {
+      printf("%d ", prot->atoms[u].covalent_bondArray[v]);
+    }
+    printf("\n");
   }
 
+  printf("\n\n");*/
 }
 
 void makeBondMatrix(struct protein *prot)
@@ -180,14 +185,23 @@ void countCovalentBonds(struct protein *prot)
   //start by looping through all atom pairs
   for(int h = 0; h < prot->number_of_atoms; h++)
   {
-    for(int p = h+1; p < prot->number_of_atoms; p++)
+    if(isAtomInColumnOne(prot, h+1) == 1) //Atom is in the first column
     {
-      if(prot->atoms[h].covalent_bondArray[p-h-1] != 1) //only want to call this search function for pairs of atoms that aren't directly covalently bonded to one another
+      for(int p = h+1; p < prot->number_of_atoms; p++)
       {
-        //start recursive search here
-        printf("New search begins HERE.\n");
-        //prot->atoms[h].covalent_bondArray[p-h-1] = recursivePairSearch(prot, h+1, p+1, 0);
-        recursivePairSearch(prot, h+1, p+1, 0, &covalentBondCount);
+        if(prot->atoms[h].covalent_bondArray[p-h-1] != 1) //only want to call this search function for pairs of atoms that aren't directly covalently bonded to one another
+        {
+          recursivePairSearch(prot, h+1, p+1, 0, &covalentBondCount);
+          prot->atoms[h].covalent_bondArray[p-h-1] = covalentBondCount;
+          covalentBondCount = 0;
+        }
+      }
+    }
+    else //Atom is not in the first column.
+    {
+      for(int p = h+1; p < prot->number_of_atoms; p++)
+      {
+        recursivePairSearchSecondColumn(prot, h+1, p+1, 0, &covalentBondCount);
         prot->atoms[h].covalent_bondArray[p-h-1] = covalentBondCount;
         covalentBondCount = 0;
       }
@@ -195,11 +209,37 @@ void countCovalentBonds(struct protein *prot)
   }
 }
 
-//This function still has problems. It runs recursively correctly. But it only terminates correctly sometimes?
-//It also does not keep count of the bonds yet. That will happen once everything terminates correctly.
+int isAtomInColumnOne(struct protein *prot, int atom1)
+{
+  for(int z = 0; z < prot->number_of_bonds; z++)
+  {
+    if(prot->bonds[z].bond_atomNumbers[0] == atom1)
+    {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+int recursivePairSearchSecondColumn(struct protein *prot, int atom1, int atom2, int found, int *covalentBondCount)
+{
+  for(int z = 0; z < prot->number_of_bonds; z++)
+  {
+    if(prot->bonds[z].bond_atomNumbers[1] == atom1)
+    {
+      found = recursivePairSearch(prot, prot->bonds[z].bond_atomNumbers[0], atom2, found, covalentBondCount);
+      if(found == 1)
+      {
+        *covalentBondCount+=1;
+        return found;
+      }
+    }
+  }
+  return found;
+}
+
 int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found, int *covalentBondCount)
 {
-  printf("Recursive Search: %d %d %d\n", atom1, atom2, found);
   for(int z = 0; z < prot->number_of_bonds; z++)
   {
     if(prot->bonds[z].bond_atomNumbers[0] == atom1)
@@ -210,24 +250,17 @@ int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found, i
       }
       if(found == 1)
       {
-        printf("FOUND IT: %d %d %d\n", atom1, atom2, found);
         *covalentBondCount+=1;
-        printf("CBC: %d\n", *covalentBondCount);
         return found;
       }
-      printf("%d %d %d\n", prot->bonds[z].bond_atomNumbers[0], prot->bonds[z].bond_atomNumbers[1], found);
       found = recursivePairSearch(prot, prot->bonds[z].bond_atomNumbers[1], atom2, found, covalentBondCount);
     }
   }
 
-  printf("end of loops reached\n");
   if(found == 1)
   {
-    printf("FOUND IT LAST: %d %d %d\n", atom1, atom2, found);
     *covalentBondCount+=1;
   }
-
-  printf("CBC: %d\n", *covalentBondCount);
   return found;
 }
 
