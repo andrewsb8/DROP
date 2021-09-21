@@ -7,3 +7,4 @@ struct VDW
 };
 
 int checkClashes(struct protein *prot);
+double getVDWRadii(struct VDW *radii, char *atom_name);

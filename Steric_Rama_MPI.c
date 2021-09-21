@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     printf("%d %d\n", prot.bonds[0].bond_atomNumbers[0], prot.bonds[0].bond_atomNumbers[1]);
 
     //***NOTE***: again, identifyDihedrals should be a part of readPDB
-    /*identifyDihedrals(&prot);
+    identifyDihedrals(&prot);
 
     printf("num dih: %d\n", prot.number_of_dihedrals);
     for(int i=0; i<prot.number_of_dihedrals; i++)
@@ -91,28 +91,44 @@ int main(int argc, char *argv[])
     printf("\n");
 
     int check = 0;
+    int clash;
     char frame[40];
-    sprintf(frame, "%s %d", "Frame ", 0);
-    writeXYZ(&prot, "trialanine.xyz", frame, 'm', 0, myrank);
     int j;
+    sprintf(frame, "%s %d", "Frame ", 0);
+    writeXYZ(&prot, "butane.xyz", frame, 'm', 0, myrank);
+    FILE *free_spaces;
+    free_spaces = fopen("./no_clashes_butane.txt", "a+");
     for(int i = 1; i <= 180; i++)
     {
-      for(j = 1; j <= 180; j++)
+      /*for(j = 1; j <= 180; j++)
       {
+        for(int k = 1; k <= 180; k++)
+        {
+          for(int m = 1; m <= 180; m++)
+          {
+            printf("%f %f %d\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), checkClashes(&prot));
+            rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2);
+          }
+          rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 2);
+        }
         rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2);
         //printf("results: %d %f %f %f\n",i,calculateDihedral(&prot, 0), tmp, calculateDihedral(&prot, 0)-tmp);
         sprintf(frame, "%s %d", "Frame ", i*j);
-        writeXYZ(&prot, "trialanine.xyz", frame, 'm', i*j, myrank);
-      }
-      //checkClashes(&prot);
-      //printf("HERE\n");
+        //writeXYZ(&prot, "trialanine.xyz", frame, 'm', i*j, myrank);
+      }*/
       //double tmp = calculateDihedral(&prot, 0);
       rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2);
       //printf("results: %d %f %f %f\n",i,calculateDihedral(&prot, 0), tmp, calculateDihedral(&prot, 0)-tmp);
-      sprintf(frame, "%s %d", "Frame ", i*j);
-      writeXYZ(&prot, "trialanine.xyz", frame, 'm', i*j, myrank);
+      sprintf(frame, "%s %d", "Frame ", i);
+      writeXYZ(&prot, "butane.xyz", frame, 'm', i, myrank);
+      if(checkClashes(&prot) == 0)
+      {
+        printf("%f\n", calculateDihedral(&prot, 0));
+        fprintf(free_spaces, "%f 1\n", calculateDihedral(&prot, 0));
+      }
+      //printf("%f %d\n", calculateDihedral(&prot, 0), checkClashes(&prot));
       //printXYZ(&prot);
-    }*/
+    }
 
     //Next up: want to adjust all of the angles to the following specifications for 4 nodes
     //-179,-179,-179,-179

@@ -15,6 +15,55 @@ This note is just acknowledge my inevitable future confusion and say that "I kno
 */
 int checkClashes(struct protein *prot)
 {
+  double distance;
+  double min_distance_allowed;
+  //loop through all atom combinations i and j where j > i
+  for(int i = 0; i < prot->number_of_atoms; i++)
+  {
+    for(int j = i+1; j < prot->number_of_atoms; j++)
+    {
+      //check that at least x number of covalent bonds are between the atoms being compared
+      if(prot->atoms[i].covalent_bondArray[j-i-1] > 2)
+      {
+        //if this condition is satisfied, check distance between atoms, and the difference of van der waals distances
+        distance = vectorMagnitude(vectorSubtract(prot->atoms[i].coordinates,prot->atoms[j].coordinates));
+        min_distance_allowed = getVDWRadii(&radii, prot->atoms[i].atom_name) + getVDWRadii(&radii, prot->atoms[j].atom_name);
+        //printf("%s %s %f %f\n", prot->atoms[i].atom_name, prot->atoms[j].atom_name, distance, min_distance_allowed);
+        if(distance < min_distance_allowed)
+        {
+          //printf("%d %s %d %s %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_name, prot->atoms[j].atom_number, prot->atoms[j].atom_name, distance, min_distance_allowed);
+          return 1; //clash found
+        }
+      }
+    }
+  }
+
+  return 0;
+}
+
+double getVDWRadii(struct VDW *radii, char *atom_name)
+{
+  switch(*atom_name)
+  {
+    case 'N' :
+      return radii->N;
+    case 'C' :
+      return radii->C;
+    case 'O' :
+      return radii->O;
+    case 'H' :
+      return radii->H;
+    default :
+      printf("No atom name defined for %s.\n", *atom_name);
+      break;
+  }
+}
+
+/*
+  Below this comment is the old function from before I utilized the covalent bond matrix (see readProtein.c)
+*/
+/*int checkClashes(struct protein *prot)
+{
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
     for(int j = i+6; j < prot->number_of_atoms; j++)
@@ -55,4 +104,4 @@ int checkClashes(struct protein *prot)
       }
     }
   }
-}
+}*/

@@ -148,7 +148,7 @@ void readPDBbonds(struct protein *prot, char *filename)
   makeBondMatrix(prot);
   countCovalentBonds(prot);
 
-  /*for(int u = 0; u < prot->number_of_atoms; u++)
+  for(int u = 0; u < prot->number_of_atoms; u++)
   {
     for(int v = 0; v < prot->atoms[u].len_covalent_bondArray; v++)
     {
@@ -157,7 +157,7 @@ void readPDBbonds(struct protein *prot, char *filename)
     printf("\n");
   }
 
-  printf("\n\n");*/
+  printf("\n\n");
 }
 
 void makeBondMatrix(struct protein *prot)
@@ -264,17 +264,37 @@ int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found, i
   return found;
 }
 
+/*
+This function has an issue where the CONECT section of a pdb (or whatever
+is read into the bonds struct) needs to be in order.
 
+Ex: The following will read as a dihedral (if the atom types are defined as a
+dihedral in the program)
+
+CONECT 1 2
+CONECT 2 3
+CONECT 3 4
+
+But the following won't
+
+CONECT 2 1
+CONECT 2 3
+CONECT 3 4
+
+This could produce problems. Especially in cases where the atom numbering gets
+weird or potentially out of order if this is to be expanded.
+*/
 void identifyDihedrals(struct protein *prot)
 {
   //the number of dihedrals a protein has is 2*number of residues - 2 (N and C terminal only typically have 1 dihedral angle each in unblocked polypeptides)
   prot->expected_num_dihedrals = (prot->number_of_residues*2)-2;
 
   //dihedral definitions
-  const int numberDihedralTypes = 2;
+  const int numberDihedralTypes = 3;
   char *dihedralDefinitions[3][4] = {
     {"C", "N", "CA", "C"}, //phi
-    {"N", "CA", "C", "N"}  //psi
+    {"N", "CA", "C", "N"},  //psi
+    {"C", "C", "C", "C"} //dihedral for butane
   };
 
   //allocate memory for the dihedrals struct to store information
