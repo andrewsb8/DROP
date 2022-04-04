@@ -27,7 +27,7 @@ void readPDB(struct protein *prot, char *filename)
   size_t size = sizeof(struct _atoms);
   prot->atoms = (struct _atoms*) malloc(size);
 
-  //read file line by line until EOF
+  //read file line by line until EOF -- NOTE: should update to only take atoms and ignore others i.e. CONECT
   while((read = getline(&line,&len,fp)) != -1)
   {
     //keep count of number of "words" or "entries" in a line of a pdb
@@ -77,6 +77,16 @@ void readPDB(struct protein *prot, char *filename)
 
   prot->number_of_atoms = line_number;
   prot->number_of_residues = prot->atoms[line_number-1].residue_number;
+
+  readPDBbonds(prot, filename);
+  identifyDihedrals(prot);
+
+  for(int i = 0; i < prot->number_of_dihedrals; i++)
+  {
+    prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
+    printf("%f\n", prot->dihedrals[i].dihedral_angle);
+  }
+  printf("\n");
 
 }
 
@@ -148,7 +158,8 @@ void readPDBbonds(struct protein *prot, char *filename)
   makeBondMatrix(prot);
   countCovalentBonds(prot);
 
-  for(int u = 0; u < prot->number_of_atoms; u++)
+  //print for debugging here
+  /*for(int u = 0; u < prot->number_of_atoms; u++)
   {
     for(int v = 0; v < prot->atoms[u].len_covalent_bondArray; v++)
     {
@@ -157,12 +168,12 @@ void readPDBbonds(struct protein *prot, char *filename)
     printf("\n");
   }
 
-  printf("\n\n");
+  printf("\n\n");*/
 }
 
 void makeBondMatrix(struct protein *prot)
 {
-  for(int t = 0; t < prot->number_of_atoms-1; t++) //last atom will not be considered to avoid weird memory artifacts
+  for(int t = 0; t < prot->number_of_atoms-1; t++) //last atom will not be considered to avoid weird memory artifacts. It should not have any unique bonds anyway
   {
     prot->atoms[t].len_covalent_bondArray = prot->number_of_atoms - (t+1);
     prot->atoms[t].covalent_bondArray = (int*) calloc(prot->atoms[t].len_covalent_bondArray, sizeof(int*));
@@ -283,6 +294,8 @@ CONECT 3 4
 
 This could produce problems. Especially in cases where the atom numbering gets
 weird or potentially out of order if this is to be expanded.
+
+May copy recursive strategy used for the bond matrix above
 */
 void identifyDihedrals(struct protein *prot)
 {
@@ -291,9 +304,10 @@ void identifyDihedrals(struct protein *prot)
 
   //dihedral definitions
   const int numberDihedralTypes = 3;
-  char *dihedralDefinitions[3][4] = {
+  char *dihedralDefinitions[4][4] = {
     {"C", "N", "CA", "C"}, //phi
     {"N", "CA", "C", "N"},  //psi
+    {"N", "CA", "CB", "HB1"}, //Ala side chain torsional angle (any of the three hydrogens would be fine)
     {"C", "C", "C", "C"} //dihedral for butane
   };
 

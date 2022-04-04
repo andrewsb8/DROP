@@ -48,7 +48,7 @@ void updatePositions(struct protein *prot, double newPositions[3], int atomNumbe
   }
 }
 
-double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngle, double dihedralAngleChange)
+double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngle, double dihedralAngleChange, int bb_or_sc)
 {
   //translate all atoms such that the second atom of the dihedral of interest is at the origin
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1];
@@ -87,12 +87,28 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
     free(tmp);
   }
 
-  //rotate all atoms about the z axis by the desired change here
-  for(int i = atom_rotation_index-1; i < prot->number_of_atoms; i++)
+  printXYZ(prot);
+
+  //rotate all atoms after bond in question about the z axis by the desired change here
+  if(bb_or_sc == 1) //1 indicates rotating backbone
   {
-    double *tmp = vectorRotate(prot->atoms[i].coordinates,2,(PI/180.0)*dihedralAngleChange);
-    updatePositions(prot, tmp, i);
-    free(tmp);
+    for(int i = atom_rotation_index-1; i < prot->number_of_atoms; i++)
+    {
+      double *tmp = vectorRotate(prot->atoms[i].coordinates,2,(PI/180.0)*dihedralAngleChange);
+      updatePositions(prot, tmp, i);
+      free(tmp);
+    }
+  }
+  else //rotate side chain instead
+  {
+    int ala2_sidechain_temp[4] = {16,17,18,19}; //temporary to test sidechain rotation method. Need better, general implementation
+    for(int i = 0; i < 4; i++)
+    {
+      printf("%f %f %f\n", prot->atoms[ala2_sidechain_temp[i]].coordinates[0], prot->atoms[ala2_sidechain_temp[i]].coordinates[1], prot->atoms[ala2_sidechain_temp[i]].coordinates[2]);
+      double *tmp = vectorRotate(prot->atoms[ala2_sidechain_temp[i]].coordinates,2,(PI/180.0)*dihedralAngleChange);
+      updatePositions(prot, tmp, ala2_sidechain_temp[i]);
+      free(tmp);
+    }
   }
 
   //undo the first three steps in reverse order
@@ -118,7 +134,10 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
   }
 }
 
-double rotateDihedral3(struct protein *prot, int dihedralNumber, double dihedralAngle, double dihedralAngleChange)
+//This method will be used to make successive rotations about the same dihedral
+//For now, the rotation methods in this file translate protein back to position in
+//box. But that is ok for now.
+double rotateDihedral_noTranslate(struct protein *prot, int dihedralNumber, double dihedralAngle, double dihedralAngleChange)
 {
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1] - 1;
   //rotate all atoms about the z axis by the desired change here
