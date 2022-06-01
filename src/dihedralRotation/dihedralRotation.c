@@ -48,7 +48,7 @@ void updatePositions(struct protein *prot, double newPositions[3], int atomNumbe
   }
 }
 
-double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngle, double dihedralAngleChange, int bb_or_sc)
+double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngle, double dihedralAngleChange, int bb_or_sc, int chi)
 {
   //translate all atoms such that the second atom of the dihedral of interest is at the origin
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1];
@@ -87,7 +87,7 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
     free(tmp);
   }
 
-  printXYZ(prot);
+  //printXYZ(prot);
 
   //rotate all atoms after bond in question about the z axis by the desired change here
   if(bb_or_sc == 1) //1 indicates rotating backbone
@@ -101,13 +101,26 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
   }
   else //rotate side chain instead
   {
-    int ala2_sidechain_temp[4] = {16,17,18,19}; //temporary to test sidechain rotation method. Need better, general implementation
-    for(int i = 0; i < 4; i++)
+    if(chi == 1) //which chi angle is being rotated, chi 1 or chi 2?
     {
-      printf("%f %f %f\n", prot->atoms[ala2_sidechain_temp[i]].coordinates[0], prot->atoms[ala2_sidechain_temp[i]].coordinates[1], prot->atoms[ala2_sidechain_temp[i]].coordinates[2]);
-      double *tmp = vectorRotate(prot->atoms[ala2_sidechain_temp[i]].coordinates,2,(PI/180.0)*dihedralAngleChange);
-      updatePositions(prot, tmp, ala2_sidechain_temp[i]);
-      free(tmp);
+      //int ala2_sidechain_temp[4] = {17,18,19,20}; //temporary to test sidechain rotation method. Need better, general implementation
+      int ile2_chi1[11] = {20, 21, 22, 16, 17, 18, 19, 23, 24, 25, 26};
+      for(int i = 0; i < 11; i++)
+      {
+        double *tmp = vectorRotate(prot->atoms[ile2_chi1[i]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
+        updatePositions(prot, tmp, ile2_chi1[i]-1);
+        free(tmp);
+      }
+    }
+    else if(chi == 2)
+    {
+      int ile2_chi2[6] = {21, 22, 23, 24, 25, 26};
+      for(int i = 0; i < 6; i++)
+      {
+        double *tmp = vectorRotate(prot->atoms[ile2_chi2[i]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
+        updatePositions(prot, tmp, ile2_chi2[i]-1);
+        free(tmp);
+      }
     }
   }
 

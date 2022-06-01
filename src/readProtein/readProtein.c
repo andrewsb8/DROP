@@ -62,7 +62,9 @@ void readPDB(struct protein *prot, char *filename)
       //since pdb files have a standard format, assignments are handled manually as opposed to using if/else if or switch cases to be concise
       prot->atoms[line_number].atom_number = atoi(stringT[1]);
       strcpy(prot->atoms[line_number].atom_type, stringT[2]);
+      printf("%s\n", prot->atoms[line_number].atom_type);
       strcpy(prot->atoms[line_number].residue, stringT[3]);
+      //printf("%s\n", prot->atoms[line_number].residue);
       prot->atoms[line_number].residue_number = atoi(stringT[4]);
       for(int k = 5; k < 8; k++)
       {
@@ -303,11 +305,13 @@ void identifyDihedrals(struct protein *prot)
   prot->expected_num_dihedrals = (prot->number_of_residues*2)-2;
 
   //dihedral definitions
-  const int numberDihedralTypes = 3;
-  char *dihedralDefinitions[4][4] = {
+  const int numberDihedralTypes = 6;
+  char *dihedralDefinitions[6][4] = { //can't use int to set this array size?
     {"C", "N", "CA", "C"}, //phi
     {"N", "CA", "C", "N"},  //psi
     {"N", "CA", "CB", "HB1"}, //Ala side chain torsional angle (any of the three hydrogens would be fine)
+    {"N", "CA", "CB", "CG1"}, //Ile chi 1
+    {"CA", "CB", "CG1", "CD"}, //Ile chi 2
     {"C", "C", "C", "C"} //dihedral for butane
   };
 

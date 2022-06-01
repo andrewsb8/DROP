@@ -23,7 +23,7 @@ int checkClashes(struct protein *prot)
     for(int j = i+1; j < prot->number_of_atoms; j++)
     {
       //check that at least x number of covalent bonds are between the atoms being compared
-      if(prot->atoms[i].covalent_bondArray[j-i-1] > 2)
+      if(prot->atoms[i].covalent_bondArray[j-i-1] > 3)
       {
         //if this condition is satisfied, check distance between atoms, and the difference of van der waals distances
         distance = vectorMagnitude(vectorSubtract(prot->atoms[i].coordinates,prot->atoms[j].coordinates));
