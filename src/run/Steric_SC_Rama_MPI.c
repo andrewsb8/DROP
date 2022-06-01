@@ -1,4 +1,4 @@
-//Current compilation command: mpicc -g Steric_SC_Rama_MPI.c -o steric dihedralRotation/dihedralRotation.c vectorCalculus/vectorCalculus.c readProtein/readProtein.c stericClash/stericClash.c -lm
+//Current compilation command: mpicc -g src/run/Steric_SC_Rama_MPI.c -o steric src/dihedralRotation/dihedralRotation.c src/vectorCalculus/vectorCalculus.c src/readProtein/readProtein.c src/stericClash/stericClash.c src/rama/rama.c -lm
 //Current run command: mpirun -n 4 steric /path/GGG_COOH_hydrogens_connect.pdb
 
 /* This executable is going to scan the top left of Ramachandran space
@@ -10,7 +10,7 @@ chain in context of the backbone configuration.
 
 Author: Brian Andrews
 Institution: Drexel University
-Last Date Modified: 4/4/2022
+Last Date Modified: 6/1/2022
 */
 
 #include <stdio.h>
@@ -21,10 +21,11 @@ Last Date Modified: 4/4/2022
 #include <string.h>
 
 //my includes
-#include "readProtein/readProtein.h"
-#include "dihedralRotation/dihedralRotation.h"
-#include "vectorCalculus/vectorCalculus.h"
-#include "stericClash/stericClash.h"
+#include "../readProtein/readProtein.h"
+#include "../dihedralRotation/dihedralRotation.h"
+#include "../vectorCalculus/vectorCalculus.h"
+#include "../stericClash/stericClash.h"
+#include "../rama/rama.h"
 
 int main(int argc, char *argv[])
 {
@@ -76,21 +77,23 @@ int main(int argc, char *argv[])
       printf("\n\n");
     }
 
+    //printXYZ(&prot);
+
     //get phi and psi of central residue to phi = -179 and psi = 179
     //may move this section to an individual method
     //need to have a better idea of how to identify dihedrals from arrays of atom numbers
     double tmp = calculateDihedral(&prot, 3);
     printf("%f\n", tmp);
-    rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 1);
+    rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 1, 0);
     double tmp2 = calculateDihedral(&prot, 3);
     printf("%f\n", tmp2);
     if(tmp2 - tmp > 0)
     {
-      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, (179-tmp2), 1);
+      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, (179-tmp2), 1, 0);
     }
     else
     {
-      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, tmp2-179, 1);
+      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, tmp2-179, 1, 0);
     }
 
     printf("%f\n", calculateDihedral(&prot, 3));
@@ -98,16 +101,16 @@ int main(int argc, char *argv[])
     //phi
     tmp = calculateDihedral(&prot, 0);
     printf("%f\n", tmp);
-    rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1);
+    rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
     tmp2 = calculateDihedral(&prot, 0);
     printf("%f\n", tmp2);
     if(tmp2 - tmp > 0)
     {
-      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 179-tmp2-2, 1);
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 179-tmp2-2, 1, 0);
     }
     else
     {
-      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, tmp2-179, 1);
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, tmp2-179, 1, 0);
     }
 
     printf("%f\n", calculateDihedral(&prot, 0));
@@ -124,7 +127,7 @@ int main(int argc, char *argv[])
     {
       for(int j = 1; j <= 41; j++) //psi 179 to 99
       {
-        for(int i = 1; i <= 180; i++) //chi 2 all of space
+        for(int i = 1; i <= 180; i++) //chi 2 degrees all of space
         {
           rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 1);
           sprintf(frame, "%s %d", "Frame ", i);
@@ -136,15 +139,18 @@ int main(int argc, char *argv[])
           //printf("%f %d\n", calculateDihedral(&prot, 5), checkClashes(&prot));
           //printXYZ(&prot);
         }
-        printf("%f %f %d\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), allowed);
+        float num = (float) allowed/180.0;
+        printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), num);
+        writeRamaDistribution(-calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), num);
         rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 1);
-        rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, -2, 1);
+        rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, -2, 1, 0);
 
         allowed = 0; //reset allowed states
       }
 
-      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 82, 1); //reset psi to 179
-      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1);
+      writeRamaDistribution(999, 999, 999);
+      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 82, 1, 0); //reset psi to 179
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
 
     }
 

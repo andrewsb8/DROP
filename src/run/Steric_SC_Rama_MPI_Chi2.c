@@ -1,4 +1,4 @@
-//Current compilation command: mpicc -g Steric_SC_Rama_MPI.c -o steric dihedralRotation/dihedralRotation.c vectorCalculus/vectorCalculus.c readProtein/readProtein.c stericClash/stericClash.c -lm
+//Current compilation command: mpicc -g src/run/Steric_SC_Rama_MPI.c -o steric src/dihedralRotation/dihedralRotation.c src/vectorCalculus/vectorCalculus.c src/readProtein/readProtein.c src/stericClash/stericClash.c src/rama/rama.c -lm
 //Current run command: mpirun -n 4 steric /path/GGG_COOH_hydrogens_connect.pdb
 
 /* This executable is going to scan the top left of Ramachandran space
@@ -10,7 +10,7 @@ chain in context of the backbone configuration.
 
 Author: Brian Andrews
 Institution: Drexel University
-Last Date Modified: 4/4/2022
+Last Date Modified: 6/1/2022
 */
 
 #include <stdio.h>
@@ -21,10 +21,11 @@ Last Date Modified: 4/4/2022
 #include <string.h>
 
 //my includes
-#include "readProtein/readProtein.h"
-#include "dihedralRotation/dihedralRotation.h"
-#include "vectorCalculus/vectorCalculus.h"
-#include "stericClash/stericClash.h"
+#include "../readProtein/readProtein.h"
+#include "../dihedralRotation/dihedralRotation.h"
+#include "../vectorCalculus/vectorCalculus.h"
+#include "../stericClash/stericClash.h"
+#include "../rama/rama.h"
 
 int main(int argc, char *argv[])
 {
@@ -118,11 +119,11 @@ int main(int argc, char *argv[])
     char frame[40];
     int j;
     sprintf(frame, "%s %d", "Frame ", 0);
-    writeXYZ(&prot, "trialanine_ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
+    //writeXYZ(&prot, "trialanine_ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
     //FILE *free_spaces;
-    for(int k = 1; k <= 1; k++) //phi -179 to -41 in 2 degree intervals (69)
+    for(int k = 1; k <= 69; k++) //phi -179 to -41 in 2 degree intervals (69)
     {
-      for(int j = 1; j <= 2; j++) //psi 179 to 99 (41)
+      for(int j = 1; j <= 41; j++) //psi 179 to 99 (41)
       {
         for(int h = 1; h <= 180; h++) //chi 2 all of space (180)
         {
@@ -130,24 +131,27 @@ int main(int argc, char *argv[])
           {
             rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 2);
             sprintf(frame, "%s %d", "Frame ", i);
-            writeXYZ(&prot, "trialanine_ILE2_BBandSC.xyz", frame, 'm', i, myrank);
-            //if(checkClashes(&prot) == 0)
-            //{
-            //  allowed += 1;  //increment number of allowed states
-            //}
+            //writeXYZ(&prot, "trialanine_ILE2_BBandSC.xyz", frame, 'm', i, myrank);
+            if(checkClashes(&prot) == 0)
+            {
+              allowed += 1;  //increment number of allowed states
+            }
             //printf("%f %d\n", calculateDihedral(&prot, 5), checkClashes(&prot));
             //printXYZ(&prot);
           }
           rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 2);
           rotateDihedral(&prot, 4, prot.dihedrals[5].dihedral_angle, 2, 0, 1);
         }
-        printf("%f %f %d\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), allowed);
+        float num = (float) allowed/(180.0*180);
+        printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), num);
+        writeRamaDistribution(-calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), num);
         rotateDihedral(&prot, 4, prot.dihedrals[5].dihedral_angle, 2, 0, 1);
         rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, -2, 1, 0);
 
         allowed = 0; //reset allowed states
       }
 
+      writeRamaDistribution(999, 999, 999);
       rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 82, 1, 0); //reset psi to 179
       rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
 

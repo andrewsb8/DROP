@@ -3,10 +3,137 @@
 #include <string.h>
 #include <math.h>
 #include <mpi.h>
+#include <assert.h>
 #include "readProtein.h"
 #include "../dihedralRotation/dihedralRotation.h"
 
 void readPDB(struct protein *prot, char *filename)
+{
+  FILE *fp;
+  char * line = NULL;
+  size_t len = 0;
+  ssize_t read;
+  char * line_split;
+  int count;
+  const int numberOfEntries = 11; //this is standard for PDB formats. 11 entries per line with delimiters between.
+  int line_number = 0; //keep track of what line number I am on while reading the file
+  char *ptr; //pointer to use for strtod (string to double) function later in this function
+
+  int lens;
+  int check = 1;
+
+  fp = fopen(filename, "r");
+
+  //allocate memory for the atoms struct to store information
+  size_t size = sizeof(struct _atoms);
+  prot->atoms = (struct _atoms*) malloc(size);
+
+  //read file line by line until EOF -- NOTE: should update to only take atoms and ignore others i.e. CONECT
+  while((read = getline(&line,&len,fp)) != -1)
+  {
+    //For this function, I only want lines that start with ATOM.
+    //Quantities to get: Atom Number, Atom name, Atom type, residue number, residue (all in a struct)
+    //Atom poitions (own array/table within the struct)
+    if(strcmp(substr(line,0,4), "ATOM") == 0)
+    {
+      //reallocate memory dynamically which allows for a flexible number of atoms from entry pdb
+      if(line_number > 0)
+      {
+        prot->atoms = (struct _atoms*) realloc(prot->atoms, size*(line_number+1));
+      }
+
+      //since pdb files have a standard format, assignments are handled manually as opposed to using if/else if or switch cases to be concise
+      //structure of pdb file can be found here: https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html
+      char *atomNum = substr(line,6,12);
+      prot->atoms[line_number].atom_number = atoi(atomNum);
+      free(atomNum);
+
+      char *atomType = substr(line,12,16);
+      strcpy(prot->atoms[line_number].atom_type, removeSpaces(atomType));
+      free(atomType);
+
+      char *residueName = substr(line,17,20);
+      strcpy(prot->atoms[line_number].residue, removeSpaces(residueName));
+      free(residueName);
+
+      char *residueNumber = substr(line,22,26);
+      prot->atoms[line_number].residue_number = atoi(residueNumber);
+      free(residueNumber);
+
+      char *xPos = substr(line,30,38);
+      char *yPos = substr(line,38,46);
+      char *zPos = substr(line,46,54);
+      prot->atoms[line_number].coordinates[0] = strtod(xPos, &ptr);
+      prot->atoms[line_number].coordinates[1] = strtod(yPos, &ptr);
+      prot->atoms[line_number].coordinates[2] = strtod(zPos, &ptr);
+      free(xPos);
+      free(yPos);
+      free(zPos);
+
+      char *atomName = substr(line,77,78);
+      strcpy(prot->atoms[line_number].atom_name, removeSpaces(atomName));
+      free(atomName);
+
+      //printf("%d %s %s %s\n", prot->atoms[line_number].atom_number, prot->atoms[line_number].atom_type, prot->atoms[line_number].residue, prot->atoms[line_number].atom_name);
+
+      line_number++;
+
+    }
+
+  }
+
+  prot->number_of_atoms = line_number;
+  prot->number_of_residues = prot->atoms[line_number-1].residue_number;
+
+  readPDBbonds(prot, filename);
+  identifyDihedrals(prot);
+
+  for(int i = 0; i < prot->number_of_dihedrals; i++)
+  {
+    prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
+    printf("%f\n", prot->dihedrals[i].dihedral_angle);
+  }
+  printf("\n");
+
+}
+
+//function to return a portion of a string with user defined indices
+//taken from here: https://stackoverflow.com/a/10375855
+//need to brush up on how pointers work *shrug*
+char * substr(char * s, int x, int y)
+{
+  size_t size_str = y-x;
+  char * ret = malloc(size_str+1);
+  char * p = ret;
+  char * q = &s[x];
+  assert(ret != NULL);
+  while(x < y)
+  {
+    *p++ = *q++;
+    x++;
+  }
+  *p++ = '\0';
+  return ret;
+}
+
+//remove spaces from strings
+//taken from here: https://www.educative.io/edpresso/how-to-remove-spaces-from-a-string-in-c
+char * removeSpaces(char *string)
+{
+  int space_count = 0;
+  for(int i = 0; string[i] != '\0'; i++)
+  {
+    if(string[i] != ' ')
+    {
+      string[space_count] = string[i];
+      space_count++;
+    }
+  }
+  string[space_count] = '\0';
+  return string;
+}
+
+void readPDBOld(struct protein *prot, char *filename)
 {
   FILE *fp;
   char * line = NULL;

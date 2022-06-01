@@ -1,11 +1,11 @@
 struct _atoms
 {
   int atom_number;
-  char atom_type[4];
-  char residue[4];
+  char atom_type[5]; //5 instead of 4 for the termination character
+  char residue[5]; //5 instead of 4 for the termination character
   int residue_number;
   double coordinates[3];
-  char atom_name[1];
+  char atom_name[2]; //2 instead of 1 for the termination character
 
   /*
   This section will describe the covalent_bondArray below. For atom i, it is an array of ints from
@@ -57,6 +57,9 @@ struct protein
 //};
 
 void readPDB(struct protein *prot,char *filename);
+char * substr(char * s, int x, int y);
+char * removeSpaces(char *string);
+void readPDBOld(struct protein *prot,char *filename);
 void readPDBbonds(struct protein *prot, char *filename);
 void makeBondMatrix(struct protein *prot);
 void countCovalentBonds(struct protein *prot);
