@@ -26,7 +26,7 @@ double dotProduct(double vector1[3], double vector2[3])
   return result;
 }
 
-//calculate the difference of two vectors
+//calculate the sum of two vectors
 double * vectorAdd(double vector1[3], double vector2[3])
 {
   double *result = malloc(sizeof(vector1)); //NOTE: this line throws a warning but does not break the code

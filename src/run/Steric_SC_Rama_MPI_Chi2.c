@@ -1,4 +1,4 @@
-//Current compilation command: mpicc -g src/run/Steric_SC_Rama_MPI.c -o steric src/dihedralRotation/dihedralRotation.c src/vectorCalculus/vectorCalculus.c src/readProtein/readProtein.c src/stericClash/stericClash.c src/rama/rama.c -lm
+//Current compilation command: mpicc -g src/run/Steric_SC_Rama_MPI_Chi2.c -o steric src/dihedralRotation/dihedralRotation.c src/vectorCalculus/vectorCalculus.c src/readProtein/readProtein.c src/stericClash/stericClash.c src/rama/rama.c -lm
 //Current run command: mpirun -n 4 steric /path/GGG_COOH_hydrogens_connect.pdb
 
 /* This executable is going to scan the top left of Ramachandran space
@@ -113,25 +113,27 @@ int main(int argc, char *argv[])
 
     printf("%f\n", calculateDihedral(&prot, 0));
 
+    //printXYZ(&prot);
+
     int check = 0;
     int clash;
     int allowed = 0;
     char frame[40];
     int j;
     sprintf(frame, "%s %d", "Frame ", 0);
-    //writeXYZ(&prot, "trialanine_ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
+    writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
     //FILE *free_spaces;
     for(int k = 1; k <= 69; k++) //phi -179 to -41 in 2 degree intervals (69)
     {
       for(int j = 1; j <= 41; j++) //psi 179 to 99 (41)
       {
-        for(int h = 1; h <= 180; h++) //chi 2 all of space (180)
+        for(int h = 1; h <= 180; h++) //chi 1 all of space (180)
         {
           for(int i = 1; i <= 180; i++) //chi 2 all of space
           {
             rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 2);
             sprintf(frame, "%s %d", "Frame ", i);
-            //writeXYZ(&prot, "trialanine_ILE2_BBandSC.xyz", frame, 'm', i, myrank);
+            writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
             if(checkClashes(&prot) == 0)
             {
               allowed += 1;  //increment number of allowed states

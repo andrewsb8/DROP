@@ -6,7 +6,11 @@
 #include "stericClash.h"
 #include "../vectorCalculus/vectorCalculus.h"
 
-struct VDW radii = {1, 1.5, 1.35, 1.35};
+//normally allowed via Ramachandran JMB 1963 in Angstroms
+struct VDW radii = {1, 1.5, 1.35, 1.4};
+
+//outer limit via Ramachandran JMB 1963
+//struct VDW radii = {};
 
 /*
 Inside this function, the output of strcmp should be equal to zero. But, for whatever reason, it needs to be 10 here.
@@ -26,7 +30,9 @@ int checkClashes(struct protein *prot)
       if(prot->atoms[i].covalent_bondArray[j-i-1] > 3)
       {
         //if this condition is satisfied, check distance between atoms, and the difference of van der waals distances
-        distance = vectorMagnitude(vectorSubtract(prot->atoms[i].coordinates,prot->atoms[j].coordinates));
+        double *bond_vector = vectorSubtract(prot->atoms[i].coordinates,prot->atoms[j].coordinates);
+        distance = vectorMagnitude(bond_vector);
+        free(bond_vector);
         min_distance_allowed = getVDWRadii(&radii, prot->atoms[i].atom_name) + getVDWRadii(&radii, prot->atoms[j].atom_name);
         //printf("%s %s %f %f\n", prot->atoms[i].atom_name, prot->atoms[j].atom_name, distance, min_distance_allowed);
         if(distance < min_distance_allowed)
