@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     char frame[40];
     int j;
     sprintf(frame, "%s %d", "Frame ", 0);
-    writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
+    //writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
     //FILE *free_spaces;
     for(int k = 1; k <= 69; k++) //phi -179 to -41 in 2 degree intervals (69)
     {
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
           {
             rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 2);
             sprintf(frame, "%s %d", "Frame ", i);
-            writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
+            //writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
             if(checkClashes(&prot) == 0)
             {
               allowed += 1;  //increment number of allowed states

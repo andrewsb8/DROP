@@ -7,7 +7,8 @@
 #include "../vectorCalculus/vectorCalculus.h"
 
 //normally allowed via Ramachandran JMB 1963 in Angstroms
-struct VDW radii = {1, 1.5, 1.35, 1.4};
+//Values: C-C, C-O, C-N, C-H, O-O, O-N, O-H, N-N, N-H, H-H
+struct VDW radii = {3.2, 2.8, 2.9, 2.4, 2.8, 2.7, 2.4, 2.7, 2.4, 2.0};
 
 //outer limit via Ramachandran JMB 1963
 //struct VDW radii = {};
@@ -33,7 +34,7 @@ int checkClashes(struct protein *prot)
         double *bond_vector = vectorSubtract(prot->atoms[i].coordinates,prot->atoms[j].coordinates);
         distance = vectorMagnitude(bond_vector);
         free(bond_vector);
-        min_distance_allowed = getVDWRadii(&radii, prot->atoms[i].atom_name) + getVDWRadii(&radii, prot->atoms[j].atom_name);
+        min_distance_allowed = getVDWRadii(&radii, prot->atoms[i].atom_name, prot->atoms[j].atom_name);
         //printf("%s %s %f %f\n", prot->atoms[i].atom_name, prot->atoms[j].atom_name, distance, min_distance_allowed);
         if(distance < min_distance_allowed)
         {
@@ -47,18 +48,58 @@ int checkClashes(struct protein *prot)
   return 0;
 }
 
-double getVDWRadii(struct VDW *radii, char *atom_name)
+double getVDWRadii(struct VDW *radii, char *atom_name, char *atom_name_2)
 {
   switch(*atom_name)
   {
     case 'N' :
-      return radii->N;
+      switch(*atom_name_2)
+      {
+        case 'N':
+          return radii->NN;
+        case 'H':
+          return radii->NH;
+        case 'C':
+          return radii->CN;
+        case 'O':
+          return radii->ON;
+      }
     case 'C' :
-      return radii->C;
+      switch(*atom_name_2)
+      {
+        case 'N':
+          return radii->CN;
+        case 'H':
+          return radii->CH;
+        case 'C':
+          return radii->CC;
+        case 'O':
+          return radii->CO;
+      }
     case 'O' :
-      return radii->O;
+      switch(*atom_name_2)
+      {
+        case 'N':
+          return radii->ON;
+        case 'H':
+          return radii->OH;
+        case 'C':
+          return radii->CO;
+        case 'O':
+          return radii->OO;
+      }
     case 'H' :
-      return radii->H;
+      switch(*atom_name_2)
+      {
+        case 'N':
+          return radii->NH;
+        case 'H':
+          return radii->HH;
+        case 'C':
+          return radii->CH;
+        case 'O':
+          return radii->OH;
+      }
     default :
       printf("No atom name defined for %s.\n", *atom_name);
       break;
