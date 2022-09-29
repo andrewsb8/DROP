@@ -7,8 +7,10 @@
 #include "../vectorCalculus/vectorCalculus.h"
 
 //normally allowed via Ramachandran JMB 1963 in Angstroms
-//Values: C-C, C-O, C-N, C-H, O-O, O-N, O-H, N-N, N-H, H-H
-struct VDW radii = {3.2, 2.8, 2.9, 2.4, 2.8, 2.7, 2.4, 2.7, 2.4, 2.0};
+//Values:           C-C, C-O, C-N, C-H, O-O, O-N, O-H, N-N, N-H, H-H
+//struct VDW radii = {3.2, 2.8, 2.9, 2.4, 2.8, 2.7, 2.4, 2.7, 2.4, 2.0};
+//inner limit allowed via Ramachandran JMB 1963 in Angstroms
+struct VDW radii = {3.0, 2.7, 2.8, 2.2, 2.7, 2.6, 2.2, 2.6, 2.2, 1.9};
 
 //outer limit via Ramachandran JMB 1963
 //struct VDW radii = {};
@@ -38,7 +40,7 @@ int checkClashes(struct protein *prot)
         //printf("%s %s %f %f\n", prot->atoms[i].atom_name, prot->atoms[j].atom_name, distance, min_distance_allowed);
         if(distance < min_distance_allowed)
         {
-          //printf("%d %s %d %s %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_name, prot->atoms[j].atom_number, prot->atoms[j].atom_name, distance, min_distance_allowed);
+          //printf("%d %s %d %s %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, distance, min_distance_allowed);
           return 1; //clash found
         }
       }

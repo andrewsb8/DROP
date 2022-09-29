@@ -104,8 +104,9 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
     if(chi == 1) //which chi angle is being rotated, chi 1 or chi 2?
     {
       //int ala2_sidechain_temp[4] = {17,18,19,20}; //temporary to test sidechain rotation method. Need better, general implementation
-      int ile2_chi1[12] = {20, 21, 22, 15, 16, 17, 18, 19, 23, 24, 25, 26};
-      for(int i = 0; i < 12; i++)
+      //int ile2_chi1[13] = {20, 21, 22, 15, 16, 17, 18, 19, 23, 24, 25, 26};
+      int ile2_chi1[13] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ,19}; //renumbered for fragment
+      for(int i = 0; i < 13; i++)
       {
         double *tmp = vectorRotate(prot->atoms[ile2_chi1[i]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
         updatePositions(prot, tmp, ile2_chi1[i]-1);
@@ -114,7 +115,8 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
     }
     else if(chi == 2)
     {
-      int ile2_chi2[6] = {21, 22, 23, 24, 25, 26};
+      //int ile2_chi2[6] = {21, 22, 23, 24, 25, 26};
+      int ile2_chi2[6] = {14, 15, 16, 17, 18, 19}; //renumbered
       for(int i = 0; i < 6; i++)
       {
         double *tmp = vectorRotate(prot->atoms[ile2_chi2[i]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
