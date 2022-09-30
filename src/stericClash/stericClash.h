@@ -15,5 +15,5 @@ struct VDW
   double HH;
 };
 
-int checkClashes(struct protein *prot);
+int countClashes(struct protein *prot);
 double getVDWRadii(struct VDW *radii, char *atom_name, char *atom_name_2);

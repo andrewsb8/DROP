@@ -1,0 +1,47 @@
+CRYST1    0.000    0.000    0.000  90.00  90.00  90.00 P 1           1
+ATOM      1  C   GLY X   1      20.370  22.833  19.620  1.00  0.00           C
+ATOM      2  O   GLY X   1      21.590  22.757  19.438  1.00  0.00           O
+ATOM      3  N   ILE X   2      19.731  21.750  20.097  1.00  0.00           N
+ATOM      4  HN  ILE X   2      18.760  21.804  20.333  1.00  0.00           H
+ATOM      5  CA  ILE X   2      20.400  20.550  20.490  1.00  0.00           C
+ATOM      6  HA  ILE X   2      21.410  20.820  20.760  1.00  0.00           H
+ATOM      7  CB  ILE X   2      19.800  19.920  21.710  1.00  0.00           C
+ATOM      8  HB  ILE X   2      20.690  19.490  22.220  1.00  0.00           H
+ATOM      9  CG2 ILE X   2      19.270  21.020  22.640  1.00  0.00           C
+ATOM     10 1HG2 ILE X   2      19.170  20.580  23.660  1.00  0.00           H
+ATOM     11 2HG2 ILE X   2      20.000  21.850  22.770  1.00  0.00           H
+ATOM     12 3HG2 ILE X   2      18.330  21.470  22.260  1.00  0.00           H
+ATOM     13  CG1 ILE X   2      18.800  18.760  21.540  1.00  0.00           C
+ATOM     14 1HG1 ILE X   2      19.240  17.900  20.990  1.00  0.00           H
+ATOM     15 2HG1 ILE X   2      18.520  18.290  22.510  1.00  0.00           H
+ATOM     16  CD  ILE X   2      17.450  19.200  21.000  1.00  0.00           C
+ATOM     17  HD1 ILE X   2      16.750  18.380  20.740  1.00  0.00           H
+ATOM     18  HD2 ILE X   2      16.900  19.950  21.610  1.00  0.00           H
+ATOM     19  HD3 ILE X   2      17.700  19.740  20.060  1.00  0.00           H
+ATOM     20  C   ILE X   2      20.524  19.751  19.241  1.00  0.00           C
+ATOM     21  O   ILE X   2      19.746  19.927  18.303  1.00  0.00           O
+ATOM     22  N   GLY X   3      21.367  18.702  19.216  1.00  0.00           N
+ATOM     23  HN  GLY X   3      21.887  18.461  20.037  1.00  0.00           H
+ENDMDL
+CONECT    1    2
+CONECT    1    3
+CONECT    3    5
+CONECT    5    7
+CONECT    5   20
+CONECT    7    9
+CONECT    7   13
+CONECT   13   16
+CONECT   20   21
+CONECT   20   22
+CONECT    3    4
+CONECT    5    6
+CONECT    7    8
+CONECT    9   10
+CONECT    9   11
+CONECT    9   12
+CONECT   13   14
+CONECT   13   15
+CONECT   16   17
+CONECT   16   18
+CONECT   16   19
+CONECT   22   23

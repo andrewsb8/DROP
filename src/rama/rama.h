@@ -1,1 +1,1 @@
-void writeRamaDistribution(float phi, float psi, float value);
+void writeRamaDistribution(char *filename, int frame, float phi, float psi, float value);

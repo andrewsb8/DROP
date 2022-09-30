@@ -20,10 +20,11 @@ Inside this function, the output of strcmp should be equal to zero. But, for wha
 I can't explain this as strcmp is used normally elsewhere. But this problem is minor and not worth figuring out right now.
 This note is just acknowledge my inevitable future confusion and say that "I know, it should be 0, but it has to be 10".
 */
-int checkClashes(struct protein *prot)
+int countClashes(struct protein *prot)
 {
   double distance;
   double min_distance_allowed;
+  int count = 0;
   //loop through all atom combinations i and j where j > i
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
@@ -41,13 +42,14 @@ int checkClashes(struct protein *prot)
         if(distance < min_distance_allowed)
         {
           //printf("%d %s %d %s %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, distance, min_distance_allowed);
-          return 1; //clash found
+          //return 1; //clash found
+          count += 1;
         }
       }
     }
   }
 
-  return 0;
+  return count;
 }
 
 double getVDWRadii(struct VDW *radii, char *atom_name, char *atom_name_2)

@@ -5,10 +5,17 @@
 #include <mpi.h>
 #include "../readProtein/readProtein.h"
 
-void writeRamaDistribution(float phi, float psi, float value)
+void writeRamaDistribution(char *filename, int frame, float phi, float psi, float value)
 {
   FILE *fp;
-  fp = fopen("alanine_SC_RAMA.txt", "a+");
+  if(frame > 1)
+  {
+    fp = fopen(filename, "a+");
+  }
+  else
+  {
+    fp = fopen(filename, "w");
+  }
   fprintf(fp, "%f %f %f\n", phi, psi, value);
   fflush(fp);
   fclose(fp);

@@ -116,12 +116,13 @@ int main(int argc, char *argv[])
     //printXYZ(&prot);
 
     int check = 0;
-    int clash;
+    int clashes;
+    int clash_count = 0;
     int allowed = 0;
     char frame[40];
     int j;
     sprintf(frame, "%s %d", "Frame ", 0);
-    writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
+    //writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
     //FILE *free_spaces;
     for(int h = 1; h <= 180; h++) //chi 1 all of space (180)
     {
@@ -129,19 +130,21 @@ int main(int argc, char *argv[])
       {
         rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 0, 2);
         sprintf(frame, "%s %d", "Frame ", i);
-        writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
-        if(checkClashes(&prot) == 0)
+        //writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
+        clashes = countClashes(&prot);
+        if(clashes == 0)
         {
-          allowed += 1;  //increment number of allowed states
+          allowed += 1;
         }
-        //printf("%f %d\n", calculateDihedral(&prot, 5), checkClashes(&prot));
+        clash_count += clashes;
         //printXYZ(&prot);
       }
       rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 0, 2);
       rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2, 0, 1);
     }
-    float num = (float) allowed/(180.0*180);
-    printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), num);
+
+    printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), (float) allowed/(180.0*180));
+    printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), (float) clash_count/(180.0*180));
 
     /*
     //NEXT SECTION: Start distributing protein configurations for analysis
