@@ -13,7 +13,7 @@ This project is still in its inception phase. But will serve as an exercise in m
 - [ ] Develop an environment where addition of functions and methods to this project is a streamlined process
 - [x] Relearn writing recursive algorithms... apparently! (See readProtein.c method countCovalentBonds for details)
 - [ ] Learn to use package versioning within Git
-- [p] Code Profiling
+- [x] Code Profiling
 
 As of 6/1/2022:
 
