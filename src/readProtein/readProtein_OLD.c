@@ -325,11 +325,23 @@ void countCovalentBonds(struct protein *prot)
   //start by looping through all atom pairs
   for(int h = 0; h < prot->number_of_atoms; h++)
   {
-    for(int p = h+1; p < prot->number_of_atoms; p++)
+    if(isAtomInColumnOne(prot, h+1) == 1) //Atom is in the first column
     {
-      if(prot->atoms[h].covalent_bondArray[p-h-1] != 1) //only want to call this search function for pairs of atoms that aren't directly covalently bonded to one another
+      for(int p = h+1; p < prot->number_of_atoms; p++)
       {
-        recursivePairSearch(prot, 0, h+1, p+1, 0, &covalentBondCount);
+        if(prot->atoms[h].covalent_bondArray[p-h-1] != 1) //only want to call this search function for pairs of atoms that aren't directly covalently bonded to one another
+        {
+          recursivePairSearch(prot, h+1, p+1, 0, &covalentBondCount);
+          prot->atoms[h].covalent_bondArray[p-h-1] = covalentBondCount;
+          covalentBondCount = 0;
+        }
+      }
+    }
+    else //Atom is not in the first column.
+    {
+      for(int p = h+1; p < prot->number_of_atoms; p++)
+      {
+        recursivePairSearchSecondColumn(prot, h+1, p+1, 0, &covalentBondCount);
         prot->atoms[h].covalent_bondArray[p-h-1] = covalentBondCount;
         covalentBondCount = 0;
       }
@@ -337,36 +349,51 @@ void countCovalentBonds(struct protein *prot)
   }
 }
 
-int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount)
+int isAtomInColumnOne(struct protein *prot, int atom1)
 {
   for(int z = 0; z < prot->number_of_bonds; z++)
   {
     if(prot->bonds[z].bond_atomNumbers[0] == atom1)
     {
-      if(prot->bonds[z].bond_atomNumbers[1] == previousAtom) //don't go backwards
+      return 1;
+    }
+  }
+  return 0;
+}
+
+int recursivePairSearchSecondColumn(struct protein *prot, int atom1, int atom2, int found, int *covalentBondCount)
+{
+  for(int z = 0; z < prot->number_of_bonds; z++)
+  {
+    if(prot->bonds[z].bond_atomNumbers[1] == atom1)
+    {
+      found = recursivePairSearch(prot, prot->bonds[z].bond_atomNumbers[0], atom2, found, covalentBondCount);
+      if(found == 1)
       {
-        continue;
+        *covalentBondCount+=1;
+        return found;
       }
+    }
+  }
+  return found;
+}
+
+int recursivePairSearch(struct protein *prot, int atom1, int atom2, int found, int *covalentBondCount)
+{
+  for(int z = 0; z < prot->number_of_bonds; z++)
+  {
+    if(prot->bonds[z].bond_atomNumbers[0] == atom1)
+    {
       if(prot->bonds[z].bond_atomNumbers[1] == atom2) //condition for killing recursion
       {
-        *covalentBondCount+=1;
-        return 1;
+        found = 1;
       }
-      found = recursivePairSearch(prot, atom1, prot->bonds[z].bond_atomNumbers[1], atom2, found, covalentBondCount);
-    }
-
-    else if(prot->bonds[z].bond_atomNumbers[1] == atom1)
-    {
-      if(prot->bonds[z].bond_atomNumbers[0] == previousAtom) //don't go backwards
-      {
-        continue;
-      }
-      if(prot->bonds[z].bond_atomNumbers[0] == atom2) //condition for killing recursion
+      if(found == 1)
       {
         *covalentBondCount+=1;
-        return 1;
+        return found;
       }
-      found = recursivePairSearch(prot, atom1, prot->bonds[z].bond_atomNumbers[0], atom2, found, covalentBondCount);
+      found = recursivePairSearch(prot, prot->bonds[z].bond_atomNumbers[1], atom2, found, covalentBondCount);
     }
   }
 
@@ -375,7 +402,6 @@ int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int a
     *covalentBondCount+=1;
   }
   return found;
-
 }
 
 /*
@@ -407,20 +433,16 @@ void identifyDihedrals(struct protein *prot)
 
   //dihedral definitions
   const int numberDihedralTypes = 6;
-  char *dihedralDefinitions[5][4] = { //can't use int to set this array size?
+  char *dihedralDefinitions[6][4] = { //can't use int to set this array size?
     {"C", "N", "CA", "C"}, //phi
     {"N", "CA", "C", "N"},  //psi
+    {"N", "CA", "CB", "HB1"}, //Ala side chain torsional angle (any of the three hydrogens would be fine)
+    {"N", "CA", "CB", "CG1"}, //Ile chi 1
+    {"CA", "CB", "CG1", "CD"}, //Ile chi 2
     {"N", "CA", "CB", "CG"}, //Leu chi 1
     {"CA", "CB", "CG", "CD1"}, //Leu chi 2
     {"C", "C", "C", "C"} //dihedral for butane
   };
-
-  /*
-  {"N", "CA", "CB", "HB1"}, //Ala side chain torsional angle (any of the three hydrogens would be fine)
-  {"N", "CA", "CB", "CG1"}, //Ile chi 1
-  {"CA", "CB", "CG1", "CD"}, //Ile chi 2
-
-  */
 
   //allocate memory for the dihedrals struct to store information
   size_t size = sizeof(struct _dihedrals);

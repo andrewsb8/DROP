@@ -104,11 +104,11 @@ int main(int argc, char *argv[])
     printf("%f\n", tmp2);
     if(tmp2 - tmp > 0)
     {
-      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 120-tmp2-2, 1, 0);
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 170-tmp2-2, 1, 0);
     }
     else
     {
-      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, tmp2-120, 1, 0);
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, tmp2-170, 1, 0);
     }
 
     printf("%f\n", calculateDihedral(&prot, 0));
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
     char frame[40];
     int j;
     sprintf(frame, "%s %d", "Frame ", 0);
-    //writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
+    writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
     //FILE *free_spaces;
     for(int h = 1; h <= 180; h++) //chi 1 all of space (180)
     {
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
       {
         rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 0, 2);
         sprintf(frame, "%s %d", "Frame ", i);
-        //writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
+        writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
         clashes = countClashes(&prot);
         if(clashes == 0)
         {
@@ -145,6 +145,7 @@ int main(int argc, char *argv[])
 
     printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), (float) allowed/(180.0*180));
     printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), (float) clash_count/(180.0*180));
+
 
     /*
     //NEXT SECTION: Start distributing protein configurations for analysis

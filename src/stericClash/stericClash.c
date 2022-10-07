@@ -31,6 +31,7 @@ int countClashes(struct protein *prot)
     for(int j = i+1; j < prot->number_of_atoms; j++)
     {
       //check that at least x number of covalent bonds are between the atoms being compared
+      //printf("%d %s %d %s %d\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, prot->atoms[i].covalent_bondArray[j-i-1]);
       if(prot->atoms[i].covalent_bondArray[j-i-1] > 3)
       {
         //if this condition is satisfied, check distance between atoms, and the difference of van der waals distances
@@ -38,7 +39,7 @@ int countClashes(struct protein *prot)
         distance = vectorMagnitude(bond_vector);
         free(bond_vector);
         min_distance_allowed = getVDWRadii(&radii, prot->atoms[i].atom_name, prot->atoms[j].atom_name);
-        //printf("%s %s %f %f\n", prot->atoms[i].atom_name, prot->atoms[j].atom_name, distance, min_distance_allowed);
+        //printf("%d %s %d %s %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, distance, min_distance_allowed);
         if(distance < min_distance_allowed)
         {
           //printf("%d %s %d %s %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, distance, min_distance_allowed);

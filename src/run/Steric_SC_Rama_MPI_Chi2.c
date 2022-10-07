@@ -1,4 +1,4 @@
-//Current compilation command: mpicc -g src/run/Steric_SC_Rama_MPI_Chi2.c -o steric src/dihedralRotation/dihedralRotation.c src/vectorCalculus/vectorCalculus.c src/readProtein/readProtein.c src/stericClash/stericClash.c src/rama/rama.c -lm
+//Current compilation command: mpicc -g src/run/Steric_SC_Rama_MPI_singleState.c -o steric src/dihedralRotation/dihedralRotation.c src/vectorCalculus/vectorCalculus.c src/readProtein/readProtein.c src/stericClash/stericClash.c src/rama/rama.c -lm
 //Current run command: mpirun -n 4 steric /path/GGG_COOH_hydrogens_connect.pdb
 
 /* This executable is going to scan the top left of Ramachandran space
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
           for(int i = 1; i <= 180; i++) //chi 2 all of space
           {
             rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 0, 2);
-            sprintf(frame, "%s %d", "Frame ", i);
+            //sprintf(frame, "%s %d", "Frame ", i);
             //writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
             clashes = countClashes(&prot);
             if(clashes == 0)
@@ -150,10 +150,10 @@ int main(int argc, char *argv[])
         float numClashNorm = (float) clash_count/(180.0*180) ;
 
         printf("%f %f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), noClashNorm, numClashNorm);
-        
+
         //write lines every time j (psi angle) is incrememted
-        writeRamaDistribution("ILE2_NoClash.txt", j, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), noClashNorm);
-        writeRamaDistribution("ILE2_NumClashes.txt", j, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), numClashNorm);
+        writeRamaDistribution("LEU2_NoClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), noClashNorm);
+        writeRamaDistribution("LEU2_NumClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), numClashNorm);
         rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2, 0, 1);
         rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, -2, 1, 0);
 
@@ -161,7 +161,8 @@ int main(int argc, char *argv[])
         clash_count = 0;
       }
 
-      writeRamaDistribution("ILE2_NoClash.txt", frame, 999, 999, 999);
+      writeRamaDistribution("LEU2_NoClash.txt", 2, 999, 999, 999);
+      writeRamaDistribution("LEU2_NumClash.txt", 2, 999, 999, 999);
       rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 82, 1, 0); //reset psi to 179
       rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
 
