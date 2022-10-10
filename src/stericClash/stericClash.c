@@ -12,9 +12,6 @@
 //inner limit allowed via Ramachandran JMB 1963 in Angstroms
 struct VDW radii = {3.0, 2.7, 2.8, 2.2, 2.7, 2.6, 2.2, 2.6, 2.2, 1.9};
 
-//outer limit via Ramachandran JMB 1963
-//struct VDW radii = {};
-
 /*
 Inside this function, the output of strcmp should be equal to zero. But, for whatever reason, it needs to be 10 here.
 I can't explain this as strcmp is used normally elsewhere. But this problem is minor and not worth figuring out right now.
@@ -42,7 +39,7 @@ int countClashes(struct protein *prot)
         //printf("%d %s %d %s %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, distance, min_distance_allowed);
         if(distance < min_distance_allowed)
         {
-          //printf("%d %s %d %s %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, distance, min_distance_allowed);
+          printf("%d %s %d %s %d %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, prot->atoms[i].covalent_bondArray[j-i-1], distance, min_distance_allowed);
           //return 1; //clash found
           count += 1;
         }

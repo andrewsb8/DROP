@@ -288,7 +288,7 @@ void readPDBbonds(struct protein *prot, char *filename)
   countCovalentBonds(prot);
 
   //print for debugging here
-  /*for(int u = 0; u < prot->number_of_atoms; u++)
+  for(int u = 0; u < prot->number_of_atoms; u++)
   {
     for(int v = 0; v < prot->atoms[u].len_covalent_bondArray; v++)
     {
@@ -297,7 +297,7 @@ void readPDBbonds(struct protein *prot, char *filename)
     printf("\n");
   }
 
-  printf("\n\n");*/
+  printf("\n\n");
 }
 
 void makeBondMatrix(struct protein *prot)
@@ -339,9 +339,11 @@ void countCovalentBonds(struct protein *prot)
 
 int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount)
 {
+  //printf("%d %d %d\n", atom1, atom2, *covalentBondCount);
   for(int z = 0; z < prot->number_of_bonds; z++)
   {
-    if(prot->bonds[z].bond_atomNumbers[0] == atom1)
+    //printf("INSIDE: %d %d %d\n", prot->bonds[z].bond_atomNumbers[0], prot->bonds[z].bond_atomNumbers[1], *covalentBondCount);
+    if(prot->bonds[z].bond_atomNumbers[0] == atom1) //atom is in first column of bonds list
     {
       if(prot->bonds[z].bond_atomNumbers[1] == previousAtom) //don't go backwards
       {
@@ -349,13 +351,20 @@ int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int a
       }
       if(prot->bonds[z].bond_atomNumbers[1] == atom2) //condition for killing recursion
       {
+        //printf("HERE: %d %d %d\n", atom1, atom2, *covalentBondCount);
         *covalentBondCount+=1;
-        return 1;
+        found = 1;
+        return found;
       }
       found = recursivePairSearch(prot, atom1, prot->bonds[z].bond_atomNumbers[1], atom2, found, covalentBondCount);
+
+      if(found == 1) //stops loop if search is completed
+      {
+        break;
+      }
     }
 
-    else if(prot->bonds[z].bond_atomNumbers[1] == atom1)
+    else if(prot->bonds[z].bond_atomNumbers[1] == atom1) // atom is in second column of bond list
     {
       if(prot->bonds[z].bond_atomNumbers[0] == previousAtom) //don't go backwards
       {
@@ -364,13 +373,19 @@ int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int a
       if(prot->bonds[z].bond_atomNumbers[0] == atom2) //condition for killing recursion
       {
         *covalentBondCount+=1;
-        return 1;
+        found = 1;
+        return found;
       }
       found = recursivePairSearch(prot, atom1, prot->bonds[z].bond_atomNumbers[0], atom2, found, covalentBondCount);
+
+      if(found == 1)
+      {
+        break;
+      }
     }
   }
 
-  if(found == 1)
+    if(found == 1)
   {
     *covalentBondCount+=1;
   }
