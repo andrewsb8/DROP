@@ -425,16 +425,16 @@ void identifyDihedrals(struct protein *prot)
   char *dihedralDefinitions[5][4] = { //can't use int to set this array size?
     {"C", "N", "CA", "C"}, //phi
     {"N", "CA", "C", "N"},  //psi
-    {"N", "CA", "CB", "CG"}, //Leu chi 1
-    {"CA", "CB", "CG", "CD1"}, //Leu chi 2
+    {"N", "CA", "CB", "CG1"}, //Ile chi 1
+    {"CA", "CB", "CG1", "CD"}, //Ile chi 2
     {"C", "C", "C", "C"} //dihedral for butane
   };
 
   /*
   {"N", "CA", "CB", "HB1"}, //Ala side chain torsional angle (any of the three hydrogens would be fine)
-  {"N", "CA", "CB", "CG1"}, //Ile chi 1
-  {"CA", "CB", "CG1", "CD"}, //Ile chi 2
 
+  {"N", "CA", "CB", "CG"}, //Leu chi 1
+  {"CA", "CB", "CG", "CD1"}, //Leu chi 2
   */
 
   //allocate memory for the dihedrals struct to store information

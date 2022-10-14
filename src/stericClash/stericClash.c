@@ -39,7 +39,7 @@ int countClashes(struct protein *prot)
         //printf("%d %s %d %s %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, distance, min_distance_allowed);
         if(distance < min_distance_allowed)
         {
-          printf("%d %s %d %s %d %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, prot->atoms[i].covalent_bondArray[j-i-1], distance, min_distance_allowed);
+          //printf("%d %s %d %s %d %f %f\n", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[j].atom_number, prot->atoms[j].atom_type, prot->atoms[i].covalent_bondArray[j-i-1], distance, min_distance_allowed);
           //return 1; //clash found
           count += 1;
         }
