@@ -116,39 +116,46 @@ int main(int argc, char *argv[])
     printf("%f\n", calculateDihedral(&prot, 0));
 
     int check = 0;
-    int clash;
+    int clashes;
+    int clash_count = 0;
     int allowed = 0;
     char frame[40];
     int j;
     sprintf(frame, "%s %d", "Frame ", 0);
-    writeXYZ(&prot, "trialanine_Ala2_BBandSC.xyz", frame, 'm', 0, myrank);
+    //writeXYZ(&prot, "trialanine_Ala2_BBandSC.xyz", frame, 'm', 0, myrank);
     //FILE *free_spaces;
-    for(int k = 1; k <= 69; k++) //phi -179 to -41 in 2 degree intervals
+    for(int k = 1; k <= 69; k++) //phi -179 to -41 in 2 degree intervals (69)
     {
-      for(int j = 1; j <= 41; j++) //psi 179 to 99
+      for(int j = 1; j <= 41; j++) //psi 179 to 99 (41)
       {
         for(int i = 1; i <= 180; i++) //chi 2 degrees all of space
         {
           rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 1);
           sprintf(frame, "%s %d", "Frame ", i);
-          writeXYZ(&prot, "trialanine_Ala2_BBandSC.xyz", frame, 'm', i, myrank);
-          if(checkClashes(&prot) == 0)
+          //writeXYZ(&prot, "trialanine_Ala2_BBandSC.xyz", frame, 'm', i, myrank);
+          clashes = countClashes(&prot);
+          if(clashes == 0)
           {
             allowed += 1;
           }
+          clash_count += clashes;
           //printf("%f %d\n", calculateDihedral(&prot, 5), checkClashes(&prot));
           //printXYZ(&prot);
         }
-        float num = (float) allowed/180.0;
-        printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), num);
-        writeRamaDistribution(-calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), num);
+        float noClashNorm = (float) allowed/(180.0);
+        float numClashNorm = (float) clash_count/(180.0) ;
+        printf("%f %f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), noClashNorm, numClashNorm);
+        writeRamaDistribution("ALA2_NoClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), noClashNorm);
+        writeRamaDistribution("ALA2_NumClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), numClashNorm);
         rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 1);
         rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, -2, 1, 0);
 
         allowed = 0; //reset allowed states
+        clash_count = 0;
       }
 
-      writeRamaDistribution(999, 999, 999);
+      writeRamaDistribution("ALA2_NoClash.txt", 2, 999, 999, 999);
+      writeRamaDistribution("ALA2_NumClash.txt", 2, 999, 999, 999);
       rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 82, 1, 0); //reset psi to 179
       rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
 
