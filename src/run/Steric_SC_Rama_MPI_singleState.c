@@ -87,11 +87,11 @@ int main(int argc, char *argv[])
     printf("%f\n", tmp2);
     if(tmp2 - tmp > 0)
     {
-      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, (120-tmp2), 1, 0);
+      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, (170-tmp2), 1, 0);
     }
     else
     {
-      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, tmp2-120, 1, 0);
+      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, tmp2-170, 1, 0);
     }
 
     printf("%f\n", calculateDihedral(&prot, 1));
@@ -104,11 +104,11 @@ int main(int argc, char *argv[])
     printf("%f\n", tmp2);
     if(tmp2 - tmp > 0)
     {
-      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 170-tmp2-2, 1, 0);
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 65-tmp2-2, 1, 0);
     }
     else
     {
-      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, tmp2-170, 1, 0);
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, tmp2-65, 1, 0);
     }
 
     printf("%f\n", calculateDihedral(&prot, 0));

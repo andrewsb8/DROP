@@ -82,21 +82,21 @@ int main(int argc, char *argv[])
     //get phi and psi of central residue to phi = -179 and psi = 179
     //may move this section to an individual method
     //need to have a better idea of how to identify dihedrals from arrays of atom numbers
-    double tmp = calculateDihedral(&prot, 3);
+    double tmp = calculateDihedral(&prot, 1);
     printf("%f\n", tmp);
-    rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 1, 0);
-    double tmp2 = calculateDihedral(&prot, 3);
+    rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 2, 1, 0);
+    double tmp2 = calculateDihedral(&prot, 1);
     printf("%f\n", tmp2);
     if(tmp2 - tmp > 0)
     {
-      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, (179-tmp2), 1, 0);
+      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, (179-tmp2), 1, 0);
     }
     else
     {
-      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, tmp2-179, 1, 0);
+      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, tmp2-179, 1, 0);
     }
 
-    printf("%f\n", calculateDihedral(&prot, 3));
+    printf("%f\n", calculateDihedral(&prot, 1));
 
     //phi
     tmp = calculateDihedral(&prot, 0);
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
     char frame[40];
     int j;
     sprintf(frame, "%s %d", "Frame ", 0);
-    //writeXYZ(&prot, "trialanine_Ala2_BBandSC.xyz", frame, 'm', 0, myrank);
+    writeXYZ(&prot, "VAL2_BBandSC.xyz", frame, 'm', 0, myrank);
     //FILE *free_spaces;
     for(int k = 1; k <= 69; k++) //phi -179 to -41 in 2 degree intervals (69)
     {
@@ -130,9 +130,12 @@ int main(int argc, char *argv[])
       {
         for(int i = 1; i <= 180; i++) //chi 2 degrees all of space
         {
-          rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 1);
+          rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2, 0, 1);
           sprintf(frame, "%s %d", "Frame ", i);
-          //writeXYZ(&prot, "trialanine_Ala2_BBandSC.xyz", frame, 'm', i, myrank);
+          if(k == 1 && j<3)
+          {
+            writeXYZ(&prot, "VAL2_BBandSC.xyz", frame, 'm', i, myrank);
+          }
           clashes = countClashes(&prot);
           if(clashes == 0)
           {
@@ -144,19 +147,19 @@ int main(int argc, char *argv[])
         }
         float noClashNorm = (float) allowed/(180.0);
         float numClashNorm = (float) clash_count/(180.0) ;
-        printf("%f %f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), noClashNorm, numClashNorm);
-        writeRamaDistribution("ALA2_NoClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), noClashNorm);
-        writeRamaDistribution("ALA2_NumClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 3), numClashNorm);
-        rotateDihedral(&prot, 5, prot.dihedrals[5].dihedral_angle, 2, 0, 1);
-        rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, -2, 1, 0);
+        printf("%f %f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), noClashNorm, numClashNorm);
+        writeRamaDistribution("VAL2_NoClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), noClashNorm);
+        writeRamaDistribution("VAL2_NumClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), numClashNorm);
+        rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2, 0, 1);
+        rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, -2, 1, 0);
 
         allowed = 0; //reset allowed states
         clash_count = 0;
       }
 
-      writeRamaDistribution("ALA2_NoClash.txt", 2, 999, 999, 999);
-      writeRamaDistribution("ALA2_NumClash.txt", 2, 999, 999, 999);
-      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 82, 1, 0); //reset psi to 179
+      writeRamaDistribution("VAL2_NoClash.txt", 2, 999, 999, 999);
+      writeRamaDistribution("VAL2_NumClash.txt", 2, 999, 999, 999);
+      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 82, 1, 0); //reset psi to 179
       rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
 
     }
