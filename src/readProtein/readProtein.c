@@ -133,92 +133,6 @@ char * removeSpaces(char *string)
   return string;
 }
 
-void readPDBOld(struct protein *prot, char *filename)
-{
-  FILE *fp;
-  char * line = NULL;
-  size_t len = 0;
-  ssize_t read;
-  char * line_split;
-  int count;
-  const int numberOfEntries = 11; //this is standard for PDB formats. 11 entries per line with delimiters between.
-  int line_number = 0; //keep track of what line number I am on while reading the file
-  char *ptr; //pointer to use for strtod (string to double) function later in this function
-
-  int lens;
-  int check = 1;
-
-  fp = fopen(filename, "r");
-
-  //allocate memory for the atoms struct to store information
-  size_t size = sizeof(struct _atoms);
-  prot->atoms = (struct _atoms*) malloc(size);
-
-  //read file line by line until EOF -- NOTE: should update to only take atoms and ignore others i.e. CONECT
-  while((read = getline(&line,&len,fp)) != -1)
-  {
-    //keep count of number of "words" or "entries" in a line of a pdb
-    count = 0;
-
-    //Get the first word of each line by splitting the string
-    line_split = strtok(line, " \t");
-    lens = strlen(line_split);
-
-    //create string array for whole line of pdb file
-    char stringT[numberOfEntries][lens];
-
-    //For this function, I only want lines that start with ATOM.
-    //Quantities to get: Atom Number, Atom name, Atom type, residue number, residue (all in a struct)
-    //Atom poitions (own array/table within the struct)
-    if(strcmp(line_split, "ATOM") == 0)
-    {
-      while(line_split != NULL)
-      {
-        //printf("%s\n", line_split);
-        strcpy(stringT[count], line_split); //see if strings are the same
-        count++;
-        line_split = strtok(NULL, " \t");
-      }
-
-      //reallocate memory dynamically which allows for a flexible number of atoms from entry pdb
-      if(line_number > 0)
-      {
-        prot->atoms = (struct _atoms*) realloc(prot->atoms, size*(line_number+1));
-      }
-
-      //since pdb files have a standard format, assignments are handled manually as opposed to using if/else if or switch cases to be concise
-      prot->atoms[line_number].atom_number = atoi(stringT[1]);
-      strcpy(prot->atoms[line_number].atom_type, stringT[2]);
-      printf("%s\n", prot->atoms[line_number].atom_type);
-      strcpy(prot->atoms[line_number].residue, stringT[3]);
-      //printf("%s\n", prot->atoms[line_number].residue);
-      prot->atoms[line_number].residue_number = atoi(stringT[4]);
-      for(int k = 5; k < 8; k++)
-      {
-        prot->atoms[line_number].coordinates[k-5] = strtod(stringT[k], &ptr);
-      }
-      strcpy(prot->atoms[line_number].atom_name, stringT[10]);
-      line_number++;
-
-    }
-
-  }
-
-  prot->number_of_atoms = line_number;
-  prot->number_of_residues = prot->atoms[line_number-1].residue_number;
-
-  readPDBbonds(prot, filename);
-  identifyDihedrals(prot);
-
-  for(int i = 0; i < prot->number_of_dihedrals; i++)
-  {
-    prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
-    printf("%f\n", prot->dihedrals[i].dihedral_angle);
-  }
-  printf("\n");
-
-}
-
 void readPDBbonds(struct protein *prot, char *filename)
 {
   FILE *fp;
@@ -252,9 +166,7 @@ void readPDBbonds(struct protein *prot, char *filename)
     //create string array for whole line of pdb file
     char stringT[numberOfEntries][lens];
 
-    //For this function, I only want lines that start with ATOM.
-    //Quantities to get: Atom Number, Atom name, Atom type, residue number, residue (all in a struct)
-    //Then all of the atoms basically become an array or list of struct data types
+    //For this function, I only want lines that start with CONECT.
     if(strcmp(line_split, "CONECT") == 0)
     {
       while(line_split != NULL)

@@ -48,25 +48,6 @@ double * vectorSubtract(double vector1[3], double vector2[3])
   return result;
 }
 
-/*
-This also calculates the difference of two vectors
-This iteration accounts for Loss of Significance by calculating differences of components via
-
-(x-y)(x+y) = x^2 - y^2
-(x-y) = (x^2 - y^2)/(x+y)
-
-If this workaround is successful, there accumulating errors in rotations will go away when this is used.
-*/
-double * vectorSubtract_No_LOS(double vector1[3], double vector2[3])
-{
-  double *result = malloc(sizeof(vector1)); //NOTE: this line throws a warning but does not break the code
-  for(int i = 0; i < 3; i++)
-  {
-    result[i] = ( (vector2[i]*vector2[i]) - (vector1[i]*vector1[i]) )/(vector2[i]+vector1[i]);
-  }
-  return result;
-}
-
 //calculates the cross product component wise of 2 vectors
 //returns a double array!
 double * crossProduct(double vector1[3], double vector2[3])
@@ -75,15 +56,6 @@ double * crossProduct(double vector1[3], double vector2[3])
   result[0] = vector1[1]*vector2[2] - vector2[1]*vector1[2];
   result[1] = vector1[2]*vector2[0] - vector2[2]*vector1[0];
   result[2] = vector1[0]*vector2[1] - vector2[0]*vector1[1];
-  return result;
-}
-
-double * crossProduct_No_LOS(double vector1[3], double vector2[3])
-{
-  double *result = malloc(sizeof(vector1)); //NOTE: this line throws a warning but does not break the code
-  result[0] = ( (vector1[1]*vector2[2]*vector1[1]*vector2[2]) - (vector2[1]*vector1[2]*vector2[1]*vector1[2]) )/(vector1[1]*vector2[2] + vector2[1]*vector1[2]);
-  result[1] = ( (vector1[2]*vector2[0]*vector1[2]*vector2[0]) - (vector2[2]*vector1[0]*vector2[2]*vector1[0]) )/(vector1[2]*vector2[0] + vector2[2]*vector1[0]);
-  result[2] = ( (vector1[0]*vector2[1]*vector1[0]*vector2[1]) - (vector2[0]*vector1[1]*vector2[0]*vector1[1]) )/(vector1[0]*vector2[1] + vector2[0]*vector1[1]);
   return result;
 }
 

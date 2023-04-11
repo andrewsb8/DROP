@@ -59,7 +59,6 @@ struct protein
 void readPDB(struct protein *prot,char *filename);
 char * substr(char * s, int x, int y);
 char * removeSpaces(char *string);
-void readPDBOld(struct protein *prot,char *filename);
 void readPDBbonds(struct protein *prot, char *filename);
 void makeBondMatrix(struct protein *prot);
 void countCovalentBonds(struct protein *prot);
