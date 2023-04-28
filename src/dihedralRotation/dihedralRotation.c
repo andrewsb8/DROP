@@ -12,6 +12,10 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
 {
   double angle;
   double angle_in_rads;
+  double otherangle;
+  double dot;
+  double norm;
+  double sign;
 
   double *vec1 = vectorSubtract(prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[0] - 1].coordinates, prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1] - 1].coordinates);
   double *vec2 = vectorSubtract(prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1] - 1].coordinates, prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] - 1].coordinates);
@@ -20,15 +24,25 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
   double *cross1 = crossProduct(vec1,vec2);
   double *cross2 = crossProduct(vec2,vec3);
 
-  //printf("%f %f %f\n", cross1[0], cross1[1], cross1[2]);
-  //printf("%f %f %f\n", cross2[0], cross2[1], cross2[2]);
+  double *doublecross = crossProduct(cross1, cross2);
 
-  angle_in_rads = acosl( dotProduct(cross1, cross2)/(vectorMagnitude(cross1)*vectorMagnitude(cross2)) );
-  //printf("Angle in rads: %f\n", angle_in_rads);
-
+  norm = vectorMagnitude(cross1)*vectorMagnitude(cross2);
+  dot = dotProduct(cross1, cross2);
+  angle_in_rads = acosl( dot/norm );
   angle = (180/PI)*angle_in_rads;
 
-  //printf("angle: %f\n\n", angle);
+  double ip = dotProduct(vec1, doublecross);
+  if (ip < 0)
+  {
+    sign = -1;
+  }
+  else
+  {
+    sign = 1;
+  }
+  otherangle = sign*(180/PI)*atan2( vectorMagnitude(doublecross), dot );
+
+  //printf("angle and otherangle: %f %f\n", angle, otherangle);
 
   free(vec1);
   free(vec2);
@@ -38,6 +52,30 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
   free(cross2);
 
   return angle;
+}
+
+//temp function to be removed, returns sign of angle between vectors
+double determineSign(struct protein *prot, int dihedralNumber)
+{
+  double *vec1 = vectorSubtract(prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[0] - 1].coordinates, prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1] - 1].coordinates);
+  double *vec2 = vectorSubtract(prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1] - 1].coordinates, prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] - 1].coordinates);
+  double *vec3 = vectorSubtract(prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] - 1].coordinates, prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[3] - 1].coordinates);
+
+  double *cross1 = crossProduct(vec1,vec2);
+  double *cross2 = crossProduct(vec2,vec3);
+
+  double *doublecross = crossProduct(cross1, cross2);
+
+  double ip = dotProduct(vec1, doublecross);
+  if (ip < 0)
+  {
+    return -1;
+  }
+  else
+  {
+    return 1;
+  }
+
 }
 
 void updatePositions(struct protein *prot, double newPositions[3], int atomNumber)
@@ -104,13 +142,13 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
     if(chi == 1) //which chi angle is being rotated, chi 1 or chi 2?
     {
       //int ala2_sidechain_temp[4] = {17,18,19,20}; //temporary to test sidechain rotation method. Need better, general implementation
-      //int ile2_chi1[13] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ,19};
+      int ile2_chi1[13] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ,19};
       //int leu2_chi1[13] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ,19};
-      int val2_chi1[10] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-      for(int i = 0; i < 10; i++)
+      //int val2_chi1[10] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+      for(int i = 0; i < 13; i++)
       {
-        double *tmp = vectorRotate(prot->atoms[val2_chi1[i]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
-        updatePositions(prot, tmp, val2_chi1[i]-1);
+        double *tmp = vectorRotate(prot->atoms[ile2_chi1[i]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
+        updatePositions(prot, tmp, ile2_chi1[i]-1);
         free(tmp);
       }
     }

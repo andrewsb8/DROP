@@ -20,6 +20,7 @@
 @map font 18 to "NimbusRomanNo9L-MediumItalic", "NimbusRomanNo9L-MediumItalic"
 @map font 19 to "NimbusRomanNo9L-Regular", "NimbusRomanNo9L-Regular"
 @map font 20 to "NimbusRomanNo9L-RegularItalic", "NimbusRomanNo9L-RegularItalic"
+@map font 34 to "NimbusSans-Bold", "NimbusSans-Bold"
 @map font 21 to "NimbusSansL-Bold", "NimbusSansL-Bold"
 @map font 22 to "NimbusSansL-BoldCondensed", "NimbusSansL-BoldCondensed"
 @map font 23 to "NimbusSansL-BoldCondensedItalic", "NimbusSansL-BoldCondensedItalic"
@@ -28,17 +29,32 @@
 @map font 26 to "NimbusSansL-RegularCondensed", "NimbusSansL-RegularCondensed"
 @map font 27 to "NimbusSansL-RegularCondensedItalic", "NimbusSansL-RegularCondensedItalic"
 @map font 28 to "NimbusSansL-RegularItalic", "NimbusSansL-RegularItalic"
+@map font 48 to "NimbusSansNarrow-Oblique", "NimbusSansNarrow-Oblique"
+@map font 49 to "NimbusSansNarrow-Regular", "NimbusSansNarrow-Regular"
+@map font 50 to "P052-Bold", "P052-Bold"
+@map font 51 to "P052-BoldItalic", "P052-BoldItalic"
+@map font 52 to "P052-Italic", "P052-Italic"
+@map font 53 to "P052-Roman", "P052-Roman"
 @map font 29 to "StandardSymbolsL-Regular", "StandardSymbolsL-Regular"
+@map font 55 to "StandardSymbolsPS-Regular", "StandardSymbolsPS-Regular"
 @map font 12 to "Symbol", "Symbol"
 @map font 2 to "Times-Bold", "Times-Bold"
 @map font 3 to "Times-BoldItalic", "Times-BoldItalic"
 @map font 1 to "Times-Italic", "Times-Italic"
 @map font 0 to "Times-Roman", "Times-Roman"
+@map font 61 to "URWBookman-Demi", "URWBookman-Demi"
+@map font 62 to "URWBookman-DemiItalic", "URWBookman-DemiItalic"
+@map font 63 to "URWBookman-Light", "URWBookman-Light"
+@map font 64 to "URWBookman-LightItalic", "URWBookman-LightItalic"
 @map font 35 to "URWBookmanL-DemiBold", "URWBookmanL-DemiBold"
 @map font 36 to "URWBookmanL-DemiBoldItalic", "URWBookmanL-DemiBoldItalic"
 @map font 37 to "URWBookmanL-Light", "URWBookmanL-Light"
 @map font 38 to "URWBookmanL-LightItalic", "URWBookmanL-LightItalic"
 @map font 39 to "URWChanceryL-MediumItalic", "URWChanceryL-MediumItalic"
+@map font 70 to "URWGothic-Book", "URWGothic-Book"
+@map font 71 to "URWGothic-BookOblique", "URWGothic-BookOblique"
+@map font 72 to "URWGothic-Demi", "URWGothic-Demi"
+@map font 73 to "URWGothic-DemiOblique", "URWGothic-DemiOblique"
 @map font 40 to "URWGothicL-Book", "URWGothicL-Book"
 @map font 41 to "URWGothicL-BookOblique", "URWGothicL-BookOblique"
 @map font 42 to "URWGothicL-Demi", "URWGothicL-Demi"
@@ -47,6 +63,7 @@
 @map font 45 to "URWPalladioL-BoldItalic", "URWPalladioL-BoldItalic"
 @map font 46 to "URWPalladioL-Italic", "URWPalladioL-Italic"
 @map font 47 to "URWPalladioL-Roman", "URWPalladioL-Roman"
+@map font 82 to "Z003-MediumItalic", "Z003-MediumItalic"
 @map font 13 to "ZapfDingbats", "ZapfDingbats"
 @map color 0 to (255, 255, 255), "white"
 @map color 1 to (0, 0, 0), "black"
@@ -83,7 +100,7 @@
 @timestamp rot 0
 @timestamp font 0
 @timestamp char size 1.000000
-@timestamp def "Wed Oct 13 15:15:15 2021"
+@timestamp def "Mon Apr 17 13:11:30 2023"
 @r0 off
 @link r0 to g0
 @r0 type above
@@ -130,7 +147,7 @@
 @g0 fixedpoint format general general
 @g0 fixedpoint prec 6, 6
 @with g0
-@    world 0, 0.5, 360, 2
+@    world 0, 0, 360, 1
 @    stack world 0, 0, 0, 0
 @    znorm 1
 @    view 0.150000, 0.150000, 1.150000, 0.850000
@@ -153,7 +170,7 @@
 @    xaxis  bar color 1
 @    xaxis  bar linestyle 1
 @    xaxis  bar linewidth 1.0
-@    xaxis  label ""
+@    xaxis  label "Angle [Deg]"
 @    xaxis  label layout para
 @    xaxis  label place auto
 @    xaxis  label char size 1.000000
@@ -161,7 +178,7 @@
 @    xaxis  label color 1
 @    xaxis  label place normal
 @    xaxis  tick on
-@    xaxis  tick major 20
+@    xaxis  tick major 90
 @    xaxis  tick minor ticks 1
 @    xaxis  tick default 6
 @    xaxis  tick place rounded true
@@ -212,7 +229,7 @@
 @    yaxis  label color 1
 @    yaxis  label place normal
 @    yaxis  tick on
-@    yaxis  tick major 0.2
+@    yaxis  tick major 0.25
 @    yaxis  tick minor ticks 1
 @    yaxis  tick default 6
 @    yaxis  tick place rounded true
@@ -277,9 +294,9 @@
 @    s0 type bar
 @    s0 symbol 0
 @    s0 symbol size 1.000000
-@    s0 symbol color 1
+@    s0 symbol color 2
 @    s0 symbol pattern 1
-@    s0 symbol fill color 1
+@    s0 symbol fill color 2
 @    s0 symbol fill pattern 0
 @    s0 symbol linewidth 1.0
 @    s0 symbol linestyle 1
@@ -289,7 +306,7 @@
 @    s0 line type 0
 @    s0 line linestyle 1
 @    s0 line linewidth 1.0
-@    s0 line color 1
+@    s0 line color 2
 @    s0 line pattern 1
 @    s0 baseline type 0
 @    s0 baseline off
@@ -311,7 +328,7 @@
 @    s0 avalue offset 0.000000 , 0.000000
 @    s0 errorbar on
 @    s0 errorbar place both
-@    s0 errorbar color 1
+@    s0 errorbar color 2
 @    s0 errorbar pattern 1
 @    s0 errorbar size 1.000000
 @    s0 errorbar linewidth 1.0
@@ -373,7 +390,6 @@
 @    s1 legend  ""
 @target G0.S0
 @type bar
-186 1
 188 1
 190 1
 192 1
@@ -383,7 +399,7 @@
 200 1
 202 1
 204 1
-284 1
+206 1
 286 1
 288 1
 290 1
@@ -391,6 +407,7 @@
 294 1
 296 1
 298 1
+300 1
 &
 @target G0.S1
 @type bar

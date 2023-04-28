@@ -1,4 +1,4 @@
-//Current compilation command: mpicc -g src/run/Steric_SC_Rama_MPI_singleState.c -o steric src/dihedralRotation/dihedralRotation.c src/vectorCalculus/vectorCalculus.c src/readProtein/readProtein.c src/stericClash/stericClash.c src/rama/rama.c -lm
+//Current compilation command: mpicc -g src/run/Steric_Gly_SC_Rama_MPI.c -o steric src/dihedralRotation/dihedralRotation.c src/vectorCalculus/vectorCalculus.c src/readProtein/readProtein.c src/stericClash/stericClash.c src/rama/rama.c -lm
 //Current run command: mpirun -n 4 steric /path/GGG_COOH_hydrogens_connect.pdb
 
 /* This executable is going to scan the top left of Ramachandran space
@@ -10,7 +10,7 @@ chain in context of the backbone configuration.
 
 Author: Brian Andrews
 Institution: Drexel University
-Last Date Modified: 6/1/2022
+Last Date Modified: 4/24/2023
 */
 
 #include <stdio.h>
@@ -77,6 +77,8 @@ int main(int argc, char *argv[])
       printf("\n\n");
     }
 
+    //printXYZ(&prot);
+
     //get phi and psi of central residue to phi = -179 and psi = 179
     //may move this section to an individual method
     //need to have a better idea of how to identify dihedrals from arrays of atom numbers
@@ -87,14 +89,14 @@ int main(int argc, char *argv[])
     printf("%f\n", tmp2);
     if(tmp2 - tmp > 0)
     {
-      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, (113-tmp2), 1, 0);
+      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, (179-tmp2-2), 1, 0);
     }
     else
     {
-      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, tmp2-113, 1, 0);
+      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, tmp2-179, 1, 0);
     }
-
-    printf("%f\n", calculateDihedral(&prot, 1));
+    rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, -2, 1, 0);
+    printf("%f\n", determineSign(&prot, 1)*calculateDihedral(&prot, 1));
 
     //phi
     tmp = calculateDihedral(&prot, 0);
@@ -104,16 +106,14 @@ int main(int argc, char *argv[])
     printf("%f\n", tmp2);
     if(tmp2 - tmp > 0)
     {
-      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 119-tmp2-2, 1, 0);
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 179-tmp2+2, 1, 0);
     }
     else
     {
-      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, tmp2-119, 1, 0);
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, tmp2-179, 1, 0);
     }
 
-    printf("%f\n", calculateDihedral(&prot, 0));
-
-    //printXYZ(&prot);
+    printf("%f\n", determineSign(&prot, 0)*calculateDihedral(&prot, 0));
 
     int check = 0;
     int clashes;
@@ -122,38 +122,61 @@ int main(int argc, char *argv[])
     char frame[40];
     int j;
     sprintf(frame, "%s %d", "Frame ", 0);
-    writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', 0, myrank);
+    //writeXYZ(&prot, "trialanine_Ala2_BBandSC.xyz", frame, 'm', 0, myrank);
     //FILE *free_spaces;
-    for(int h = 1; h <= 180; h++) //chi 1 all of space (180)
+    for(int k = 1; k <= 69; k++) //phi -179 to -41 in 2 degree intervals (69)
     {
-      for(int i = 1; i <= 180; i++) //chi 2 all of space
+      for(int j = 1; j <= 41; j++) //psi 179 to 99 (41)
       {
-        rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 0, 2);
-        sprintf(frame, "%s %d", "Frame ", i);
-        writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
+        //sprintf(frame, "%s %d", "Frame ", i);
+        writeXYZ(&prot, "GLY2_BBandSC.xyz", frame, 'm', j*k, myrank);
         clashes = countClashes(&prot);
         if(clashes == 0)
         {
           allowed += 1;
-          writeRamaDistribution("ILE2_NoClash.txt", 2, determineSign(&prot, 2)*calculateDihedral(&prot, 2), determineSign(&prot, 3)*calculateDihedral(&prot, 3), 1);
+          writeRamaDistribution("GLY2_NoClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), 1);
         }
         else
         {
-          writeRamaDistribution("ILE2_NoClash.txt", 2, determineSign(&prot, 2)*calculateDihedral(&prot, 2), determineSign(&prot, 3)*calculateDihedral(&prot, 3), 0);
+          writeRamaDistribution("GLY2_NoClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), 0);
         }
         clash_count += clashes;
         //printXYZ(&prot);
-        writeRamaDistribution("ILE2_NumClash.txt", 2, determineSign(&prot, 2)*calculateDihedral(&prot, 2), determineSign(&prot, 3)*calculateDihedral(&prot, 3), clashes);
+
+        writeRamaDistribution("GLY2_NumClash.txt", 2, -calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), clashes);
+        //printf("%f %f\n", determineSign(&prot, 0)*calculateDihedral(&prot, 0), determineSign(&prot, 1)*calculateDihedral(&prot, 1));
+
+        //for some reason (coordinate system?) rotations are reversed for phi > 157? Just for glycine!!!
+        if (calculateDihedral(&prot, 0) > 157)
+        {
+          rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 2, 1, 0);
+        }
+        else
+        {
+          rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, -2, 1, 0);
+        }
+
+
+        allowed = 0; //reset allowed states
+        clash_count = 0;
       }
-      rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 0, 2);
-      rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2, 0, 1);
 
-      writeRamaDistribution("ILE2_NoClash.txt", 2, 999, 999, 999);
-      writeRamaDistribution("ILE2_NumClash.txt", 2, 999, 999, 999);
+      writeRamaDistribution("GLY2_NoClash.txt", 2, 999, 999, 999);
+      writeRamaDistribution("GLY2_NumClash.txt", 2, 999, 999, 999);
+
+      //rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 82, 1, 0); //reset psi to 179
+      //for some reason (coordinate system?) rotations are reversed for phi > 157? Just for glycine!!
+      if (calculateDihedral(&prot, 0) > 157)
+      {
+        rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, -82, 1, 0);
+      }
+      else
+      {
+        rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 82, 1, 0);
+      }
+      rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
+
     }
-
-    printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), (float) allowed/(180.0*180));
-    printf("%f %f %f\n", calculateDihedral(&prot, 0), calculateDihedral(&prot, 1), (float) clash_count/(180.0*180));
 
     /*
     //NEXT SECTION: Start distributing protein configurations for analysis
