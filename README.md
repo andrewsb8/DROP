@@ -8,7 +8,7 @@ This project is still in its inception phase. But will serve as an exercise in m
 - [ ] Learn about parallelization (in C, although it should translate well to other languages)
 - [p] Learn to make and use a makefile
 - [ ] Make this a useful command line tool
-- [ ] Learn to implement command line flags (before I have just kept track of command line option orders which is not good practice)
+- [p] Learn to implement command line flags using argp
 - [x] Use Git more directly to simulate a team environment in software development
 - [ ] Develop an environment where addition of functions and methods to this project is a streamlined process
 - [x] Relearn writing recursive algorithms... apparently! (See readProtein.c method countCovalentBonds for details)
