@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <mpi.h>
 #include <assert.h>
 #include "readProtein.h"
 #include "../dihedralRotation/dihedralRotation.h"
@@ -88,12 +87,12 @@ void readPDB(struct protein *prot, char *filename)
   readPDBbonds(prot, filename);
   identifyDihedrals(prot);
 
-  for(int i = 0; i < prot->number_of_dihedrals; i++)
+  /*for(int i = 0; i < prot->number_of_dihedrals; i++)
   {
     prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
     printf("%f\n", prot->dihedrals[i].dihedral_angle);
   }
-  printf("\n");
+  printf("\n");*/
 
 }
 

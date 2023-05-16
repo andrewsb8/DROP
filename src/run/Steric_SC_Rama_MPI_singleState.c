@@ -87,11 +87,11 @@ int main(int argc, char *argv[])
     printf("%f\n", tmp2);
     if(tmp2 - tmp > 0)
     {
-      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, (113-tmp2), 1, 0);
+      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, (165-tmp2), 1, 0);
     }
     else
     {
-      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, tmp2-113, 1, 0);
+      rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, tmp2-165, 1, 0);
     }
 
     printf("%f\n", calculateDihedral(&prot, 1));
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
       {
         rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 0, 2);
         sprintf(frame, "%s %d", "Frame ", i);
-        writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
+        //writeXYZ(&prot, "ILE2_BBandSC.xyz", frame, 'm', i, myrank);
         clashes = countClashes(&prot);
         if(clashes == 0)
         {
