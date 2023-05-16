@@ -4,7 +4,7 @@
 #include "trial.h"
 #include "../include/readProtein/readProtein.h"
 
-char *filename;
+char *filename; //change to an arguments struct and keep global
 
 static int trial_parse(int key, char *arg, struct argp_state *state)
 {
@@ -21,7 +21,6 @@ static int trial_parse(int key, char *arg, struct argp_state *state)
   return 0;
 }
 
-//change --help output to specify which function is being used
 void trial(int argc, char **argv)
 {
   struct argp_option trial_options[] =
