@@ -189,6 +189,8 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
 }
 
 //This method will be used to make successive rotations about the same dihedral
+//without translating to protein or molecule back to the original coordinates
+//between rotations.
 //For now, the rotation methods in this file translate protein back to position in
 //box. But that is ok for now.
 double rotateDihedral_noTranslate(struct protein *prot, int dihedralNumber, double dihedralAngle, double dihedralAngleChange)
