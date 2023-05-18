@@ -56,13 +56,14 @@ struct protein
 //  char ALA[4] = {'CB', 'HB1', 'HB2', 'HB3'};
 //};
 
-void readPDB(struct protein *prot,char *filename);
+void readPDB(struct protein *prot,char *filename, FILE *log_file);
 char * substr(char * s, int x, int y);
 char * removeSpaces(char *string);
-void readPDBbonds(struct protein *prot, char *filename);
+void readPDBbonds(struct protein *prot, char *filename, FILE *log_file);
 void makeBondMatrix(struct protein *prot);
-void countCovalentBonds(struct protein *prot);
+void countCovalentBonds(struct protein *prot, FILE *log_file);
 int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount);
+void printCovalentBondMatrix(struct protein *prot, FILE *log_file);
 void identifyDihedrals(struct protein *prot);
 void printXYZ(struct protein *prot);
 void writeXYZ(struct protein *prot, char *filename, char *comment, char type, int frame, int rank);

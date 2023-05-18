@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 {
   static struct argp_option options[] =
   {
-    { "func", 'f', "[Function String]", 0, "Identify Function" },
+    { "func", 'f', "[Function String]", 0, "Identify Function. Must be first option specified!" },
     { "commands", 'c', 0,  OPTION_ARG_OPTIONAL, "See options for -f" },
     { 0, 0, 0, 0, "To see options for a specific function: ./drop -f [FUNC] --help"},
     { 0, 0, 0, 0, "Informational Options:" },

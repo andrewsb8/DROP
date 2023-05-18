@@ -6,7 +6,7 @@
 #include "readProtein.h"
 #include "../dihedralRotation/dihedralRotation.h"
 
-void readPDB(struct protein *prot, char *filename)
+void readPDB(struct protein *prot, char *filename, FILE *log_file)
 {
   FILE *fp;
   char * line = NULL;
@@ -27,12 +27,10 @@ void readPDB(struct protein *prot, char *filename)
   size_t size = sizeof(struct _atoms);
   prot->atoms = (struct _atoms*) malloc(size);
 
-  //read file line by line until EOF -- NOTE: should update to only take atoms and ignore others i.e. CONECT
+  //read file line by line until EOF
   while((read = getline(&line,&len,fp)) != -1)
   {
-    //For this function, I only want lines that start with ATOM.
-    //Quantities to get: Atom Number, Atom name, Atom type, residue number, residue (all in a struct)
-    //Atom poitions (own array/table within the struct)
+    //Quantities to get for ATOM: Atom Number, Atom name, Atom type, residue number, residue (all in a struct), Atom poitions (own array/table within the struct)
     if(strcmp(substr(line,0,4), "ATOM") == 0)
     {
       //reallocate memory dynamically which allows for a flexible number of atoms from entry pdb
@@ -79,10 +77,18 @@ void readPDB(struct protein *prot, char *filename)
 
   }
 
+  fclose(fp);
+
+  if (line_number == 0)
+  {
+    fprintf(stderr, "ERROR: No ATOM entries in the input file.\n");
+    exit(1);
+  }
+
   prot->number_of_atoms = line_number;
   prot->number_of_residues = prot->atoms[line_number-1].residue_number;
 
-  readPDBbonds(prot, filename);
+  readPDBbonds(prot, filename, log_file);
   identifyDihedrals(prot);
 
   for(int i = 0; i < prot->number_of_dihedrals; i++)
@@ -130,7 +136,7 @@ char * removeSpaces(char *string)
   return string;
 }
 
-void readPDBbonds(struct protein *prot, char *filename)
+void readPDBbonds(struct protein *prot, char *filename, FILE *log_file)
 {
   FILE *fp;
   char * line = NULL;
@@ -191,22 +197,21 @@ void readPDBbonds(struct protein *prot, char *filename)
 
   }
 
+  fclose(fp);
+
+  if (line_number == 0)
+  {
+    fprintf(stderr, "ERROR: No CONECT entries in the input file. No bonds were read or inferred from structure.\n");
+    exit(1);
+  }
+
   prot->number_of_bonds = line_number;
 
   makeBondMatrix(prot);
-  countCovalentBonds(prot);
-
-  //print for debugging here
-  for(int u = 0; u < prot->number_of_atoms; u++)
-  {
-    for(int v = 0; v < prot->atoms[u].len_covalent_bondArray; v++)
-    {
-      printf("%d ", prot->atoms[u].covalent_bondArray[v]);
-    }
-    printf("\n");
-  }
+  countCovalentBonds(prot, log_file);
 
   printf("\n\n");
+  return;
 }
 
 void makeBondMatrix(struct protein *prot)
@@ -223,15 +228,17 @@ void makeBondMatrix(struct protein *prot)
       //if first atom in bond is the atom currently looking at, put a 1 in the location of the second atom in bond
       if(prot->bonds[u].bond_atomNumbers[0] == t+1)
       {
-        //printf("%d %d\n", t+1, prot->bonds[u].bond_atomNumbers[1]);
         prot->atoms[t].covalent_bondArray[prot->bonds[u].bond_atomNumbers[1] - (t+2)] = 1; //see readProtein.h for confusing indexing of this data structure
       }
     }
   }
+
+  return;
 }
 
-void countCovalentBonds(struct protein *prot)
+void countCovalentBonds(struct protein *prot, FILE *log_file)
 {
+  int warning = 0;
   static int covalentBondCount = 0;
   //start by looping through all atom pairs
   for(int h = 0; h < prot->number_of_atoms; h++)
@@ -242,11 +249,29 @@ void countCovalentBonds(struct protein *prot)
       if(prot->atoms[h].covalent_bondArray[p-h-1] != 1)
       {
         recursivePairSearch(prot, 0, h+1, p+1, 0, &covalentBondCount);
+        if (covalentBondCount == 0)
+        {
+          warning = warning + 1;
+          fprintf(stderr, "WARNING %d: There is a zero in your covalent bond matrix. "
+          "This means you either:\n\n1. Have more than one noncovalently bonded proteins "
+          "in your structure.\n2. Are missing or have incorrect CONECT records.\n\nPlease "
+          "check your pdb file as the results will not be accurate with this structure. "
+          "Dihedral angles may be unrecognized because bond information is missing. See "
+          "your log file for more details and your covalent bond matrix.\n\n", warning);
+          fprintf(log_file, "WARNING %d: There is a zero in your covalent bond matrix. "
+          "This means you either:\n\n1. Have more than one noncovalently bonded proteins "
+          "in your structure.\n2. Are missing or have incorrect CONECT records.\n\nPlease "
+          "check your pdb file as the results will not be accurate with this structure. "
+          "Dihedral angles may be unrecognized because bond information is missing.\n\n", warning);
+        }
         prot->atoms[h].covalent_bondArray[p-h-1] = covalentBondCount;
         covalentBondCount = 0;
       }
     }
   }
+
+  printCovalentBondMatrix(prot, log_file);
+  return;
 }
 
 int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount)
@@ -294,12 +319,29 @@ int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int a
     }
   }
 
-    if(found == 1)
+  if(found == 1)
   {
     *covalentBondCount+=1;
   }
+
   return found;
 
+}
+
+void printCovalentBondMatrix(struct protein *prot, FILE *log_file)
+{
+  fprintf(log_file, "Covalent Bond Matrix:\n");
+  for(int u = 0; u < prot->number_of_atoms; u++)
+  {
+    for(int v = 0; v < prot->atoms[u].len_covalent_bondArray; v++)
+    {
+      fprintf(log_file, "%d ", prot->atoms[u].covalent_bondArray[v]);
+    }
+    fprintf(log_file, "\n");
+  }
+
+  fprintf(log_file, "\n\n");
+  return;
 }
 
 /*
@@ -409,7 +451,7 @@ void identifyDihedrals(struct protein *prot)
       }
     }
   }
-
+  return;
 }
 
 void printXYZ(struct protein *prot)
@@ -424,6 +466,7 @@ void printXYZ(struct protein *prot)
     free(line);
   }
   printf("\n\n");
+  return;
 }
 
 void writeXYZ(struct protein *prot,char *filename,char *comment,char type,int frame, int rank)
@@ -443,6 +486,7 @@ void writeXYZ(struct protein *prot,char *filename,char *comment,char type,int fr
       printf("Please specify single-structure (s) or multi-frame (m) pdb option.\n");
       break;
   }
+  return;
 }
 
 void writeXYZsingleframe(struct protein *prot,char *filename, char *comment, int rank)
@@ -463,6 +507,7 @@ void writeXYZsingleframe(struct protein *prot,char *filename, char *comment, int
   }
   fclose(fp);
   printf("Completed XYZ structure generation. Filename: %s.\n", filename);
+  return;
 }
 
 void writeXYZmultiframe(struct protein *prot,char *filename, char *comment, int frame, int rank)
@@ -493,6 +538,7 @@ void writeXYZmultiframe(struct protein *prot,char *filename, char *comment, int 
     free(line);
   }
   fclose(fp);
+  return;
 }
 
 void writePDB(struct protein *prot,char *filename,char type,int frame)
@@ -512,11 +558,13 @@ void writePDB(struct protein *prot,char *filename,char type,int frame)
       printf("Please specify single-structure (s) or multi-frame (m) pdb option.\n");
       break;
   }
+  return;
 }
 
 void writePDBmultiframe(struct protein *prot,char *filename, int frame)
 {
   printf("placeholder\n");
+  return;
 }
 
 void writePDBsingleframe(struct protein *prot,char *filename)
@@ -534,4 +582,5 @@ void writePDBsingleframe(struct protein *prot,char *filename)
     fprintf(fp, "%s", line);
   }
   fprintf(fp, "ENDMDL\n");
+  return;
 }

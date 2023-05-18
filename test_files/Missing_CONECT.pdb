@@ -1,0 +1,41 @@
+CRYST1    0.000    0.000    0.000  90.00  90.00  90.00 P 1           1
+ATOM      1  C   GLY X   1       7.759  31.057   4.664  1.00  0.00           C
+ATOM      2  O   GLY X   1       8.644  30.289   4.243  1.00  0.00           O
+ATOM      3  N   VAL X   2       7.873  31.660   5.853  1.00  0.00           N
+ATOM      4  HN  VAL X   2       7.237  32.410   6.054  1.00  0.00           H
+ATOM      5  CA  VAL X   2       8.990  31.550   6.760  1.00  0.00           C
+ATOM      6  HA  VAL X   2       9.920  31.810   6.270  1.00  0.00           H
+ATOM      7  CB  VAL X   2       8.770  32.440   7.950  1.00  0.00           C
+ATOM      8  HB  VAL X   2       8.520  33.450   7.540  1.00  0.00           H
+ATOM      9  CG1 VAL X   2       7.520  32.000   8.800  1.00  0.00           C
+ATOM     10 1HG1 VAL X   2       6.560  31.920   8.250  1.00  0.00           H
+ATOM     11 2HG1 VAL X   2       7.660  31.000   9.260  1.00  0.00           H
+ATOM     12 3HG1 VAL X   2       7.510  32.870   9.500  1.00  0.00           H
+ATOM     13  CG2 VAL X   2      10.040  32.710   8.740  1.00  0.00           C
+ATOM     14 1HG2 VAL X   2      10.440  31.800   9.230  1.00  0.00           H
+ATOM     15 2HG2 VAL X   2      10.830  33.040   8.030  1.00  0.00           H
+ATOM     16 3HG2 VAL X   2       9.810  33.460   9.520  1.00  0.00           H
+ATOM     17  C   VAL X   2       9.146  30.118   7.216  1.00  0.00           C
+ATOM     18  O   VAL X   2       8.237  29.284   7.437  1.00  0.00           O
+ATOM     19  N   GLY X   3      10.332  29.527   7.502  1.00  0.00           N
+ATOM     20  HN  GLY X   3      11.136  30.120   7.467  1.00  0.00           H
+END
+CONECT	1	2
+CONECT	1	3
+CONECT	3	5
+CONECT	5	7
+CONECT	5	17
+REMARK CONECT	7	9
+CONECT	7	13
+CONECT	17 18
+CONECT	17 19
+CONECT	3	4
+CONECT	5	6
+CONECT	7	8
+CONECT	9	10
+CONECT	9	11
+CONECT	9	12
+CONECT	13 14
+CONECT	13 15
+CONECT	13 16
+CONECT	19 20

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <argp.h>
+#include <string.h>
 
 #include "trial.h"
 #include "../include/readProtein/readProtein.h"
@@ -15,15 +16,17 @@ static int trial_parse(int key, char *arg, struct argp_state *state)
   struct arguments *a = state->input;
   switch(key)
   {
-      case 'i': //require this option to be present, not just argument
+      //require this option to be present, not just argument
+      case 'i':
       {
+        //TO DO: check if file exists first and terminate if it does not
         a->input_file = arg;
         break;
       }
 
       case 'l':
       {
-        a->log_file = arg; //not overriding defaults
+        a->log_file = arg;
         break;
       }
 
@@ -42,14 +45,23 @@ void trial(int argc, char **argv)
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "log.txt"};
+  struct arguments args = {NULL, "drop.log"};
+
   struct argp trial_argp = { trial_options, trial_parse, 0, 0 };
   argp_parse(&trial_argp, argc, argv, 0, 0, &args);
-  printf("logfile name: %s\n", args.log_file);
+
+  //log inputs
+  FILE *log = fopen(args.log_file, "w");
+  fprintf(log, "Command Line: drop -f trial ");
+  for(int k = 1; k < argc-2; k++)
+  {
+    fprintf(log, "%s ", argv[k]);
+  }
+  fprintf(log, "\n\n");
 
   //initialize protein struct and begin analysis
   struct protein prot;
-  readPDB(&prot, args.input_file);
+  readPDB(&prot, args.input_file, log);
 
   return;
 }
