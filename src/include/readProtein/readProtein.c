@@ -73,8 +73,6 @@ void readPDB(struct protein *prot, char *filename)
       strcpy(prot->atoms[line_number].atom_name, removeSpaces(atomName));
       free(atomName);
 
-      //printf("%d %s %s %s\n", prot->atoms[line_number].atom_number, prot->atoms[line_number].atom_type, prot->atoms[line_number].residue, prot->atoms[line_number].atom_name);
-
       line_number++;
 
     }
@@ -213,7 +211,8 @@ void readPDBbonds(struct protein *prot, char *filename)
 
 void makeBondMatrix(struct protein *prot)
 {
-  for(int t = 0; t < prot->number_of_atoms-1; t++) //last atom will not be considered to avoid weird memory artifacts. It should not have any unique bonds anyway
+  //last atom will not be considered to avoid weird memory artifacts. It should not have any unique bonds anyway
+  for(int t = 0; t < prot->number_of_atoms-1; t++)
   {
     prot->atoms[t].len_covalent_bondArray = prot->number_of_atoms - (t+1);
     prot->atoms[t].covalent_bondArray = (int*) calloc(prot->atoms[t].len_covalent_bondArray, sizeof(int*));
@@ -221,7 +220,8 @@ void makeBondMatrix(struct protein *prot)
     //going through and using bonds list to identify atoms that have 1 covalent bond between them
     for(int u = 0; u < prot->number_of_bonds; u++)
     {
-      if(prot->bonds[u].bond_atomNumbers[0] == t+1) //if first atom in bond is the atom currently looking at, put a 1 in the location of the second atom in bond
+      //if first atom in bond is the atom currently looking at, put a 1 in the location of the second atom in bond
+      if(prot->bonds[u].bond_atomNumbers[0] == t+1)
       {
         //printf("%d %d\n", t+1, prot->bonds[u].bond_atomNumbers[1]);
         prot->atoms[t].covalent_bondArray[prot->bonds[u].bond_atomNumbers[1] - (t+2)] = 1; //see readProtein.h for confusing indexing of this data structure
@@ -238,7 +238,8 @@ void countCovalentBonds(struct protein *prot)
   {
     for(int p = h+1; p < prot->number_of_atoms; p++)
     {
-      if(prot->atoms[h].covalent_bondArray[p-h-1] != 1) //only want to call this search function for pairs of atoms that aren't directly covalently bonded to one another
+      //only want to call this search function for pairs of atoms that aren't directly covalently bonded to one another
+      if(prot->atoms[h].covalent_bondArray[p-h-1] != 1)
       {
         recursivePairSearch(prot, 0, h+1, p+1, 0, &covalentBondCount);
         prot->atoms[h].covalent_bondArray[p-h-1] = covalentBondCount;
@@ -250,10 +251,8 @@ void countCovalentBonds(struct protein *prot)
 
 int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount)
 {
-  //printf("%d %d %d\n", atom1, atom2, *covalentBondCount);
   for(int z = 0; z < prot->number_of_bonds; z++)
   {
-    //printf("INSIDE: %d %d %d\n", prot->bonds[z].bond_atomNumbers[0], prot->bonds[z].bond_atomNumbers[1], *covalentBondCount);
     if(prot->bonds[z].bond_atomNumbers[0] == atom1) //atom is in first column of bonds list
     {
       if(prot->bonds[z].bond_atomNumbers[1] == previousAtom) //don't go backwards
@@ -262,7 +261,6 @@ int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int a
       }
       if(prot->bonds[z].bond_atomNumbers[1] == atom2) //condition for killing recursion
       {
-        //printf("HERE: %d %d %d\n", atom1, atom2, *covalentBondCount);
         *covalentBondCount+=1;
         found = 1;
         return found;
@@ -325,6 +323,9 @@ This could produce problems. Especially in cases where the atom numbering gets
 weird or potentially out of order if this is to be expanded.
 
 May copy recursive strategy used for the bond matrix above
+5/18/2023: OR.. just use the covalent bond matrix already formed. Each atom
+included in the dihedral has to be bonded and are identified by a '1' in
+the bond matrix......
 */
 void identifyDihedrals(struct protein *prot)
 {

@@ -62,8 +62,7 @@ bool findCommand(char *arg, int argc, char **argv)
   char **strippedArgs = stripFArgv(argc, argv); //get rid of '-f FUNCTION' to avoid argp errors
   if ( strcmp(arg, commandList[0][0]) == 0 )
   {
-    //call function and pass state
-    printf("found trial\n");
+    //call function
     trial(argc, argv);
     found = true;
   }
