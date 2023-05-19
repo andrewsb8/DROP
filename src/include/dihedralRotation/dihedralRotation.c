@@ -12,7 +12,7 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
 {
   double angle;
   double angle_in_rads;
-  double otherangle;
+  double signedAngle;
   double dot;
   double norm;
   double sign;
@@ -40,9 +40,7 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
   {
     sign = 1;
   }
-  otherangle = sign*(180/PI)*atan2( vectorMagnitude(doublecross), dot );
-
-  //printf("angle and otherangle: %f %f\n", angle, otherangle);
+  signedAngle = sign*angle;
 
   free(vec1);
   free(vec2);
@@ -51,7 +49,7 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
   free(cross1);
   free(cross2);
 
-  return angle;
+  return signedAngle;
 }
 
 //temp function to be removed, returns sign of angle between vectors
@@ -76,6 +74,11 @@ double determineSign(struct protein *prot, int dihedralNumber)
     return 1;
   }
 
+}
+
+void setDihedral(struct protein *prot, double angle, double newAngle)
+{
+  printf("placeholder\n\n");
 }
 
 void updatePositions(struct protein *prot, double newPositions[3], int atomNumber)
@@ -117,6 +120,7 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
   }
 
   //rotate about y axis so that the axis between the middle two atoms of the dihedral is aligned with the z axis
+  //need to enforce rotation such that dihedral_atomNumbers[2] (3rd atom in dihedral) has z coord > 0
   double angleToZAxis = atanl((prot->atoms[atom_rotation_index-1].coordinates[0])/(prot->atoms[atom_rotation_index-1].coordinates[2]));
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
@@ -125,7 +129,7 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
     free(tmp);
   }
 
-  //printXYZ(prot);
+  printf("%f %f %f\n", prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2]-1].coordinates[0], prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2]-1].coordinates[1], prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2]-1].coordinates[2]);
 
   //rotate all atoms after bond in question about the z axis by the desired change here
   if(bb_or_sc == 1) //1 indicates rotating backbone

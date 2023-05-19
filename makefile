@@ -1,5 +1,6 @@
 SHELL := /bin/bash
 #PATH  := node_modules/.bin:$(PATH)
+buildDir = $(pwd)
 
 compile:
 	gcc -c src/drop/drop.c

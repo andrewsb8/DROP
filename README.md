@@ -3,7 +3,9 @@ Dihedral Rotation Of Proteins (DROP)
 
 This is a work in progress personal project which manipulates protein structures via rotating dihedral angles. A major refactor to make this into a command line application has begun on 5/15/2023.
 
-You can compile DROP with ```make``` in the parent directory. Although, currently the only thing that can be done is read a pdb file with CONECT records (see example files) to populate ```struct protein``` (see ```src/readProtein/readProtein.h```).
+You can compile DROP with ```make``` in the parent directory. Although it is recommended to make a ```build``` directory and execute ```make -C /path/to/DROP```.
+
+Currently the only thing that can be done is read a pdb file with CONECT records (see example files) to populate ```struct protein``` (see ```src/readProtein/readProtein.h```).
 
 See options with ```./drop --help```
 

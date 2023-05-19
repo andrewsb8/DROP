@@ -4,6 +4,7 @@
 
 #include "trial.h"
 #include "../include/readProtein/readProtein.h"
+#include "../include/dihedralRotation/dihedralRotation.h"
 
 struct arguments
 {
@@ -46,11 +47,13 @@ void trial(int argc, char **argv)
 
   //DEFAULTS
   struct arguments args = {NULL, "drop.log"};
-
+  //parse options
   struct argp trial_argp = { trial_options, trial_parse, 0, 0 };
   argp_parse(&trial_argp, argc, argv, 0, 0, &args);
 
-  //log inputs
+  //log inputs - this has a weird format b/c of stripFArgv(int argc, char **argv) in commands.c
+  //can't put the log file earlier in the workflow unless I compile each -f option into its own
+  //binary which i don't know how to do... yet!
   FILE *log = fopen(args.log_file, "w");
   fprintf(log, "Command Line: drop -f trial ");
   for(int k = 1; k < argc-2; k++)
@@ -60,8 +63,24 @@ void trial(int argc, char **argv)
   fprintf(log, "\n\n");
 
   //initialize protein struct and begin analysis
+  fprintf(log, "Reading structure file: %s\n\n", args.input_file);
   struct protein prot;
   readPDB(&prot, args.input_file, log);
 
+  fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
+
+  rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
+  rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 2, 1, 0);
+  rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2, 0, 1);
+  rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 0, 2);
+
+  for(int i = 0; i < prot.number_of_dihedrals; i++)
+  {
+    prot.dihedrals[i].dihedral_angle = calculateDihedral(&prot, i);
+    printf("%f\n", prot.dihedrals[i].dihedral_angle);
+  }
+  printf("\n");
+
+  fclose(log);
   return;
 }

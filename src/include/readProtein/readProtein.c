@@ -81,7 +81,8 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
 
   if (line_number == 0)
   {
-    fprintf(stderr, "ERROR: No ATOM entries in the input file.\n");
+    fprintf(stderr, "ERROR: No ATOM entries in the input file. Exiting.\n");
+    fprintf(log_file, "ERROR: No ATOM entries in the input file. Exiting\n");
     exit(1);
   }
 
@@ -91,12 +92,14 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   readPDBbonds(prot, filename, log_file);
   identifyDihedrals(prot);
 
+  fprintf(log_file, "Calculating initial dihedral angles.\n");
+
   for(int i = 0; i < prot->number_of_dihedrals; i++)
   {
     prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
-    printf("%f\n", prot->dihedrals[i].dihedral_angle);
+    fprintf(log_file, "%f\n", prot->dihedrals[i].dihedral_angle);
   }
-  printf("\n");
+  fprintf(log_file, "\n");
 
 }
 
@@ -371,7 +374,9 @@ the bond matrix......
 */
 void identifyDihedrals(struct protein *prot)
 {
-  //the number of dihedrals a protein has is 2*number of residues - 2 (N and C terminal only typically have 1 dihedral angle each in unblocked polypeptides)
+  //this number needs to be updated to account for amino acid type and side
+  //chain dihedrals. then it should be used to produce potential warnings or
+  //errors if one hasn't been thrown due to covalent bond matrix error.
   prot->expected_num_dihedrals = (prot->number_of_residues*2)-2;
 
   //dihedral definitions
