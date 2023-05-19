@@ -7,7 +7,7 @@
 
 const char *argp_program_bug_address = "https://github.com/andrewsb8/DROP/issues";
 const char *argp_program_version = "DROP Version 0.0.1";
-static char doc[] = "DROP (Dihedral Rotation Of Proteins) -- A tool to investigate protein structures.";
+static char doc[] = "DROP (Dihedral Rotation Of Proteins) -- A tool to investigate protein structures via direct manipulation of dihedral angles and steric clash analysis.";
 
 int num_master_options_read = 0;
 
