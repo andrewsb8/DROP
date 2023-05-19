@@ -37,7 +37,7 @@ static int trial_parse(int key, char *arg, struct argp_state *state)
   return 0;
 }
 
-void trial(int argc, char **argv)
+void trial(int argc, char **argv, char *stringArgv)
 {
   struct argp_option trial_options[] =
   {
@@ -60,16 +60,9 @@ void trial(int argc, char **argv)
     exit(1);
   }
 
-  //log inputs - this has a weird format b/c of stripFArgv(int argc, char **argv) in commands.c
-  //can't put the log file earlier in the workflow unless I compile each -f option into its own
-  //binary which i don't know how to do... yet!
+  //log command line inputs
   FILE *log = fopen(args.log_file, "w");
-  fprintf(log, "Command Line: drop -f trial ");
-  for(int k = 1; k < argc-2; k++)
-  {
-    fprintf(log, "%s ", argv[k]);
-  }
-  fprintf(log, "\n\n");
+  fprintf(log, "Command Line: %s\n\n", stringArgv);
 
   //initialize protein struct and begin analysis
   fprintf(log, "Reading structure file: %s\n\n", args.input_file);
