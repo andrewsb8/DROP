@@ -8,8 +8,9 @@ compile:
 	gcc -c src/include/readProtein/readProtein.c
 	gcc -c src/include/vectorCalculus/vectorCalculus.c
 	gcc -c src/include/dihedralRotation/dihedralRotation.c
+	gcc -c src/include/fileHandling/fileHandling.c
 	gcc -c src/dropanalysis/trial.c
-	gcc -o drop drop.o commands.o readProtein.o trial.o dihedralRotation.o vectorCalculus.o -lm
+	gcc -o drop drop.o commands.o readProtein.o trial.o dihedralRotation.o vectorCalculus.o fileHandling.o -lm
 	rm *.o
 
 all: compile

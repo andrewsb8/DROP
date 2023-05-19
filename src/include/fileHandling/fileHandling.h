@@ -1,0 +1,1 @@
+int fileExists(char *filename);

@@ -204,7 +204,8 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file)
 
   if (line_number == 0)
   {
-    fprintf(stderr, "ERROR: No CONECT entries in the input file. No bonds were read or inferred from structure.\n");
+    fprintf(stderr, "ERROR: No CONECT entries in the input file. No bonds were read or inferred from structure. Exiting.\n");
+    fprintf(log_file, "ERROR: No CONECT entries in the input file. No bonds were read or inferred from structure. Exiting.\n");
     exit(1);
   }
 

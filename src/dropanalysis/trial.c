@@ -1,10 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <argp.h>
 #include <string.h>
 
 #include "trial.h"
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
+#include "../include/fileHandling/fileHandling.h"
 
 struct arguments
 {
@@ -51,6 +53,13 @@ void trial(int argc, char **argv)
   struct argp trial_argp = { trial_options, trial_parse, 0, 0 };
   argp_parse(&trial_argp, argc, argv, 0, 0, &args);
 
+  //if input file does not exist, exit
+  if (fileExists(args.input_file) == -1)
+  {
+    fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
+    exit(1);
+  }
+
   //log inputs - this has a weird format b/c of stripFArgv(int argc, char **argv) in commands.c
   //can't put the log file earlier in the workflow unless I compile each -f option into its own
   //binary which i don't know how to do... yet!
@@ -69,6 +78,7 @@ void trial(int argc, char **argv)
 
   fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
 
+  //current tests - going to remove and replace with whatever function trial becomes
   rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
   rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 2, 1, 0);
   rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2, 0, 1);
