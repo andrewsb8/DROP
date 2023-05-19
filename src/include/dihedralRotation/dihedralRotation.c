@@ -129,7 +129,11 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
     free(tmp);
   }
 
-  printf("%f %f %f\n", prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2]-1].coordinates[0], prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2]-1].coordinates[1], prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2]-1].coordinates[2]);
+  // if dihedral is aligned with the z-axis from 0 to -z rather than 0 to z, reverse rotation direction
+  if ( prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2]-1].coordinates[2] < 0 )
+  {
+    dihedralAngleChange = -dihedralAngleChange;
+  }
 
   //rotate all atoms after bond in question about the z axis by the desired change here
   if(bb_or_sc == 1) //1 indicates rotating backbone
