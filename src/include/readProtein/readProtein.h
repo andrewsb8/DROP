@@ -35,8 +35,9 @@ struct _dihedrals
 {
   int dihedral_atomNumbers[4];
   double dihedral_angle;
-  char *phi_or_psi[3]; //TO BE IMPLEMENTED: stores which type of dihedral it is
-  char *dihedral_identifier[4]; // stores residue type and number i.e. GLY1. NOTE: not implemented yet
+  char *dihedral_angType[4]; //stores which type of dihedral it is. e.g. phi, psi, chi1, chi2, omega (omega not implemented yet)
+  char *dihedral_resName[4]; // stores residue name
+  int dihedral_resNum; //stores residue number
 };
 
 struct protein
@@ -47,7 +48,7 @@ struct protein
   int number_of_residues;
   int number_of_atoms;
   int number_of_bonds;
-  int number_of_dihedrals; //count of dihedrals **only backbone dihedrals for now**
+  int number_of_dihedrals; //count of dihedrals
   int expected_num_dihedrals; //in an unblocked polypeptide, this should be equal to number_of_dihedrals
 };
 

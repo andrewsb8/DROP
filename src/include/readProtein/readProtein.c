@@ -92,12 +92,13 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   readPDBbonds(prot, filename, log_file);
   identifyDihedrals(prot);
 
-  fprintf(log_file, "Calculating initial dihedral angles.\n");
+  //log initial structure values
+  fprintf(log_file, "Calculating initial dihedral angles.\nColumns: Angle, Angle Type (phi, psi, etc), Residue Name, Residue Number\n");
 
   for(int i = 0; i < prot->number_of_dihedrals; i++)
   {
     prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
-    fprintf(log_file, "%f\n", prot->dihedrals[i].dihedral_angle);
+    fprintf(log_file, "%f %s %s %d\n", prot->dihedrals[i].dihedral_angle, prot->dihedrals[i].dihedral_angType, prot->dihedrals[i].dihedral_resName, prot->dihedrals[i].dihedral_resNum);
   }
   fprintf(log_file, "\n");
 
@@ -437,12 +438,17 @@ void identifyDihedrals(struct protein *prot)
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[3] = prot->bonds[p].bond_atomNumbers[1];
                 if(m==0)
                 {
-                  prot->dihedrals[prot->number_of_dihedrals].phi_or_psi[3] = "Phi";
+                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "Phi");
                 }
-                else
+                if(m==1)
                 {
-                  prot->dihedrals[prot->number_of_dihedrals].phi_or_psi[3] = "Psi";
+                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType,"Psi");
                 }
+
+                //residue is identified by third atom in dihedral because that will always be in the ith residue. Could have used second atom also.
+                //this will not work if omega is to be incorporated. but currently no plans to do so.
+                strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_resName, prot->atoms[ prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] -1 ].residue);
+                prot->dihedrals[prot->number_of_dihedrals].dihedral_resNum = prot->atoms[ prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] -1 ].residue_number;
 
                 prot->number_of_dihedrals += 1;
                 if(prot->number_of_dihedrals > 0)
