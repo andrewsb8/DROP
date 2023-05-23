@@ -20,7 +20,7 @@ struct _atoms
   .
   .
   .
-  last atom -1 [covalent bonds between 2 and last atom]
+  last atom -1 [covalent bonds between 2nd to last and last atom] (this has length 1)
   */
   int* covalent_bondArray; //stores number of covalent bonds between atoms i and j where *!*j > i*!* which cuts memory required for this in half!!!
   int len_covalent_bondArray; //stores the length of the above array so that it is convenient to retrieve
@@ -51,6 +51,22 @@ struct protein
   int number_of_dihedrals; //count of dihedrals
   int expected_num_dihedrals; //in an unblocked polypeptide, this should be equal to number_of_dihedrals
 };
+
+//dihedral definitions for use in identifyDihedrals
+static int numberDihedralTypes = 8;
+static char *dihedralDefinitions[8][4] = { //can't use int to set this array size?
+  //backbone
+  {"C", "N", "CA", "C"}, //phi
+  {"N", "CA", "C", "N"},  //psi
+  {"C", "C", "C", "C"}, //dihedral for butane
+  //sidechains
+  {"N", "CA", "CB", "HB3"}, //Ala side chain torsional angle (use HB3 b/c no other amino acid has this atom type)
+  {"N", "CA", "CB", "CG1"}, //Ile, Val chi 1
+  {"CA", "CB", "CG1", "CD"}, //Ile chi 2
+  {"N", "CA", "CB", "CG"}, //Leu chi 1
+  {"CA", "CB", "CG", "CD1"} //Leu chi 2
+};
+
 
 //struct sideChainAtoms
 //{

@@ -93,6 +93,7 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   identifyDihedrals(prot);
 
   //log initial structure values
+  fprintf(log_file, "Number of dihedrals identified in structure: %d\n", prot->number_of_dihedrals);
   fprintf(log_file, "Calculating initial dihedral angles.\nColumns: Angle, Angle Type (phi, psi, etc), Residue Name, Residue Number\n");
 
   for(int i = 0; i < prot->number_of_dihedrals; i++)
@@ -379,25 +380,8 @@ void identifyDihedrals(struct protein *prot)
   //this number needs to be updated to account for amino acid type and side
   //chain dihedrals. then it should be used to produce potential warnings or
   //errors if one hasn't been thrown due to covalent bond matrix error.
+  //move to it's own function?
   prot->expected_num_dihedrals = (prot->number_of_residues*2)-2;
-
-  //dihedral definitions
-  const int numberDihedralTypes = 6;
-  char *dihedralDefinitions[5][4] = { //can't use int to set this array size?
-    {"C", "N", "CA", "C"}, //phi
-    {"N", "CA", "C", "N"},  //psi
-    {"N", "CA", "CB", "CG1"}, //Ile chi 1
-    {"CA", "CB", "CG1", "CD"}, //Ile chi 2
-    {"C", "C", "C", "C"} //dihedral for butane
-  };
-
-  /*
-  {"N", "CA", "CB", "HB1"}, //Ala side chain torsional angle (any of the three hydrogens would be fine)
-
-  {"N", "CA", "CB", "CG"}, //Leu chi 1
-  {"CA", "CB", "CG", "CD1"}, //Leu chi 2
-  {"N", "CA", "CB", "CG1"}, //val chi 1 (equal to ile chi 1)
-  */
 
   //allocate memory for the dihedrals struct to store information
   size_t size = sizeof(struct _dihedrals);
@@ -414,7 +398,6 @@ void identifyDihedrals(struct protein *prot)
 
   for(int m = 0; m < numberDihedralTypes; m++)
   {
-    //printf("%s\n", dihedralDefinitions[m][3]);
     for(int n = 0; n < prot->number_of_bonds; n++)
     {
       //if two atoms bonded are the same as the first two of the dihedral definition, search for the second pair
@@ -436,14 +419,18 @@ void identifyDihedrals(struct protein *prot)
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[1] = prot->bonds[n].bond_atomNumbers[1];
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] = prot->bonds[p].bond_atomNumbers[0];
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[3] = prot->bonds[p].bond_atomNumbers[1];
+                //m==0 is manually assigned to be phi in dihedralDefinitions in readProtein.h
                 if(m==0)
                 {
                   strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "Phi");
                 }
+                //m==1 is manually assigned to be psi in dihedralDefinitions in readProtein.h
                 if(m==1)
                 {
-                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType,"Psi");
+                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "Psi");
                 }
+                //add more conditions for chi angles. Output is random bytes for some amino acids.
+                //but may need more systematic ordering of dihedralDefinitions
 
                 //residue is identified by third atom in dihedral because that will always be in the ith residue. Could have used second atom also.
                 //this will not work if omega is to be incorporated. but currently no plans to do so.
