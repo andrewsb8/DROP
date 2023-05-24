@@ -30,7 +30,7 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   //read file line by line until EOF
   while((read = getline(&line,&len,fp)) != -1)
   {
-    //Quantities to get for ATOM: Atom Number, Atom name, Atom type, residue number, residue (all in a struct), Atom poitions (own array/table within the struct)
+    //Quantities to get for ATOM entries: Atom Number, Atom name, Atom type, residue number, residue (all in a struct), Atom poitions (own array/table within the struct)
     if(strcmp(substr(line,0,4), "ATOM") == 0)
     {
       //reallocate memory dynamically which allows for a flexible number of atoms from entry pdb
@@ -230,7 +230,6 @@ void makeBondMatrix(struct protein *prot)
     prot->atoms[t].len_covalent_bondArray = prot->number_of_atoms - (t+1);
     prot->atoms[t].covalent_bondArray = (int*) calloc(prot->atoms[t].len_covalent_bondArray, sizeof(int*));
 
-    //going through and using bonds list to identify atoms that have 1 covalent bond between them
     for(int u = 0; u < prot->number_of_bonds; u++)
     {
       //if first atom in bond is the atom currently looking at, put a 1 in the location of the second atom in bond
@@ -249,12 +248,11 @@ void countCovalentBonds(struct protein *prot, FILE *log_file)
 {
   int warning = 0;
   static int covalentBondCount = 0;
-  //start by looping through all atom pairs
   for(int h = 0; h < prot->number_of_atoms; h++)
   {
     for(int p = h+1; p < prot->number_of_atoms; p++)
     {
-      //only want to call this search function for pairs of atoms that aren't directly covalently bonded to one another
+      //only want to call search function for pairs of atoms that aren't directly covalently bonded to one another
       if(prot->atoms[h].covalent_bondArray[p-h-1] != 1)
       {
         recursivePairSearch(prot, 0, h+1, p+1, 0, &covalentBondCount);
@@ -262,13 +260,13 @@ void countCovalentBonds(struct protein *prot, FILE *log_file)
         {
           warning = warning + 1;
           fprintf(stderr, "WARNING %d: There is a zero in your covalent bond matrix. "
-          "This means you either:\n\n1. Have more than one noncovalently bonded proteins "
+          "This means you either:\n\n1. Have at least one noncovalently bonded atyom "
           "in your structure.\n2. Are missing or have incorrect CONECT records.\n\nPlease "
           "check your pdb file as the results will not be accurate with this structure. "
           "Dihedral angles may be unrecognized because bond information is missing. See "
           "your log file for more details and your covalent bond matrix.\n\n", warning);
           fprintf(log_file, "WARNING %d: There is a zero in your covalent bond matrix. "
-          "This means you either:\n\n1. Have more than one noncovalently bonded proteins "
+          "This means you either:\n\n1. Have at least one noncovalently bonded atom "
           "in your structure.\n2. Are missing or have incorrect CONECT records.\n\nPlease "
           "check your pdb file as the results will not be accurate with this structure. "
           "Dihedral angles may be unrecognized because bond information is missing.\n\n", warning);

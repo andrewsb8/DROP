@@ -51,7 +51,6 @@ void trial(int argc, char **argv, char *stringArgv)
   struct argp trial_argp = { trial_options, trial_parse, 0, 0 };
   argp_parse(&trial_argp, argc, argv, 0, 0, &args);
 
-  //if input file does not exist, exit
   if (fileExists(args.input_file) == -1)
   {
     fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
