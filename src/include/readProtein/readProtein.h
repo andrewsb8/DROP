@@ -9,18 +9,20 @@ struct _atoms
 
   /*
   This section will describe the covalent_bondArray below. For atom i, it is an array of ints from
-  j = i+1 to prot->number_of_atoms - 1. Each int is the number of covalent bonds between atom i and
+  j = i+1 to prot->number_of_atoms - 1 (N). Each int is the number of covalent bonds between atom i and
   atom j.
 
-  Since each atom i has one and j must be great than i, this is a visualization of the arrays
+  This is a visualization of the arrays, where there is an array for each atom:
 
   i(atom number) array
-  1 [covalent bonds between 1 and 2, ... , covalent bonds between 1 and last atom]
-  2 [covalent bonds between 2 and 3, ... , covalent bonds between 2 and last atom]
+  1             [covalent bonds between atoms 1 and 2, covalent bonds between atoms 1 and 3, ... , covalent bonds between atom 1 and last atom] (length prot->number_of_atoms - 2, atom 1 not included)
+  2             [covalent bonds between atoms 2 and 3, covalent bonds between atoms 2 and 4, ... , covalent bonds between atom 2 and last atom]
   .
   .
   .
-  last atom -1 [covalent bonds between 2nd to last and last atom] (this has length 1)
+  N             [covalent bonds between 2nd to last atom and last atom] (this has length 1 by definition)
+
+  For a single molecule, there should be no zeroes in these arrays!
   */
   int* covalent_bondArray; //stores number of covalent bonds between atoms i and j where *!*j > i*!* which cuts memory required for this in half!!!
   int len_covalent_bondArray; //stores the length of the above array so that it is convenient to retrieve
@@ -35,7 +37,7 @@ struct _dihedrals
 {
   int dihedral_atomNumbers[4];
   double dihedral_angle;
-  char *dihedral_angType[4]; //stores which type of dihedral it is. e.g. phi, psi, chi1, chi2, omega (omega not implemented yet)
+  char *dihedral_angType[4]; //stores type of dihedral. e.g. phi, psi, chi1, chi2, omega (omega not implemented yet)
   char *dihedral_resName[4]; // stores residue name
   int dihedral_resNum; //stores residue number
 };

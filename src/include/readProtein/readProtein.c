@@ -92,7 +92,7 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   readPDBbonds(prot, filename, log_file);
   identifyDihedrals(prot);
 
-  //log initial structure values
+  //log initial dihedral angle values
   fprintf(log_file, "Number of dihedrals identified in structure: %d\n", prot->number_of_dihedrals);
   fprintf(log_file, "Calculating initial dihedral angles.\nColumns: Angle, Angle Type (phi, psi, etc), Residue Name, Residue Number\n");
 
@@ -179,7 +179,6 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file)
     {
       while(line_split != NULL)
       {
-        //printf("%s\n", line_split);
         strcpy(stringT[count], line_split); //see if strings are the same
         count++;
         line_split = strtok(NULL, " \t");
@@ -191,7 +190,7 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file)
         prot->bonds = (struct _bonds*) realloc(prot->bonds, size*(line_number+1));
       }
 
-      //since pdb files have a standard format, assignments are handled manually as opposed to using if/else if or switch cases to be concise
+      //the second and third entries of the line are the atom numbers in the bond
       for(int k = 1; k < 3; k++)
       {
         prot->bonds[line_number].bond_atomNumbers[k-1] = atoi(stringT[k]);
@@ -220,6 +219,9 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file)
   return;
 }
 
+//initiate covalent bond arrays for each atom. place 1s where atom i is covalently bonded to atom j.
+//the way this is written may not catch all covalent bonds on first pass because this only checks first column of CONECT record
+//those left will be caught in the recursive search.
 void makeBondMatrix(struct protein *prot)
 {
   //last atom will not be considered to avoid weird memory artifacts. It should not have any unique bonds anyway
@@ -242,6 +244,7 @@ void makeBondMatrix(struct protein *prot)
   return;
 }
 
+//count covalent bonds between atoms i and j via recursive search using the CONECT records
 void countCovalentBonds(struct protein *prot, FILE *log_file)
 {
   int warning = 0;
@@ -280,6 +283,10 @@ void countCovalentBonds(struct protein *prot, FILE *log_file)
   return;
 }
 
+//recursive search through CONECT records to find path from atom i to atom j
+//previousAtom is used to prevent infinite recursion from traveling backwards through the path of connected atoms
+//CONECT records have two columns and some atom numbers may only exist in one of the two columns so this is accounted
+//for by actively checking both columns for the desired atom number.
 int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount)
 {
   for(int z = 0; z < prot->number_of_bonds; z++)
@@ -334,6 +341,7 @@ int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int a
 
 }
 
+//prints the covalent bond arrays, aka matrix. typically used only for log file after pdb processing.
 void printCovalentBondMatrix(struct protein *prot, FILE *log_file)
 {
   fprintf(log_file, "Covalent Bond Matrix:\n");
