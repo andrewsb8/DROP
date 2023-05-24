@@ -53,6 +53,7 @@ void stripAllArgv(int argc, char **argv)
   }
 }
 
+//makes a string of argv to print command line to log
 char * makeStringArgv(int argc, char **argv)
 {
   char * strng;
@@ -76,13 +77,11 @@ bool findCommand(char *arg, int argc, char **argv)
   //search available commands or functions
   if ( strcmp(arg, commandList[0][0]) == 0 )
   {
-    //call function
     trial(argc, argv, stringArgv);
     found = true;
   }
   else if ( strcmp(arg, commandList[1][0]) == 0 )
   {
-    //call function
     printf("found cool\n");
     found = true;
   }

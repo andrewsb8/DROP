@@ -19,10 +19,8 @@ static int trial_parse(int key, char *arg, struct argp_state *state)
   struct arguments *a = state->input;
   switch(key)
   {
-      //require this option to be present, not just argument
       case 'i':
       {
-        //TO DO: check if file exists first and terminate if it does not
         a->input_file = arg;
         break;
       }

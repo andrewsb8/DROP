@@ -105,7 +105,7 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
     double *tmp = vectorSubtract(translation, prot->atoms[i].coordinates);
-    //equate tmp values to prot->atoms[i].coordinates using a loop i guess
+    //equate tmp values to prot->atoms[i].coordinates
     updatePositions(prot, tmp, i);
     free(tmp);
   }
@@ -120,7 +120,6 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
   }
 
   //rotate about y axis so that the axis between the middle two atoms of the dihedral is aligned with the z axis
-  //need to enforce rotation such that dihedral_atomNumbers[2] (3rd atom in dihedral) has z coord > 0
   double angleToZAxis = atanl((prot->atoms[atom_rotation_index-1].coordinates[0])/(prot->atoms[atom_rotation_index-1].coordinates[2]));
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
@@ -129,7 +128,8 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
     free(tmp);
   }
 
-  // if dihedral is aligned with the z-axis from 0 to -z rather than 0 to z, reverse rotation direction
+  //if dihedral is aligned with the z-axis from 0 to -z rather than 0 to z, reverse rotation direction
+  //preserves direction of rotation without needing extra rotation to align with positive z axis
   if ( prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2]-1].coordinates[2] < 0 )
   {
     dihedralAngleChange = -dihedralAngleChange;

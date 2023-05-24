@@ -389,8 +389,7 @@ void identifyDihedrals(struct protein *prot)
 
   //check variable to compare strings
   int check;
-  //variables to save index of bond struct which contains pairs of
-  //atoms within a dihedral
+  //variables to save index of bond struct which contains pairs of atoms within a dihedral
   int pairOne_index;
   int pairTwo_index;
 
@@ -470,8 +469,7 @@ void printXYZ(struct protein *prot)
 
 void writeXYZ(struct protein *prot,char *filename,char *comment,char type,int frame, int rank)
 {
-  //use type variable to decide if writing a multiframe or single frame pdb
-  //there are slight syntax differences in the file formats
+  //use type variable to decide if writing a multiframe or single frame xyz
   switch(type){
     case 'm' :
       //printf("Writing multi-frame xyz file.\n");
@@ -531,7 +529,6 @@ void writeXYZmultiframe(struct protein *prot,char *filename, char *comment, int 
     char* line = malloc(bufsz+1);
     sprintf(line, "%s %f %f %f", prot->atoms[i].atom_type, prot->atoms[i].coordinates[0], prot->atoms[i].coordinates[1], prot->atoms[i].coordinates[2]);
 
-    //printf("%s", line);
     fprintf(fp, "%s\n", line);
     fflush(fp);
     free(line);
@@ -543,7 +540,6 @@ void writeXYZmultiframe(struct protein *prot,char *filename, char *comment, int 
 void writePDB(struct protein *prot,char *filename,char type,int frame)
 {
   //use type variable to decide if writing a multiframe or single frame pdb
-  //there are slight syntax differences in the file formats
   switch(type){
     case 'm' :
       printf("Writing multi-frame pdb file.\n");
@@ -574,7 +570,7 @@ void writePDBsingleframe(struct protein *prot,char *filename)
   fprintf(fp, "MODEL\t1\n");
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
-    char line[0];
+    char line[40];
     sprintf(line, "%4s   %5d  %s %3s %d %f %f %f %s", "ATOM", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[i].residue, prot->atoms[i].residue_number, prot->atoms[i].coordinates[0], prot->atoms[i].coordinates[1], prot->atoms[i].coordinates[2], prot->atoms[i].atom_name);
 
     printf("%s", line);

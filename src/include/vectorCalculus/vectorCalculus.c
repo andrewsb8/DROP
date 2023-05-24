@@ -26,7 +26,7 @@ double dotProduct(double vector1[3], double vector2[3])
   return result;
 }
 
-//calculate the sum of two vectors
+//calculate the sum of components of two vectors
 double * vectorAdd(double vector1[3], double vector2[3])
 {
   double *result = malloc(sizeof(vector1)); //NOTE: this line throws a warning but does not break the code
@@ -37,7 +37,7 @@ double * vectorAdd(double vector1[3], double vector2[3])
   return result;
 }
 
-//calculate the difference of two vectors
+//calculate the difference of components of two vectors
 double * vectorSubtract(double vector1[3], double vector2[3])
 {
   double *result = malloc(sizeof(vector1)); //NOTE: this line throws a warning but does not break the code
@@ -48,8 +48,7 @@ double * vectorSubtract(double vector1[3], double vector2[3])
   return result;
 }
 
-//calculates the cross product component wise of 2 vectors
-//returns a double array!
+//calculates the cross product of 2 vectors
 double * crossProduct(double vector1[3], double vector2[3])
 {
   double *result = malloc(sizeof(vector1)); //NOTE: this line throws a warning but does not break the code
@@ -71,6 +70,7 @@ double * matrixVectorMult(double matrix[3][3], double vector[3])
   return result;
 }
 
+//rotates a vector around a principal axis defined by axisOfRotation
 double * vectorRotate(double vector1[3], int axisOfRotation, double angle)
 {
   double mat[3][3][3] = {
@@ -82,6 +82,7 @@ double * vectorRotate(double vector1[3], int axisOfRotation, double angle)
   return matrixVectorMult(mat[axisOfRotation], vector1);
 }
 
+//convert vector from cartesian to polar coordinates
 double * cartesianToPolar(double vector[3])
 {
   double *result = malloc(sizeof(vector));
@@ -92,6 +93,7 @@ double * cartesianToPolar(double vector[3])
   return result;
 }
 
+//convert back to cartesian from polar coordinates
 double * polarToCartesian(double vector[3])
 {
   double *result = malloc(sizeof(vector));

@@ -13,12 +13,12 @@ int num_master_options_read = 0;
 
 static int parse_opt(int key, char *arg, struct argp_state *state)
 {
-  //only allow one "parent" option to be executed at a time
+  //only allow one "parent" option, -f or -c, to be executed at a time
   if (num_master_options_read == 0)
   {
     switch(key)
     {
-        // function definition case
+        //function definition case
         case 'f':
         {
           //NULL case is handled by requiring -f in struct argp_option
