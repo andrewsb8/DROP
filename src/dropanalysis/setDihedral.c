@@ -3,7 +3,7 @@
 #include <argp.h>
 #include <string.h>
 
-#include "trial.h"
+#include "setDihedral.h"
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
 #include "../include/fileHandling/fileHandling.h"
@@ -16,7 +16,7 @@ struct arguments
   char dih_type[4];
 };
 
-static int trial_parse(int key, char *arg, struct argp_state *state)
+static int setDihedralParse(int key, char *arg, struct argp_state *state)
 {
   struct arguments *a = state->input;
   switch(key)
@@ -45,11 +45,11 @@ static int trial_parse(int key, char *arg, struct argp_state *state)
   return 0;
 }
 
-void trial(int argc, char **argv, char *stringArgv)
+void setDihedral(int argc, char **argv, char *stringArgv)
 {
-  struct argp_option trial_options[] =
+  struct argp_option setDihedralOptions[] =
   {
-    { 0, 0, 0, 0, "./drop -f trial Options:\n" },
+    { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "resnum", 'n', "[Log File]", 0, "Residue Number" },
@@ -60,8 +60,8 @@ void trial(int argc, char **argv, char *stringArgv)
   //DEFAULTS
   struct arguments args = {NULL, "drop.log", 1, "phi"};
   //parse options
-  struct argp trial_argp = { trial_options, trial_parse, 0, 0 };
-  argp_parse(&trial_argp, argc, argv, 0, 0, &args);
+  struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
+  argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
 
   if (fileExists(args.input_file) == -1)
   {
@@ -92,7 +92,7 @@ void trial(int argc, char **argv, char *stringArgv)
     fprintf(log, "Found dihedral number: %d\n\n", index);
   }
 
-  //current tests - going to remove and replace with whatever function trial becomes
+  //current tests - going to remove as features are added
   rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
   rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 2, 1, 0);
   rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2, 0, 1);

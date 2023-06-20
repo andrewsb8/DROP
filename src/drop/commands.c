@@ -5,10 +5,10 @@
 #include <argp.h>
 
 #include "commands.h"
-#include "../dropanalysis/trial.h"
+#include "../dropanalysis/setDihedral.h"
 
 const char *commandList[][2]={
-  {"trial", "Read a PDB file."},
+  {"setDihedral", "Change a single user-specified dihedral angle for a given residue."},
   {"cool", "does something cool"}
 };
 const int commandListLen = sizeof(commandList)/sizeof(commandList[0]);
@@ -77,7 +77,7 @@ bool findCommand(char *arg, int argc, char **argv)
   //search available commands or functions
   if ( strcmp(arg, commandList[0][0]) == 0 )
   {
-    trial(argc, argv, stringArgv);
+    setDihedral(argc, argv, stringArgv);
     found = true;
   }
   else if ( strcmp(arg, commandList[1][0]) == 0 )

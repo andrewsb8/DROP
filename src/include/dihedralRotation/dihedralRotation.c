@@ -91,11 +91,6 @@ int findDihedral(struct protein *prot, int rnum, char *dtype)
   return index;
 }
 
-void setDihedral(struct protein *prot, double angle, double newAngle)
-{
-  printf("placeholder\n\n");
-}
-
 void updatePositions(struct protein *prot, double newPositions[3], int atomNumber)
 {
   for(int j = 0; j < 3; j++)

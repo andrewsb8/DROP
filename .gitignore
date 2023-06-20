@@ -3,5 +3,6 @@ results/clash_distributions/rama_*
 *.txt
 *.xyz
 *.log
+*.o
 build
 copyright-template.txt
