@@ -12,6 +12,8 @@ struct arguments
 {
   char *input_file;
   char *log_file;
+  int res_number;
+  char dih_type[4];
 };
 
 static int trial_parse(int key, char *arg, struct argp_state *state)
@@ -30,6 +32,14 @@ static int trial_parse(int key, char *arg, struct argp_state *state)
         a->log_file = arg;
         break;
       }
+      case 'n':
+      {
+        a->res_number = atoi(arg);
+      }
+      case 'd':
+      {
+        strcpy(a->dih_type, arg);
+      }
 
   }
   return 0;
@@ -42,11 +52,13 @@ void trial(int argc, char **argv, char *stringArgv)
     { 0, 0, 0, 0, "./drop -f trial Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "log", 'l', "[Log File]", 0, "Output log file" },
+    { "resnum", 'n', "[Log File]", 0, "Residue Number" },
+    { "dihtype", 'd', "[Log File]", 0, "Dihedral Type (e.g. phi, psi)" },
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "drop.log"};
+  struct arguments args = {NULL, "drop.log", 1, "phi"};
   //parse options
   struct argp trial_argp = { trial_options, trial_parse, 0, 0 };
   argp_parse(&trial_argp, argc, argv, 0, 0, &args);
@@ -67,6 +79,18 @@ void trial(int argc, char **argv, char *stringArgv)
   readPDB(&prot, args.input_file, log);
 
   fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
+
+  //find dihedral to set based on user input
+  int index = findDihedral(&prot, args.res_number, args.dih_type);
+  if (index == -1)
+  {
+    fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
+    fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
+  }
+  else
+  {
+    fprintf(log, "Found dihedral number: %d\n\n", index);
+  }
 
   //current tests - going to remove and replace with whatever function trial becomes
   rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);

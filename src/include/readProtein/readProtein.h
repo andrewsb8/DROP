@@ -37,7 +37,7 @@ struct _dihedrals
 {
   int dihedral_atomNumbers[4];
   double dihedral_angle;
-  char *dihedral_angType[4]; //stores type of dihedral. e.g. phi, psi, chi1, chi2, omega (omega not implemented yet)
+  char *dihedral_angType[4]; //stores type of dihedral. e.g. phi, psi, chi1, chi2, omega (omega not implemented yet). Lower Case!!!!!
   char *dihedral_resName[4]; // stores residue name
   int dihedral_resNum; //stores residue number
 };

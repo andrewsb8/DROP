@@ -427,12 +427,12 @@ void identifyDihedrals(struct protein *prot)
                 //m==0 is manually assigned to be phi in dihedralDefinitions in readProtein.h
                 if(m==0)
                 {
-                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "Phi");
+                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "phi");
                 }
                 //m==1 is manually assigned to be psi in dihedralDefinitions in readProtein.h
                 if(m==1)
                 {
-                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "Psi");
+                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "psi");
                 }
                 //add more conditions for chi angles. Output is random bytes for some amino acids.
                 //but may need more systematic ordering of dihedralDefinitions
