@@ -3,9 +3,9 @@ Dihedral Rotation Of Proteins (DROP)
 
 Copyright 2023- Brian Andrews.
 
-The repository contains a work-in-progress command line tool which can manipulate protein structures by rotating dihedral angles in the molecule. This tool will be used to investigate accessible regions of the high-dimensional conformation space of proteins based on atomic overlaps. More factors may be added in the future.
+The repository contains a work-in-progress command line tool which can manipulate protein structures by rotating dihedral angles. This tool will be used to investigate accessible regions of the high-dimensional conformation space of proteins based on atomic overlaps. More factors may be added to the analysis in the future.
 
-You can compile DROP with ```make``` in the parent directory. Although it is recommended to make a ```build``` directory and execute ```make -C /path/to/DROP```.
+You can compile DROP with ```make``` in the parent directory. (Not working yet) Although it is recommended to make a ```build``` directory and execute ```make -C /path/to/DROP```.
 
 See options with ```./drop --help```
 
