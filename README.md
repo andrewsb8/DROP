@@ -20,7 +20,7 @@ The tool is organized as follows:
 
 - See "child" options for the different commands: ```./drop -f [command string from -c] --help```
 
-After compilation, you can export the path to DROP to use the tool without the ```./```.
+After compilation, you can export the path to the DROP executable to use the tool without the ```./```.
 
 The only current working command is ```./drop -f setDihedral -i [input pdb file]...```. This command allows the user to change a single dihedral angle based on user input.
 
