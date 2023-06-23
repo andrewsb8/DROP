@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 #include "../readProtein/readProtein.h"
 #include "../dihedralRotation/dihedralRotation.h"
 #include "../vectorCalculus/vectorCalculus.h"
@@ -99,7 +100,7 @@ void updatePositions(struct protein *prot, double newPositions[3], int atomNumbe
   }
 }
 
-double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngle, double dihedralAngleChange, int bb_or_sc, int chi)
+double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngleChange, bool backbone, int chi_num)
 {
   //translate all atoms such that the second atom of the dihedral of interest is at the origin
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1];
@@ -146,7 +147,7 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
   }
 
   //rotate all atoms after bond in question about the z axis by the desired change here
-  if(bb_or_sc == 1) //1 indicates rotating backbone
+  if(backbone)
   {
     for(int i = atom_rotation_index-1; i < prot->number_of_atoms; i++)
     {
@@ -157,7 +158,7 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
   }
   else //rotate side chain instead
   {
-    if(chi == 1) //which chi angle is being rotated, chi 1 or chi 2?
+    if(chi_num == 1) //which chi angle is being rotated, chi 1 or chi 2?
     {
       //int ala2_sidechain_temp[4] = {17,18,19,20}; //temporary to test sidechain rotation method. Need better, general implementation
       int ile2_chi1[13] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ,19};
@@ -170,7 +171,7 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
         free(tmp);
       }
     }
-    else if(chi == 2)
+    else if(chi_num == 2)
     {
       int ile2_chi2[6] = {14, 15, 16, 17, 18, 19};
       //int leu2_chi2[9] = {11, 12, 13, 14, 15, 16, 17, 18 ,19};
@@ -211,7 +212,7 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
 //between rotations.
 //For now, the rotation methods in this file translate protein back to position in
 //box. But that is ok for now.
-double rotateDihedral_noTranslate(struct protein *prot, int dihedralNumber, double dihedralAngle, double dihedralAngleChange)
+double rotateDihedral_noTranslate(struct protein *prot, int dihedralNumber, double dihedralAngleChange)
 {
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1] - 1;
   //rotate all atoms about the z axis by the desired change here

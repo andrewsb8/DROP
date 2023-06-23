@@ -94,12 +94,12 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
 
   //log initial dihedral angle values
   fprintf(log_file, "Number of dihedrals identified in structure: %d\n", prot->number_of_dihedrals);
-  fprintf(log_file, "Calculating initial dihedral angles.\nColumns: Angle, Angle Type (phi, psi, etc), Residue Name, Residue Number\n");
+  fprintf(log_file, "Calculating initial dihedral angles.\nColumns: Angle, Angle Type (phi, psi, etc), Residue Name, Residue Number, Dihedral Number\n");
 
   for(int i = 0; i < prot->number_of_dihedrals; i++)
   {
     prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
-    fprintf(log_file, "%f %s %s %d\n", prot->dihedrals[i].dihedral_angle, prot->dihedrals[i].dihedral_angType, prot->dihedrals[i].dihedral_resName, prot->dihedrals[i].dihedral_resNum);
+    fprintf(log_file, "%f %s %s %d %d\n", prot->dihedrals[i].dihedral_angle, prot->dihedrals[i].dihedral_angType, prot->dihedrals[i].dihedral_resName, prot->dihedrals[i].dihedral_resNum, i);
   }
   fprintf(log_file, "\n");
 
@@ -473,7 +473,7 @@ void printXYZ(struct protein *prot)
   return;
 }
 
-void writeXYZ(struct protein *prot,char *filename,char *comment,char type,int frame, int rank)
+void writeXYZ(struct protein *prot, char *filename, char *comment, char type, int frame, int rank)
 {
   //use type variable to decide if writing a multiframe or single frame xyz
   switch(type){
@@ -492,7 +492,7 @@ void writeXYZ(struct protein *prot,char *filename,char *comment,char type,int fr
   return;
 }
 
-void writeXYZsingleframe(struct protein *prot,char *filename, char *comment, int rank)
+void writeXYZsingleframe(struct protein *prot, char *filename, char *comment, int rank)
 {
   FILE *fp;
   fp = fopen(filename, "w");

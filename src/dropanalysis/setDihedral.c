@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <argp.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "setDihedral.h"
 #include "../include/readProtein/readProtein.h"
@@ -11,9 +12,11 @@
 struct arguments
 {
   char *input_file;
+  char *output_file;
   char *log_file;
   int res_number;
   char dih_type[4];
+  double angle;
 };
 
 static int setDihedralParse(int key, char *arg, struct argp_state *state)
@@ -26,7 +29,11 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
         a->input_file = arg;
         break;
       }
-
+      case 'o':
+      {
+        a->output_file = arg;
+        break;
+      }
       case 'l':
       {
         a->log_file = arg;
@@ -40,6 +47,10 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
       {
         strcpy(a->dih_type, arg);
       }
+      case 'a':
+      {
+        a->angle = atoi(arg);
+      }
 
   }
   return 0;
@@ -51,14 +62,16 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   {
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
+    { "output", 'o', "[Output File]", 0, "Output xyz file" },
     { "log", 'l', "[Log File]", 0, "Output log file" },
-    { "resnum", 'n', "[Log File]", 0, "Residue Number" },
-    { "dihtype", 'd', "[Log File]", 0, "Dihedral Type (e.g. phi, psi)" },
+    { "resnum", 'n', "INT", 0, "Residue Number" },
+    { "dihtype", 'd', "[Dihedral Type]", 0, "phi, psi" },
+    { "dihangle", 'a', "DOUBLE", 0, "Target dihedral angle in degrees" },
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "drop.log", 1, "phi"};
+  struct arguments args = {NULL, "output.xyz", "drop.log", 1, "phi", 0};
   //parse options
   struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
   argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
@@ -80,7 +93,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
 
   fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
 
-  //find dihedral to set based on user input
+  //find dihedral to change based on user input
   int index = findDihedral(&prot, args.res_number, args.dih_type);
   if (index == -1)
   {
@@ -92,18 +105,37 @@ void setDihedral(int argc, char **argv, char *stringArgv)
     fprintf(log, "Found dihedral number: %d\n\n", index);
   }
 
-  //current tests - going to remove as features are added
-  rotateDihedral(&prot, 0, prot.dihedrals[0].dihedral_angle, 2, 1, 0);
-  rotateDihedral(&prot, 1, prot.dihedrals[1].dihedral_angle, 2, 1, 0);
-  rotateDihedral(&prot, 2, prot.dihedrals[2].dihedral_angle, 2, 0, 1);
-  rotateDihedral(&prot, 3, prot.dihedrals[3].dihedral_angle, 2, 0, 2);
-
-  for(int i = 0; i < prot.number_of_dihedrals; i++)
+  //is the angle being changed the backbone or side chain?
+  bool backbone;
+  if( strcmp(args.dih_type, "phi") == 0 || strcmp(args.dih_type, "psi") == 0 )
   {
-    prot.dihedrals[i].dihedral_angle = calculateDihedral(&prot, i);
-    printf("%f\n", prot.dihedrals[i].dihedral_angle);
+    backbone = true;
   }
-  printf("\n");
+  else
+  {
+    backbone = false;
+  }
+
+  //stores number associated with the chi or side chain torsion
+  //default is zero, but will be read by user input at some point
+  int chi_num = 0;
+  if(!backbone)
+  {
+    fprintf(stderr, "Need to do something here for the chi angles.\n\n");
+  }
+
+  //calculate the angle change based on current angle and angle defined by command line
+  double dih_angle_change = args.angle - prot.dihedrals[index].dihedral_angle ;
+  fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", args.dih_type, args.res_number, dih_angle_change);
+
+  //rotate the dihedral
+  rotateDihedral(&prot, index, dih_angle_change, backbone, chi_num);
+  prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
+
+  fprintf(log, "Rotation finished. Input angle, Angle after rotation: %f %f.\n\n", args.angle, prot.dihedrals[index].dihedral_angle);
+
+  //print out structure after rotation
+  writeXYZ(&prot, args.output_file, "Frame 1", 's', 0, 0);
 
   fclose(log);
   return;
