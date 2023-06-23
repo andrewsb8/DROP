@@ -132,7 +132,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   rotateDihedral(&prot, index, dih_angle_change, backbone, chi_num);
   prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
 
-  fprintf(log, "Rotation complete. Please check the accuracy of the operation: Input angle, Angle after rotation: %f %f.\n\n", args.angle, prot.dihedrals[index].dihedral_angle);
+  fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f.\n\n", args.angle, prot.dihedrals[index].dihedral_angle);
 
   //print out structure after rotation
   writeXYZ(&prot, args.output_file, "Frame 1", 's', 0, 0);
