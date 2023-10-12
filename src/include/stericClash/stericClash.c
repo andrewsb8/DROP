@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
 #include "../readProtein/readProtein.h"
 #include "stericClash.h"
 #include "../vectorCalculus/vectorCalculus.h"
