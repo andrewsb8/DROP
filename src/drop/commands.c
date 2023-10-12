@@ -6,10 +6,11 @@
 
 #include "commands.h"
 #include "../dropanalysis/setDihedral.h"
+#include "../dropanalysis/countClashes.h"
 
 const char *commandList[][2]={
   {"setDihedral", "Change a single user-specified dihedral angle for a given residue."},
-  {"cool", "does something cool"}
+  {"countClashes", "Counts the number of atomic overlaps according to atomic radii used by Ramachandran."}
 };
 const int commandListLen = sizeof(commandList)/sizeof(commandList[0]);
 
