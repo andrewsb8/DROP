@@ -83,7 +83,7 @@ bool findCommand(char *arg, int argc, char **argv)
   }
   else if ( strcmp(arg, commandList[1][0]) == 0 )
   {
-    printf("found cool\n");
+    countClashes(argc, argv, stringArgv);
     found = true;
   }
 
