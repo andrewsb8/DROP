@@ -22,6 +22,4 @@ The tool is organized as follows:
 
 After compilation, you can export the path to the DROP executable to use the tool without the ```./```.
 
-The only current working command is ```./drop -f setDihedral -i [input pdb file]...```. This command allows the user to change a single dihedral angle based on user input.
-
 NOTE: files in 'results' cannot be currently replicated by compiling from source. The c files used for completing those analyses are in 'src/run' and are currently being refactored into the new code. The code and results are being preserved until testing shows the results are reproducible after refactoring is completed.
