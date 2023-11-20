@@ -75,6 +75,15 @@ void stericClashes(int argc, char **argv, char *stringArgv)
 
   fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
 
+  if(!args.list_clashes)
+  {
+    fprintf(log, "Individual atomic clashes will not be reported.\n");
+  }
+  else
+  {
+    fprintf(log, "Individual atomic clashes will be reported.\n");
+  }
+
   int num_clashes = countClashes(&prot, log, args.list_clashes);
 
   fprintf(log, "Number of steric clashes: %d\n\n", num_clashes);
