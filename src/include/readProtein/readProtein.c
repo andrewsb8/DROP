@@ -568,6 +568,8 @@ void writePDBmultiframe(struct protein *prot,char *filename, int frame)
   return;
 }
 
+//thanks to gromacs for the pdb line formatting
+//https://github.com/gromacs/gromacs/blob/main/src/gromacs/fileio/pdbio.cpp
 void writePDBsingleframe(struct protein *prot,char *filename)
 {
   FILE *fp;
@@ -577,7 +579,22 @@ void writePDBsingleframe(struct protein *prot,char *filename)
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
     char line[81];
-    sprintf(line, "%4s  %5d%4s %3s %3d    %3.3f %3.3f %3.3f %s\n", "ATOM", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[i].residue, prot->atoms[i].residue_number, prot->atoms[i].coordinates[0], prot->atoms[i].coordinates[1], prot->atoms[i].coordinates[2], prot->atoms[i].atom_name);
+    sprintf(line,
+    "%-6s%5d %-4.4s%c%4.4s%c%4d%c   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n",
+    "ATOM",
+    prot->atoms[i].atom_number,
+    prot->atoms[i].atom_type,
+    ' ', //alternate location
+    prot->atoms[i].residue,
+    ' ', //chain id
+    prot->atoms[i].residue_number,
+    ' ', //residue insertion code
+    prot->atoms[i].coordinates[0],
+    prot->atoms[i].coordinates[1],
+    prot->atoms[i].coordinates[2],
+    0.0, //occupancy
+    0.0, //b_factor
+    prot->atoms[i].atom_name);
 
     fprintf(fp, "%s", line);
   }

@@ -17,6 +17,7 @@ struct arguments
   int res_number;
   char dih_type[4];
   double angle;
+  char *extension;
 };
 
 static int setDihedralParse(int key, char *arg, struct argp_state *state)
@@ -51,6 +52,10 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
       {
         a->angle = atoi(arg);
       }
+      case 'e':
+      {
+        a->extension = arg;
+      }
 
   }
   return 0;
@@ -67,11 +72,12 @@ void setDihedral(int argc, char **argv, char *stringArgv)
     { "resnum", 'n', "INT", 0, "Residue Number" },
     { "dihtype", 'd', "[Dihedral Type]", 0, "phi, psi" },
     { "dihangle", 'a', "DOUBLE", 0, "Target dihedral angle in degrees" },
+    { "extension", 'e', "[Output File Extension]", 0, "Options: pdb, xyz" },
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "output.xyz", "drop.log", 1, "phi", 0};
+  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb"};
   //parse options
   struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
   argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
@@ -136,8 +142,20 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n", args.angle, prot.dihedrals[index].dihedral_angle);
 
   //print out structure after rotation
-  //writeXYZ(&prot, args.output_file, "Frame 1", 's', 0, 0);
-  writePDB(&prot, args.output_file, 's', 0);
+  if(strcmp(args.extension, "pdb") == 0)
+  {
+    writePDB(&prot, args.output_file, 's', 0);
+  }
+  else if(strcmp(args.extension, "xyz") == 0)
+  {
+    writeXYZ(&prot, args.output_file, "Frame 1", 's', 0, 0);
+  }
+  else
+  {
+    fprintf(log, "Error: File extension for output not recognized.\n");
+    fprintf(stderr, "Error: File extension for output not recognized.\n");
+    exit(1);
+  }
 
   fclose(log);
   return;
