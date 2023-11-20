@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <math.h>
 #include <assert.h>
 #include "readProtein.h"
@@ -475,28 +476,30 @@ void printXYZ(struct protein *prot)
 
 void writeXYZ(struct protein *prot, char *filename, char *comment, char type, int frame, int rank)
 {
+  FILE *fp;
+  fp = fopen(filename, "w");
+
   //use type variable to decide if writing a multiframe or single frame xyz
   switch(type){
     case 'm' :
       //printf("Writing multi-frame xyz file.\n");
-      writeXYZmultiframe(prot, filename, comment, frame, rank);
+      writeXYZmultiframe(prot, fp, comment, frame, rank);
       break;
     case 's' :
-      printf("Writing single-structure xyz file.\n");
-      writeXYZsingleframe(prot, filename, comment, rank);
+      fprintf(stderr, "Writing single-structure xyz file.\n");
+      writeXYZsingleframe(prot, fp, comment, rank);
+      fprintf(stderr, "Completed XYZ structure generation. Filename: %s.\n", filename);
       break;
     default :
-      printf("Please specify single-structure (s) or multi-frame (m) pdb option.\n");
+      printf("Please specify single-structure (s) or multi-frame (m) xyz option.\n");
       break;
   }
+  fclose(fp);
   return;
 }
 
-void writeXYZsingleframe(struct protein *prot, char *filename, char *comment, int rank)
+void writeXYZsingleframe(struct protein *prot, FILE *fp, char *comment, int rank)
 {
-  FILE *fp;
-  fp = fopen(filename, "w");
-
   fprintf(fp, "%d\n", prot->number_of_atoms);
   fprintf(fp, "Comment: %s\n", comment);
   for(int i = 0; i < prot->number_of_atoms; i++)
@@ -508,12 +511,10 @@ void writeXYZsingleframe(struct protein *prot, char *filename, char *comment, in
     fprintf(fp, "%s\n", line);
     free(line);
   }
-  fclose(fp);
-  printf("Completed XYZ structure generation. Filename: %s.\n", filename);
   return;
 }
 
-void writeXYZmultiframe(struct protein *prot,char *filename, char *comment, int frame, int rank)
+void writeXYZmultiframe(struct protein *prot, char *filename, char *comment, int frame, int rank)
 {
   FILE *fp;
   if(frame > 0)
@@ -543,26 +544,36 @@ void writeXYZmultiframe(struct protein *prot,char *filename, char *comment, int 
   return;
 }
 
-void writePDB(struct protein *prot,char *filename,char type,int frame)
+void writePDB(struct protein *prot, char *filename, char type, int frame, bool conect)
 {
+  FILE *fp;
+  fp = fopen(filename, "w");
+
   //use type variable to decide if writing a multiframe or single frame pdb
   switch(type){
     case 'm' :
       printf("Writing multi-frame pdb file.\n");
-      writePDBmultiframe(prot, filename, frame);
+      writePDBmultiframe(prot, fp, frame);
       break;
     case 's' :
       printf("Writing single-structure pdb file.\n");
-      writePDBsingleframe(prot, filename);
+      writePDBsingleframe(prot, fp);
       break;
     default :
       printf("Please specify single-structure (s) or multi-frame (m) pdb option.\n");
       break;
   }
+
+  if(conect)
+  {
+    writePDBConect(prot, fp);
+  }
+
+  fclose(fp);
   return;
 }
 
-void writePDBmultiframe(struct protein *prot,char *filename, int frame)
+void writePDBmultiframe(struct protein *prot, FILE *fp, int frame)
 {
   printf("placeholder\n");
   return;
@@ -570,11 +581,8 @@ void writePDBmultiframe(struct protein *prot,char *filename, int frame)
 
 //thanks to gromacs for the pdb line formatting
 //https://github.com/gromacs/gromacs/blob/main/src/gromacs/fileio/pdbio.cpp
-void writePDBsingleframe(struct protein *prot,char *filename)
+void writePDBsingleframe(struct protein *prot, FILE *fp)
 {
-  FILE *fp;
-  fp = fopen(filename, "w");
-
   fprintf(fp, "MODEL\t1\n");
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
@@ -600,5 +608,17 @@ void writePDBsingleframe(struct protein *prot,char *filename)
   }
 
   fprintf(fp, "ENDMDL\n");
+  return;
+}
+
+//thanks to gromacs for string formatting
+//https://github.com/gromacs/gromacs/blob/main/src/gromacs/fileio/pdbio.cpp
+void writePDBConect(struct protein *prot, FILE *fp)
+{
+  for(int i = 0; i < prot->number_of_bonds; i++)
+  {
+    fprintf(fp, "CONECT%5d%5d\n", prot->bonds[i].bond_atomNumbers[0], prot->bonds[i].bond_atomNumbers[1]);
+  }
+
   return;
 }

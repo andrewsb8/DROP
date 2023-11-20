@@ -18,6 +18,7 @@ struct arguments
   char dih_type[4];
   double angle;
   char *extension;
+  bool conect;
 };
 
 static int setDihedralParse(int key, char *arg, struct argp_state *state)
@@ -56,6 +57,10 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
       {
         a->extension = arg;
       }
+      case 'c':
+      {
+        a->conect = atoi(arg);
+      }
 
   }
   return 0;
@@ -73,11 +78,12 @@ void setDihedral(int argc, char **argv, char *stringArgv)
     { "dihtype", 'd', "[Dihedral Type]", 0, "phi, psi" },
     { "dihangle", 'a', "DOUBLE", 0, "Target dihedral angle in degrees" },
     { "extension", 'e', "[Output File Extension]", 0, "Options: pdb, xyz" },
+    { "conect", 'c', "BOOL", 0, "Include CONECT records in PDB. 0 does not print conect. Default: 0." },
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb"};
+  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0};
   //parse options
   struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
   argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
@@ -144,7 +150,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   //print out structure after rotation
   if(strcmp(args.extension, "pdb") == 0)
   {
-    writePDB(&prot, args.output_file, 's', 0);
+    writePDB(&prot, args.output_file, 's', 0, args.conect);
   }
   else if(strcmp(args.extension, "xyz") == 0)
   {
