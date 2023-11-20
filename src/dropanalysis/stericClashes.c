@@ -13,6 +13,7 @@ struct arguments
 {
   char *input_file;
   char *log_file;
+  bool list_clashes;
 };
 
 static int stericClashesParse(int key, char *arg, struct argp_state *state)
@@ -30,6 +31,11 @@ static int stericClashesParse(int key, char *arg, struct argp_state *state)
         a->log_file = arg;
         break;
       }
+      case 'lc':
+      {
+        a->list_clashes = strtobool(arg);
+        break;
+      }
 
   }
   return 0;
@@ -42,11 +48,12 @@ void stericClashes(int argc, char **argv, char *stringArgv)
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "log", 'l', "[Log File]", 0, "Output log file" },
+    { "list_clashes", 'lc', "[Boolean]", 0, "Choose to list atomic clashes in log file" },
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "drop.log"};
+  struct arguments args = {NULL, "drop.log", true};
   //parse options
   struct argp stericClashesArgp = { stericClashesOptions, stericClashesParse, 0, 0 };
   argp_parse(&stericClashesArgp, argc, argv, 0, 0, &args);
@@ -56,6 +63,8 @@ void stericClashes(int argc, char **argv, char *stringArgv)
     fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
     exit(1);
   }
+
+  printf("%d\n", args.list_clashes);
 
   //log command line inputs
   FILE *log = fopen(args.log_file, "w");
@@ -68,7 +77,7 @@ void stericClashes(int argc, char **argv, char *stringArgv)
 
   fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
 
-  int num_clashes = countClashes(&prot);
+  int num_clashes = countClashes(&prot, log, args.list_clashes);
 
   fprintf(log, "Number of steric clashes: %d\n\n", num_clashes);
 

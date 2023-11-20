@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 
 #include "../readProtein/readProtein.h"
 #include "stericClash.h"
@@ -15,7 +16,7 @@
 //inner limit allowed via Ramachandran JMB 1963 in Angstroms
 struct VDW radii = {3.0, 2.7, 2.8, 2.2, 2.7, 2.6, 2.2, 2.6, 2.2, 1.9};
 
-int countClashes(struct protein *prot)
+int countClashes(struct protein *prot, FILE *log, bool list_clashes)
 {
   double distance;
   double min_distance_allowed;
@@ -36,6 +37,10 @@ int countClashes(struct protein *prot)
         if(distance < min_distance_allowed)
         {
           count += 1;
+          if(list_clashes)
+          {
+            fprintf(log, "Clash between (Atom Type-Atom Number): %s%d and %s%d\n", prot->atoms[i].atom_name, prot->atoms[i].atom_number, prot->atoms[j].atom_name, prot->atoms[j].atom_number);
+          }
         }
       }
     }
