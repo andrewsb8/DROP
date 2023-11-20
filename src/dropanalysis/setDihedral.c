@@ -51,7 +51,7 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
       }
       case 'a':
       {
-        a->angle = atoi(arg);
+        a->angle = atof(arg);
       }
       case 'e':
       {
