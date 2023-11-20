@@ -577,7 +577,7 @@ void writePDBsingleframe(struct protein *prot,char *filename)
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
     char line[81];
-    sprintf(line, "%4s   %5d  %s %3s %d %f %f %f %s\n", "ATOM", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[i].residue, prot->atoms[i].residue_number, prot->atoms[i].coordinates[0], prot->atoms[i].coordinates[1], prot->atoms[i].coordinates[2], prot->atoms[i].atom_name);
+    sprintf(line, "%4s  %5d%4s %3s %3d    %3.3f %3.3f %3.3f %s\n", "ATOM", prot->atoms[i].atom_number, prot->atoms[i].atom_type, prot->atoms[i].residue, prot->atoms[i].residue_number, prot->atoms[i].coordinates[0], prot->atoms[i].coordinates[1], prot->atoms[i].coordinates[2], prot->atoms[i].atom_name);
 
     fprintf(fp, "%s", line);
   }
