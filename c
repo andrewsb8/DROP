@@ -1,4 +1,4 @@
-Command Line: ./drop -f stericClashes -i test_files/clashes_test_conect.pdb -lc 0
+Command Line: ./drop -f stericClashes -i test_files/clashes_test_conect.pdb -lc false
 
 Reading structure file: test_files/clashes_test_conect.pdb
 
@@ -54,12 +54,13 @@ ATOMILE ILE 2 5
 
 Done reading structure file: test_files/clashes_test_conect.pdb
 
-Clash between (Atom Type-Atom Number): O9 and O28
-Clash between (Atom Type-Atom Number): H11 and H15
-Clash between (Atom Type-Atom Number): C16 and N29
-Clash between (Atom Type-Atom Number): C16 and H30
-Clash between (Atom Type-Atom Number): H19 and N29
-Clash between (Atom Type-Atom Number): H19 and H30
-Clash between (Atom Type-Atom Number): O28 and O36
+Clash: (AtomType AtomNumber)-(AtomType AtomNumber) [Allowed Distance, Distance in Structure]
+Clash: (O9)-(O28) [2.700000, 2.384387]
+Clash: (H11)-(H15) [1.900000, 1.763859]
+Clash: (C16)-(N29) [2.800000, 2.247243]
+Clash: (C16)-(H30) [2.200000, 1.635268]
+Clash: (H19)-(N29) [2.200000, 1.724210]
+Clash: (H19)-(H30) [1.900000, 0.835284]
+Clash: (O28)-(O36) [2.700000, 2.376426]
 Number of steric clashes: 7
 

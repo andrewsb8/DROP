@@ -21,6 +21,12 @@ int countClashes(struct protein *prot, FILE *log, bool list_clashes)
   double distance;
   double min_distance_allowed;
   int count = 0;
+
+  if(list_clashes)
+  {
+    fprintf(log, "Clash: (AtomType AtomNumber)-(AtomType AtomNumber) [Allowed Distance, Distance in Structure]\n");
+  }
+
   //loop through all atom combinations i and j where j > i
   for(int i = 0; i < prot->number_of_atoms; i++)
   {
@@ -39,7 +45,7 @@ int countClashes(struct protein *prot, FILE *log, bool list_clashes)
           count += 1;
           if(list_clashes)
           {
-            fprintf(log, "Clash between (Atom Type-Atom Number): %s%d and %s%d\n", prot->atoms[i].atom_name, prot->atoms[i].atom_number, prot->atoms[j].atom_name, prot->atoms[j].atom_number);
+            fprintf(log, "Clash: (%s%d)-(%s%d) [%f, %f]\n", prot->atoms[i].atom_name, prot->atoms[i].atom_number, prot->atoms[j].atom_name, prot->atoms[j].atom_number, min_distance_allowed, distance);
           }
         }
       }

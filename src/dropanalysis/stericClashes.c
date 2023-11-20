@@ -31,9 +31,9 @@ static int stericClashesParse(int key, char *arg, struct argp_state *state)
         a->log_file = arg;
         break;
       }
-      case 'lc':
+      case 'c':
       {
-        a->list_clashes = strtobool(arg);
+        a->list_clashes = atoi(arg);
         break;
       }
 
@@ -48,12 +48,12 @@ void stericClashes(int argc, char **argv, char *stringArgv)
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "log", 'l', "[Log File]", 0, "Output log file" },
-    { "list_clashes", 'lc', "[Boolean]", 0, "Choose to list atomic clashes in log file" },
+    { "list_clashes", 'c', "[Boolean]", 0, "Choose to list atomic clashes in log file. 0 does not print list. Default: 1." },
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "drop.log", true};
+  struct arguments args = {NULL, "drop.log", 1};
   //parse options
   struct argp stericClashesArgp = { stericClashesOptions, stericClashesParse, 0, 0 };
   argp_parse(&stericClashesArgp, argc, argv, 0, 0, &args);
@@ -63,8 +63,6 @@ void stericClashes(int argc, char **argv, char *stringArgv)
     fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
     exit(1);
   }
-
-  printf("%d\n", args.list_clashes);
 
   //log command line inputs
   FILE *log = fopen(args.log_file, "w");
