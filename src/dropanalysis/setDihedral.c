@@ -99,6 +99,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   {
     fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
     fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
+    exit(1);
   }
   else
   {

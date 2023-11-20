@@ -6,10 +6,11 @@
 
 #include "commands.h"
 #include "../dropanalysis/setDihedral.h"
+#include "../dropanalysis/stericClashes.h"
 
 const char *commandList[][2]={
   {"setDihedral", "Change a single user-specified dihedral angle for a given residue."},
-  {"cool", "does something cool"}
+  {"stericClashes", "Counts the number of atomic overlaps according to atomic radii used by Ramachandran."}
 };
 const int commandListLen = sizeof(commandList)/sizeof(commandList[0]);
 
@@ -82,7 +83,7 @@ bool findCommand(char *arg, int argc, char **argv)
   }
   else if ( strcmp(arg, commandList[1][0]) == 0 )
   {
-    printf("found cool\n");
+    stericClashes(argc, argv, stringArgv);
     found = true;
   }
 
