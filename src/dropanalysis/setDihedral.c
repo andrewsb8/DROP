@@ -136,7 +136,8 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n", args.angle, prot.dihedrals[index].dihedral_angle);
 
   //print out structure after rotation
-  writeXYZ(&prot, args.output_file, "Frame 1", 's', 0, 0);
+  //writeXYZ(&prot, args.output_file, "Frame 1", 's', 0, 0);
+  writePDB(&prot, args.output_file, 's', 0);
 
   fclose(log);
   return;
