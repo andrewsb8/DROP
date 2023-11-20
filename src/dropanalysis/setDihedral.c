@@ -51,7 +51,7 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
       }
       case 'a':
       {
-        a->angle = atoi(arg);
+        a->angle = atof(arg);
       }
       case 'e':
       {
@@ -76,7 +76,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "resnum", 'n', "INT", 0, "Residue Number" },
     { "dihtype", 'd', "[Dihedral Type]", 0, "phi, psi" },
-    { "dihangle", 'a', "DOUBLE", 0, "Target dihedral angle in degrees" },
+    { "dihangle", 'a', "FLOAT", 0, "Target dihedral angle in degrees" },
     { "extension", 'e', "[Output File Extension]", 0, "Options: pdb, xyz" },
     { "conect", 'c', "BOOL", 0, "Include CONECT records in PDB. 0 does not print conect. Default: 0." },
     { 0 }
