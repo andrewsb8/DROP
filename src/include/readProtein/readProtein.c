@@ -72,6 +72,11 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
       strcpy(prot->atoms[line_number].atom_name, removeSpaces(atomName));
       free(atomName);
 
+      if(isBackbone(prot->atoms[line_number].atom_type))
+      {
+        printf("backbone atom: %s\n", prot->atoms[line_number].atom_type);
+      }
+
       line_number++;
 
     }
@@ -104,6 +109,18 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   }
   fprintf(log_file, "\n");
 
+}
+
+bool isBackbone(char *atomtype)
+{
+  for(int i = 0; i < size_bb_atom_list; i++)
+  {
+    if( strcmp(atomtype, backbone_atom_list[i]) == 0 )
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 //function to return a portion of a string with user defined indices
@@ -407,13 +424,13 @@ void identifyDihedrals(struct protein *prot)
     for(int n = 0; n < prot->number_of_bonds; n++)
     {
       //if two atoms bonded are the same as the first two of the dihedral definition, search for the second pair
-      if(strcmp( dihedralDefinitions[m][0], prot->atoms[prot->bonds[n].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( dihedralDefinitions[m][1], prot->atoms[prot->bonds[n].bond_atomNumbers[1]-1].atom_type ) == 0)
+      if(strcmp( backboneDihedralDefinitions[m][0], prot->atoms[prot->bonds[n].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( backboneDihedralDefinitions[m][1], prot->atoms[prot->bonds[n].bond_atomNumbers[1]-1].atom_type ) == 0)
       {
         pairOne_index = n;
         for(int p = 0; p < prot->number_of_bonds; p++)
         {
           //search for second pair
-          if(strcmp( dihedralDefinitions[m][2], prot->atoms[prot->bonds[p].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( dihedralDefinitions[m][3], prot->atoms[prot->bonds[p].bond_atomNumbers[1]-1].atom_type ) == 0)
+          if(strcmp( backboneDihedralDefinitions[m][2], prot->atoms[prot->bonds[p].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( backboneDihedralDefinitions[m][3], prot->atoms[prot->bonds[p].bond_atomNumbers[1]-1].atom_type ) == 0)
           {
             pairTwo_index = p;
             //multiple other bonds satisfy the above condition. Need to check for bond between the two pairs of bonds

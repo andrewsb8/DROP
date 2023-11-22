@@ -61,11 +61,12 @@ struct protein
   int expected_num_dihedrals; //in an unblocked polypeptide, this should be equal to number_of_dihedrals
 };
 
-//possible list of backbone atoms including NH3 and COOH termini atoms
+//list of backbone atoms including NH3 and COOH termini atoms
 static char *backbone_atom_list[15] = { "N" ,"H1", "H2", "H3", "HN", "HA", "HA1", "HA2", "CA", "C", "O", "OT", "OT1", "OT2", "HT2" };
+static int size_bb_atom_list = sizeof(backbone_atom_list) / sizeof(backbone_atom_list)[0];
 
 //dihedral definitions for use in identifyDihedrals
-static int numberDihedralTypes = 8;
+static int numberDihedralTypes = 2;
 static char *backboneDihedralDefinitions[2][4] = { //can't use int to set this array size?
   //backbone
   {"C", "N", "CA", "C"}, //phi
@@ -95,6 +96,7 @@ static char *customDihedralDefintions[1][4] = {
 
 
 void readPDB(struct protein *prot,char *filename, FILE *log_file);
+bool isBackbone(char *atomtype);
 char * substr(char * s, int x, int y);
 char * removeSpaces(char *string);
 void readPDBbonds(struct protein *prot, char *filename, FILE *log_file);
