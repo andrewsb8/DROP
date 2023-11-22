@@ -22,4 +22,8 @@ The tool is organized as follows:
 
 After compilation, you can export the path to the DROP executable to use the tool without the ```./```.
 
-NOTE: files in 'results' cannot be currently replicated by compiling from source. The c files used for completing those analyses are in 'src/run' and are currently being refactored into the new code. The code and results are being preserved until testing shows the results are reproducible after refactoring is completed.
+### Known Issues
+
+- Order of command line arguments may not be memory safe because of the way argp was implemented
+
+NOTE: files in 'src/archive/results' cannot be currently replicated by compiling from source. The c files used for completing those analyses are in 'src/archive/run' and are currently being refactored into the new code. The code and results are being preserved until testing shows the results are reproducible after refactoring is completed.
