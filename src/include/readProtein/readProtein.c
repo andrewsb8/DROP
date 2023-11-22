@@ -79,6 +79,8 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
       strcpy(prot->atoms[line_number].atom_name, removeSpaces(atomName));
       free(atomName);
 
+      //the following blocks of code classify atoms into backbone and
+      //side chain groups on a per residue basis using _residues struct 
       if(prot->atoms[line_number].residue_number != res_num)
       {
         prot->residues[res_num-1].num_bb_atoms = bb_atoms;
