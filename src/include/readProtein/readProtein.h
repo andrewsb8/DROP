@@ -42,11 +42,18 @@ struct _dihedrals
   int dihedral_resNum; //stores residue number
 };
 
+struct _residues
+{
+  int backbone_atoms[8]; //backbone atom numbers for a residue. 8 is the most backbone atoms possible (N- or C-terminal (COOH) glycine with 8 atoms)
+  int sidechain_atoms[18]; //side chain atom numbers for a residue. 18 is the most side chain atoms possible (Arg or Trp)
+};
+
 struct protein
 {
   struct _atoms *atoms;
   struct _bonds *bonds;
   struct _dihedrals *dihedrals;
+  struct _residues *residues;
   int number_of_residues;
   int number_of_atoms;
   int number_of_bonds;
@@ -54,26 +61,38 @@ struct protein
   int expected_num_dihedrals; //in an unblocked polypeptide, this should be equal to number_of_dihedrals
 };
 
+//possible list of backbone atoms including NH3 and COOH termini atoms
+static char *backbone_atom_list[15] = { "N" ,"H1", "H2", "H3", "HN", "HA", "HA1", "HA2", "CA", "C", "O", "OT", "OT1", "OT2", "HT2" };
+
 //dihedral definitions for use in identifyDihedrals
 static int numberDihedralTypes = 8;
-static char *dihedralDefinitions[8][4] = { //can't use int to set this array size?
+static char *backboneDihedralDefinitions[2][4] = { //can't use int to set this array size?
   //backbone
   {"C", "N", "CA", "C"}, //phi
   {"N", "CA", "C", "N"},  //psi
-  {"C", "C", "C", "C"}, //dihedral for butane
-  //sidechains
-  {"N", "CA", "CB", "HB3"}, //Ala side chain torsional angle (use HB3 b/c no other amino acid has this atom type)
+};
+
+static char *chi1DihedralDefinitions[3][4] = {
+  {"N", "CA", "CB", "HB3"}, //Ala "chi 1" (use HB3 b/c no other amino acid has this atom type)
   {"N", "CA", "CB", "CG1"}, //Ile, Val chi 1
+  {"N", "CA", "CB", "CG"} //Leu chi 1
+};
+
+static char *chi2DihedralDefinitions[2][4] = {
   {"CA", "CB", "CG1", "CD"}, //Ile chi 2
-  {"N", "CA", "CB", "CG"}, //Leu chi 1
   {"CA", "CB", "CG", "CD1"} //Leu chi 2
 };
 
+static char *chi3DihedralDefinitions[1][4];
 
-//struct sideChainAtoms
-//{
-//  char ALA[4] = {'CB', 'HB1', 'HB2', 'HB3'};
-//};
+static char *chi4DihedralDefinitions[1][4];
+
+static char *chi5DihedralDefinitions[1][4];
+
+static char *customDihedralDefintions[1][4] = {
+  {"C", "C", "C", "C"} //dihedral for butane
+};
+
 
 void readPDB(struct protein *prot,char *filename, FILE *log_file);
 char * substr(char * s, int x, int y);
