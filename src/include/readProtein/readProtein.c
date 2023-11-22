@@ -28,6 +28,13 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   size_t size = sizeof(struct _atoms);
   prot->atoms = (struct _atoms*) malloc(size);
 
+  //variable for keeping track of residue number for _residues
+  int res_num = 1;
+  int bb_atoms = 0;
+  int sc_atoms = 0;
+  size_t size_res = sizeof(struct _residues);
+  prot->residues = (struct _residues*) malloc(size_res);
+
   //read file line by line until EOF
   while((read = getline(&line,&len,fp)) != -1)
   {
@@ -72,9 +79,25 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
       strcpy(prot->atoms[line_number].atom_name, removeSpaces(atomName));
       free(atomName);
 
+      if(prot->atoms[line_number].residue_number != res_num)
+      {
+        prot->residues[res_num-1].num_bb_atoms = bb_atoms;
+        prot->residues[res_num-1].num_sc_atoms = sc_atoms;
+        prot->residues = (struct _residues*) realloc(prot->residues, size_res*(res_num+1));
+        res_num = prot->atoms[line_number].residue_number;
+        bb_atoms = 0;
+        sc_atoms = 0;
+      }
+
       if(isBackbone(prot->atoms[line_number].atom_type))
       {
-        printf("backbone atom: %s\n", prot->atoms[line_number].atom_type);
+        prot->residues[res_num-1].backbone_atoms[bb_atoms] = prot->atoms[line_number].atom_number;
+        bb_atoms += 1;
+      }
+      else
+      {
+        prot->residues[res_num-1].sidechain_atoms[sc_atoms] = prot->atoms[line_number].atom_number;
+        sc_atoms += 1;
       }
 
       line_number++;
