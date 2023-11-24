@@ -68,7 +68,8 @@ static char *backbone_atom_list[15] = { "N" ,"H1", "H2", "H3", "HN", "HA", "HA1"
 static int size_bb_atom_list = sizeof(backbone_atom_list) / sizeof(backbone_atom_list)[0];
 
 //dihedral definitions for use in identifyDihedrals
-static int numberDihedralTypes = 2;
+static char *dihedralTypes[2] = {"phi", "psi"}; //, "chi1", "chi2"}; //, "chi3", "chi4", "chi5", "custom"}; //TODO
+static int numberDihedralTypes = sizeof(dihedralTypes)/sizeof(dihedralTypes[0]);
 static char *backboneDihedralDefinitions[2][4] = { //can't use int to set this array size?
   {"C", "N", "CA", "C"}, //phi
   {"N", "CA", "C", "N"},  //psi
