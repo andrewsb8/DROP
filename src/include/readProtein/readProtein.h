@@ -46,7 +46,7 @@ struct _residues
 {
   int num_bb_atoms;
   int num_sc_atoms;
-  int backbone_atoms[8]; //backbone atom numbers for a residue. 8 is the most backbone atoms possible (N- or C-terminal (COOH) glycine with 8 atoms)
+  int backbone_atoms[8]; //backbone atom numbers for a residue. 8 is the most backbone atoms possible (N- (NH3) or C-terminal (COOH) glycine with 8 atoms)
   int sidechain_atoms[18]; //side chain atom numbers for a residue. 18 is the most side chain atoms possible (Arg or Trp)
 };
 
@@ -70,7 +70,6 @@ static int size_bb_atom_list = sizeof(backbone_atom_list) / sizeof(backbone_atom
 //dihedral definitions for use in identifyDihedrals
 static int numberDihedralTypes = 2;
 static char *backboneDihedralDefinitions[2][4] = { //can't use int to set this array size?
-  //backbone
   {"C", "N", "CA", "C"}, //phi
   {"N", "CA", "C", "N"},  //psi
 };
@@ -97,13 +96,13 @@ static char *customDihedralDefintions[1][4] = {
 };
 
 
-void readPDB(struct protein *prot,char *filename, FILE *log_file);
+void readPDB(struct protein *prot,char *filename, FILE *log_file, bool print_bond_matrix);
 bool isBackbone(char *atomtype);
 char * substr(char * s, int x, int y);
 char * removeSpaces(char *string);
-void readPDBbonds(struct protein *prot, char *filename, FILE *log_file);
+void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix);
 void makeBondMatrix(struct protein *prot);
-void countCovalentBonds(struct protein *prot, FILE *log_file);
+void countCovalentBonds(struct protein *prot, FILE *log_file, bool print_bond_matrix);
 int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount);
 void printCovalentBondMatrix(struct protein *prot, FILE *log_file);
 void identifyDihedrals(struct protein *prot);

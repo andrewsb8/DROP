@@ -7,7 +7,7 @@
 #include "readProtein.h"
 #include "../dihedralRotation/dihedralRotation.h"
 
-void readPDB(struct protein *prot, char *filename, FILE *log_file)
+void readPDB(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix)
 {
   FILE *fp;
   char * line = NULL;
@@ -80,7 +80,7 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
       free(atomName);
 
       //the following blocks of code classify atoms into backbone and
-      //side chain groups on a per residue basis using _residues struct 
+      //side chain groups on a per residue basis using _residues struct
       if(prot->atoms[line_number].residue_number != res_num)
       {
         prot->residues[res_num-1].num_bb_atoms = bb_atoms;
@@ -120,7 +120,7 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   prot->number_of_atoms = line_number;
   prot->number_of_residues = prot->atoms[line_number-1].residue_number;
 
-  readPDBbonds(prot, filename, log_file);
+  readPDBbonds(prot, filename, log_file, print_bond_matrix);
   identifyDihedrals(prot);
 
   //log initial dihedral angle values
@@ -184,7 +184,7 @@ char * removeSpaces(char *string)
   return string;
 }
 
-void readPDBbonds(struct protein *prot, char *filename, FILE *log_file)
+void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix)
 {
   FILE *fp;
   char * line = NULL;
@@ -256,7 +256,7 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file)
   prot->number_of_bonds = line_number;
 
   makeBondMatrix(prot);
-  countCovalentBonds(prot, log_file);
+  countCovalentBonds(prot, log_file, print_bond_matrix);
 
   printf("\n\n");
   return;
@@ -287,7 +287,7 @@ void makeBondMatrix(struct protein *prot)
 }
 
 //count covalent bonds between atoms i and j via recursive search using the CONECT records
-void countCovalentBonds(struct protein *prot, FILE *log_file)
+void countCovalentBonds(struct protein *prot, FILE *log_file, bool print_bond_matrix)
 {
   int warning = 0;
   static int covalentBondCount = 0;
@@ -320,7 +320,14 @@ void countCovalentBonds(struct protein *prot, FILE *log_file)
     }
   }
 
-  printCovalentBondMatrix(prot, log_file);
+  if(print_bond_matrix)
+  {
+    printCovalentBondMatrix(prot, log_file);
+  }
+  else
+  {
+    fprintf(log_file, "Not printing covalent bond matrix\n\n");
+  }
   return;
 }
 

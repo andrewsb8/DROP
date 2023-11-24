@@ -14,6 +14,7 @@ struct arguments
   char *input_file;
   char *log_file;
   bool list_clashes;
+  bool bond_matrix;
 };
 
 static int stericClashesParse(int key, char *arg, struct argp_state *state)
@@ -36,6 +37,10 @@ static int stericClashesParse(int key, char *arg, struct argp_state *state)
         a->list_clashes = atoi(arg);
         break;
       }
+      case 'b':
+      {
+        a->bond_matrix = atoi(arg);
+      }
 
   }
   return 0;
@@ -48,12 +53,13 @@ void stericClashes(int argc, char **argv, char *stringArgv)
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "log", 'l', "[Log File]", 0, "Output log file" },
+    { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix. Default: true" },
     { "list_clashes", 'c', "[Boolean]", 0, "Choose to list atomic clashes in log file. 0 does not print list. Default: 1." },
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "drop.log", 1};
+  struct arguments args = {NULL, "drop.log", 1, 1};
   //parse options
   struct argp stericClashesArgp = { stericClashesOptions, stericClashesParse, 0, 0 };
   argp_parse(&stericClashesArgp, argc, argv, 0, 0, &args);
@@ -71,7 +77,7 @@ void stericClashes(int argc, char **argv, char *stringArgv)
   //initialize protein struct and begin analysis
   fprintf(log, "Reading structure file: %s\n\n", args.input_file);
   struct protein prot;
-  readPDB(&prot, args.input_file, log);
+  readPDB(&prot, args.input_file, log, args.bond_matrix);
 
   fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
 

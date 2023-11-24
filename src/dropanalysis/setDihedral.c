@@ -19,6 +19,7 @@ struct arguments
   double angle;
   char *extension;
   bool conect;
+  bool bond_matrix;
 };
 
 static int setDihedralParse(int key, char *arg, struct argp_state *state)
@@ -61,6 +62,10 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
       {
         a->conect = atoi(arg);
       }
+      case 'b':
+      {
+        a->bond_matrix = atoi(arg);
+      }
 
   }
   return 0;
@@ -79,13 +84,14 @@ void setDihedral(int argc, char **argv, char *stringArgv)
     { "dihangle", 'a', "FLOAT", 0, "Target dihedral angle in degrees" },
     { "extension", 'e', "[Output File Extension]", 0, "Options: pdb, xyz" },
     { "conect", 'c', "BOOL", 0, "Include CONECT records in PDB. 0 does not print conect. Default: 0." },
+    { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix to log file. Default: true" },
     { 0 }
   };
 
   //DEFAULTS
   struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0};
   //parse options
-  struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
+  struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0, 1 };
   argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
 
   if (fileExists(args.input_file) == -1)
@@ -101,7 +107,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   //initialize protein struct and begin analysis
   fprintf(log, "Reading structure file: %s\n\n", args.input_file);
   struct protein prot;
-  readPDB(&prot, args.input_file, log);
+  readPDB(&prot, args.input_file, log, args.bond_matrix);
 
   fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
 
