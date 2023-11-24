@@ -68,34 +68,17 @@ static char *backbone_atom_list[15] = { "N" ,"H1", "H2", "H3", "HN", "HA", "HA1"
 static int size_bb_atom_list = sizeof(backbone_atom_list) / sizeof(backbone_atom_list)[0];
 
 //dihedral definitions for use in identifyDihedrals
-static char *dihedralTypes[2] = {"phi", "psi"}; //, "chi1", "chi2"}; //, "chi3", "chi4", "chi5", "custom"}; //TODO
-static int numberDihedralTypes = sizeof(dihedralTypes)/sizeof(dihedralTypes[0]);
-static char *backboneDihedralDefinitions[2][4] = { //can't use int to set this array size?
-  {"C", "N", "CA", "C"}, //phi
-  {"N", "CA", "C", "N"},  //psi
+static char *DihedralDefinitions[][5] = { //can't use int to set this array size?
+  {"C", "N", "CA", "C", "phi"}, //phi
+  {"N", "CA", "C", "N", "psi"},  //psi
+  {"N", "CA", "CB", "HB3", "chi1"}, //Ala "chi 1" (use HB3 b/c no other amino acid has this atom type)
+  {"N", "CA", "CB", "CG1", "chi1"}, //Ile, Val chi 1
+  {"N", "CA", "CB", "CG", "chi1"}, //Leu chi 1
+  {"CA", "CB", "CG1", "CD", "chi2"}, //Ile chi 2
+  {"CA", "CB", "CG", "CD1", "chi2"}, //Leu chi 2
+  {"C", "C", "C", "C", "cust"} //dihedral for butane
 };
-
-static char *chi1DihedralDefinitions[3][4] = {
-  {"N", "CA", "CB", "HB3"}, //Ala "chi 1" (use HB3 b/c no other amino acid has this atom type)
-  {"N", "CA", "CB", "CG1"}, //Ile, Val chi 1
-  {"N", "CA", "CB", "CG"} //Leu chi 1
-};
-
-static char *chi2DihedralDefinitions[2][4] = {
-  {"CA", "CB", "CG1", "CD"}, //Ile chi 2
-  {"CA", "CB", "CG", "CD1"} //Leu chi 2
-};
-
-static char *chi3DihedralDefinitions[1][4];
-
-static char *chi4DihedralDefinitions[1][4];
-
-static char *chi5DihedralDefinitions[1][4];
-
-static char *customDihedralDefintions[1][4] = {
-  {"C", "C", "C", "C"} //dihedral for butane
-};
-
+static int numberDihedralTypes = sizeof(DihedralDefinitions)/sizeof(DihedralDefinitions[0]);
 
 void readPDB(struct protein *prot,char *filename, FILE *log_file, bool print_bond_matrix);
 bool isBackbone(char *atomtype);

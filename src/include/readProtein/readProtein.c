@@ -456,13 +456,13 @@ void identifyDihedrals(struct protein *prot)
     for(int n = 0; n < prot->number_of_bonds; n++)
     {
       //if two atoms bonded are the same as the first two of the dihedral definition, search for the second pair
-      if(strcmp( backboneDihedralDefinitions[m][0], prot->atoms[prot->bonds[n].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( backboneDihedralDefinitions[m][1], prot->atoms[prot->bonds[n].bond_atomNumbers[1]-1].atom_type ) == 0)
+      if(strcmp( DihedralDefinitions[m][0], prot->atoms[prot->bonds[n].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( DihedralDefinitions[m][1], prot->atoms[prot->bonds[n].bond_atomNumbers[1]-1].atom_type ) == 0)
       {
         pairOne_index = n;
         for(int p = 0; p < prot->number_of_bonds; p++)
         {
           //search for second pair
-          if(strcmp( backboneDihedralDefinitions[m][2], prot->atoms[prot->bonds[p].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( backboneDihedralDefinitions[m][3], prot->atoms[prot->bonds[p].bond_atomNumbers[1]-1].atom_type ) == 0)
+          if(strcmp( DihedralDefinitions[m][2], prot->atoms[prot->bonds[p].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( DihedralDefinitions[m][3], prot->atoms[prot->bonds[p].bond_atomNumbers[1]-1].atom_type ) == 0)
           {
             pairTwo_index = p;
             //multiple other bonds satisfy the above condition. Need to check for bond between the two pairs of bonds
@@ -474,18 +474,8 @@ void identifyDihedrals(struct protein *prot)
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[1] = prot->bonds[n].bond_atomNumbers[1];
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] = prot->bonds[p].bond_atomNumbers[0];
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[3] = prot->bonds[p].bond_atomNumbers[1];
-                //m==0 is manually assigned to be phi in dihedralDefinitions in readProtein.h
-                if(m==0)
-                {
-                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "phi");
-                }
-                //m==1 is manually assigned to be psi in dihedralDefinitions in readProtein.h
-                if(m==1)
-                {
-                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "psi");
-                }
-                //add more conditions for chi angles. Output is random bytes for some amino acids.
-                //but may need more systematic ordering of dihedralDefinitions
+
+                strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, DihedralDefinitions[m][4]);
 
                 //residue is identified by third atom in dihedral because that will always be in the ith residue. Could have used second atom also.
                 //this will not work if omega is to be incorporated. but currently no plans to do so.

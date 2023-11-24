@@ -77,7 +77,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   {
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
-    { "output", 'o', "[Output File]", 0, "Output xyz file" },
+    { "output", 'o', "[Output File]", 0, "Output file. Options: see -e for options." },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "resnum", 'n', "INT", 0, "Residue Number" },
     { "dihtype", 'd', "[Dihedral Type]", 0, "phi, psi" },
