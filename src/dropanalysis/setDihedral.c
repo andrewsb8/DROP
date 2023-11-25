@@ -89,9 +89,9 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0};
+  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 1};
   //parse options
-  struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0, 1 };
+  struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
   argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
 
   if (fileExists(args.input_file) == -1)
