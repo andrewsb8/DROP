@@ -135,20 +135,12 @@ void setDihedral(int argc, char **argv, char *stringArgv)
     backbone = false;
   }
 
-  //stores number associated with the chi or side chain torsion
-  //default is zero, but will be read by user input at some point
-  int chi_num = 0;
-  if(!backbone)
-  {
-    fprintf(stderr, "Need to do something here for the chi angles.\n\n");
-  }
-
   //calculate the angle change based on current angle and angle defined by command line
   double dih_angle_change = args.angle - prot.dihedrals[index].dihedral_angle ;
   fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", args.dih_type, args.res_number, dih_angle_change);
 
   //rotate the dihedral
-  rotateDihedral(&prot, index, dih_angle_change, backbone, chi_num);
+  rotateDihedral(&prot, index, dih_angle_change, backbone);
   prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
 
   fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n", args.angle, prot.dihedrals[index].dihedral_angle);
