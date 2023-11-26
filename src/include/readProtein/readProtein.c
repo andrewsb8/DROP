@@ -85,7 +85,8 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file, bool print_bo
       {
         prot->residues[res_num-1].num_bb_atoms = bb_atoms;
         prot->residues[res_num-1].num_sc_atoms = sc_atoms;
-        prot->residues = (struct _residues*) realloc(prot->residues, size_res*(res_num+1));
+        //add residue
+        prot->residues = (struct _residues*) realloc(prot->residues, size_res*(res_num+1));//new residue
         res_num = prot->atoms[line_number].residue_number;
         bb_atoms = 0;
         sc_atoms = 0;
