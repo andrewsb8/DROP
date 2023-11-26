@@ -161,17 +161,17 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
     //bool to find sc atoms in dihedral. don't want to rotate whole side chain, only atoms which come after relevant dihedral
     int found = 0;
 
-    for(int i = 0; i < prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].num_sc_atoms; i++)
+    for(int j = 0; j < prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].num_sc_atoms; j++)
     {
       //residue/dihedral is identified by third atom in dihedral, consistent with readProtein.c
-      if(prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] == prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[i])
+      if(prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] == prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[j])
       {
         found = 1;
       }
       if(found == 1)
       {
-        double *tmp = vectorRotate(prot->atoms[prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[i]].coordinates,2,(PI/180.0)*dihedralAngleChange);
-        updatePositions(prot, tmp, prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[i]);
+        double *tmp = vectorRotate(prot->atoms[prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[j]].coordinates,2,(PI/180.0)*dihedralAngleChange);
+        updatePositions(prot, tmp, prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[j]);
         free(tmp);
       }
     }
