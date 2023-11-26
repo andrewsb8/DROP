@@ -67,7 +67,7 @@ char * makeStringArgv(int argc, char **argv)
   return strng;
 }
 
-bool findCommand(char *arg, int argc, char **argv)
+bool findCommand(char *func, int argc, char **argv)
 {
   bool found = false;
   //make a string of argv arguments for the log file output
@@ -76,12 +76,12 @@ bool findCommand(char *arg, int argc, char **argv)
   stripFArgv(argc, argv); //get rid of '-f FUNCTION' to avoid argp errors
 
   //search available commands or functions
-  if ( strcmp(arg, commandList[0][0]) == 0 )
+  if ( strcmp(func, commandList[0][0]) == 0 )
   {
     setDihedral(argc, argv, stringArgv);
     found = true;
   }
-  else if ( strcmp(arg, commandList[1][0]) == 0 )
+  else if ( strcmp(func, commandList[1][0]) == 0 )
   {
     stericClashes(argc, argv, stringArgv);
     found = true;

@@ -42,11 +42,20 @@ struct _dihedrals
   int dihedral_resNum; //stores residue number
 };
 
+struct _residues
+{
+  int num_bb_atoms;
+  int num_sc_atoms;
+  int backbone_atoms[8]; //backbone atom numbers for a residue. 8 is the most backbone atoms possible (N- (NH3) or C-terminal (COOH) glycine with 8 atoms)
+  int sidechain_atoms[18]; //side chain atom numbers for a residue. 18 is the most side chain atoms possible (Arg or Trp)
+};
+
 struct protein
 {
   struct _atoms *atoms;
   struct _bonds *bonds;
   struct _dihedrals *dihedrals;
+  struct _residues *residues;
   int number_of_residues;
   int number_of_atoms;
   int number_of_bonds;
@@ -54,33 +63,30 @@ struct protein
   int expected_num_dihedrals; //in an unblocked polypeptide, this should be equal to number_of_dihedrals
 };
 
+//list of backbone atoms including NH3 and COOH termini atoms
+static char *backbone_atom_list[15] = { "N" ,"H1", "H2", "H3", "HN", "HA", "HA1", "HA2", "CA", "C", "O", "OT", "OT1", "OT2", "HT2" };
+static int size_bb_atom_list = sizeof(backbone_atom_list) / sizeof(backbone_atom_list)[0];
+
 //dihedral definitions for use in identifyDihedrals
-static int numberDihedralTypes = 8;
-static char *dihedralDefinitions[8][4] = { //can't use int to set this array size?
-  //backbone
-  {"C", "N", "CA", "C"}, //phi
-  {"N", "CA", "C", "N"},  //psi
-  {"C", "C", "C", "C"}, //dihedral for butane
-  //sidechains
-  {"N", "CA", "CB", "HB3"}, //Ala side chain torsional angle (use HB3 b/c no other amino acid has this atom type)
-  {"N", "CA", "CB", "CG1"}, //Ile, Val chi 1
-  {"CA", "CB", "CG1", "CD"}, //Ile chi 2
-  {"N", "CA", "CB", "CG"}, //Leu chi 1
-  {"CA", "CB", "CG", "CD1"} //Leu chi 2
+static char *DihedralDefinitions[][5] = { //can't use int to set this array size?
+  {"C", "N", "CA", "C", "phi"}, //phi
+  {"N", "CA", "C", "N", "psi"},  //psi
+  {"N", "CA", "CB", "HB3", "chi1"}, //Ala "chi 1" (use HB3 b/c no other amino acid has this atom type)
+  {"N", "CA", "CB", "CG1", "chi1"}, //Ile, Val chi 1
+  {"N", "CA", "CB", "CG", "chi1"}, //Leu chi 1
+  {"CA", "CB", "CG1", "CD", "chi2"}, //Ile chi 2
+  {"CA", "CB", "CG", "CD1", "chi2"}, //Leu chi 2
+  {"C", "C", "C", "C", "cust"} //dihedral for butane
 };
+static int numberDihedralTypes = sizeof(DihedralDefinitions)/sizeof(DihedralDefinitions[0]);
 
-
-//struct sideChainAtoms
-//{
-//  char ALA[4] = {'CB', 'HB1', 'HB2', 'HB3'};
-//};
-
-void readPDB(struct protein *prot,char *filename, FILE *log_file);
+void readPDB(struct protein *prot,char *filename, FILE *log_file, bool print_bond_matrix);
+bool isBackbone(char *atomtype);
 char * substr(char * s, int x, int y);
 char * removeSpaces(char *string);
-void readPDBbonds(struct protein *prot, char *filename, FILE *log_file);
+void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix);
 void makeBondMatrix(struct protein *prot);
-void countCovalentBonds(struct protein *prot, FILE *log_file);
+void countCovalentBonds(struct protein *prot, FILE *log_file, bool print_bond_matrix);
 int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount);
 void printCovalentBondMatrix(struct protein *prot, FILE *log_file);
 void identifyDihedrals(struct protein *prot);

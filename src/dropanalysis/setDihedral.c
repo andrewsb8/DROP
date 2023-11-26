@@ -19,6 +19,7 @@ struct arguments
   double angle;
   char *extension;
   bool conect;
+  bool bond_matrix;
 };
 
 static int setDihedralParse(int key, char *arg, struct argp_state *state)
@@ -61,6 +62,10 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
       {
         a->conect = atoi(arg);
       }
+      case 'b':
+      {
+        a->bond_matrix = atoi(arg);
+      }
 
   }
   return 0;
@@ -72,18 +77,19 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   {
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
-    { "output", 'o', "[Output File]", 0, "Output xyz file" },
+    { "output", 'o', "[Output File]", 0, "Output file. Options: see -e for options." },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "resnum", 'n', "INT", 0, "Residue Number" },
     { "dihtype", 'd', "[Dihedral Type]", 0, "phi, psi" },
     { "dihangle", 'a', "FLOAT", 0, "Target dihedral angle in degrees" },
     { "extension", 'e', "[Output File Extension]", 0, "Options: pdb, xyz" },
     { "conect", 'c', "BOOL", 0, "Include CONECT records in PDB. 0 does not print conect. Default: 0." },
+    { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix to log file. Default: true" },
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0};
+  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 1};
   //parse options
   struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
   argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
@@ -101,7 +107,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   //initialize protein struct and begin analysis
   fprintf(log, "Reading structure file: %s\n\n", args.input_file);
   struct protein prot;
-  readPDB(&prot, args.input_file, log);
+  readPDB(&prot, args.input_file, log, args.bond_matrix);
 
   fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
 
@@ -129,20 +135,12 @@ void setDihedral(int argc, char **argv, char *stringArgv)
     backbone = false;
   }
 
-  //stores number associated with the chi or side chain torsion
-  //default is zero, but will be read by user input at some point
-  int chi_num = 0;
-  if(!backbone)
-  {
-    fprintf(stderr, "Need to do something here for the chi angles.\n\n");
-  }
-
   //calculate the angle change based on current angle and angle defined by command line
   double dih_angle_change = args.angle - prot.dihedrals[index].dihedral_angle ;
   fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", args.dih_type, args.res_number, dih_angle_change);
 
   //rotate the dihedral
-  rotateDihedral(&prot, index, dih_angle_change, backbone, chi_num);
+  rotateDihedral(&prot, index, dih_angle_change, backbone);
   prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
 
   fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n", args.angle, prot.dihedrals[index].dihedral_angle);

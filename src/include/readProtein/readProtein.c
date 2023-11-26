@@ -7,7 +7,7 @@
 #include "readProtein.h"
 #include "../dihedralRotation/dihedralRotation.h"
 
-void readPDB(struct protein *prot, char *filename, FILE *log_file)
+void readPDB(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix)
 {
   FILE *fp;
   char * line = NULL;
@@ -27,6 +27,13 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   //allocate memory for the atoms struct to store information
   size_t size = sizeof(struct _atoms);
   prot->atoms = (struct _atoms*) malloc(size);
+
+  //variable for keeping track of residue number for _residues
+  int res_num = 1;
+  int bb_atoms = 0;
+  int sc_atoms = 0;
+  size_t size_res = sizeof(struct _residues);
+  prot->residues = (struct _residues*) malloc(size_res);
 
   //read file line by line until EOF
   while((read = getline(&line,&len,fp)) != -1)
@@ -72,6 +79,30 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
       strcpy(prot->atoms[line_number].atom_name, removeSpaces(atomName));
       free(atomName);
 
+      //the following blocks of code classify atoms into backbone and
+      //side chain groups on a per residue basis using _residues struct
+      if(prot->atoms[line_number].residue_number != res_num)
+      {
+        prot->residues[res_num-1].num_bb_atoms = bb_atoms;
+        prot->residues[res_num-1].num_sc_atoms = sc_atoms;
+        //add residue
+        prot->residues = (struct _residues*) realloc(prot->residues, size_res*(res_num+1));//new residue
+        res_num = prot->atoms[line_number].residue_number;
+        bb_atoms = 0;
+        sc_atoms = 0;
+      }
+
+      if(isBackbone(prot->atoms[line_number].atom_type))
+      {
+        prot->residues[res_num-1].backbone_atoms[bb_atoms] = prot->atoms[line_number].atom_number;
+        bb_atoms += 1;
+      }
+      else
+      {
+        prot->residues[res_num-1].sidechain_atoms[sc_atoms] = prot->atoms[line_number].atom_number;
+        sc_atoms += 1;
+      }
+
       line_number++;
 
     }
@@ -90,7 +121,7 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   prot->number_of_atoms = line_number;
   prot->number_of_residues = prot->atoms[line_number-1].residue_number;
 
-  readPDBbonds(prot, filename, log_file);
+  readPDBbonds(prot, filename, log_file, print_bond_matrix);
   identifyDihedrals(prot);
 
   //log initial dihedral angle values
@@ -104,6 +135,18 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file)
   }
   fprintf(log_file, "\n");
 
+}
+
+bool isBackbone(char *atomtype)
+{
+  for(int i = 0; i < size_bb_atom_list; i++)
+  {
+    if( strcmp(atomtype, backbone_atom_list[i]) == 0 )
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 //function to return a portion of a string with user defined indices
@@ -142,7 +185,7 @@ char * removeSpaces(char *string)
   return string;
 }
 
-void readPDBbonds(struct protein *prot, char *filename, FILE *log_file)
+void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix)
 {
   FILE *fp;
   char * line = NULL;
@@ -214,7 +257,7 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file)
   prot->number_of_bonds = line_number;
 
   makeBondMatrix(prot);
-  countCovalentBonds(prot, log_file);
+  countCovalentBonds(prot, log_file, print_bond_matrix);
 
   printf("\n\n");
   return;
@@ -245,7 +288,7 @@ void makeBondMatrix(struct protein *prot)
 }
 
 //count covalent bonds between atoms i and j via recursive search using the CONECT records
-void countCovalentBonds(struct protein *prot, FILE *log_file)
+void countCovalentBonds(struct protein *prot, FILE *log_file, bool print_bond_matrix)
 {
   int warning = 0;
   static int covalentBondCount = 0;
@@ -278,7 +321,14 @@ void countCovalentBonds(struct protein *prot, FILE *log_file)
     }
   }
 
-  printCovalentBondMatrix(prot, log_file);
+  if(print_bond_matrix)
+  {
+    printCovalentBondMatrix(prot, log_file);
+  }
+  else
+  {
+    fprintf(log_file, "Not printing covalent bond matrix\n\n");
+  }
   return;
 }
 
@@ -407,13 +457,13 @@ void identifyDihedrals(struct protein *prot)
     for(int n = 0; n < prot->number_of_bonds; n++)
     {
       //if two atoms bonded are the same as the first two of the dihedral definition, search for the second pair
-      if(strcmp( dihedralDefinitions[m][0], prot->atoms[prot->bonds[n].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( dihedralDefinitions[m][1], prot->atoms[prot->bonds[n].bond_atomNumbers[1]-1].atom_type ) == 0)
+      if(strcmp( DihedralDefinitions[m][0], prot->atoms[prot->bonds[n].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( DihedralDefinitions[m][1], prot->atoms[prot->bonds[n].bond_atomNumbers[1]-1].atom_type ) == 0)
       {
         pairOne_index = n;
         for(int p = 0; p < prot->number_of_bonds; p++)
         {
           //search for second pair
-          if(strcmp( dihedralDefinitions[m][2], prot->atoms[prot->bonds[p].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( dihedralDefinitions[m][3], prot->atoms[prot->bonds[p].bond_atomNumbers[1]-1].atom_type ) == 0)
+          if(strcmp( DihedralDefinitions[m][2], prot->atoms[prot->bonds[p].bond_atomNumbers[0]-1].atom_type ) == 0 && strcmp( DihedralDefinitions[m][3], prot->atoms[prot->bonds[p].bond_atomNumbers[1]-1].atom_type ) == 0)
           {
             pairTwo_index = p;
             //multiple other bonds satisfy the above condition. Need to check for bond between the two pairs of bonds
@@ -425,18 +475,8 @@ void identifyDihedrals(struct protein *prot)
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[1] = prot->bonds[n].bond_atomNumbers[1];
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] = prot->bonds[p].bond_atomNumbers[0];
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[3] = prot->bonds[p].bond_atomNumbers[1];
-                //m==0 is manually assigned to be phi in dihedralDefinitions in readProtein.h
-                if(m==0)
-                {
-                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "phi");
-                }
-                //m==1 is manually assigned to be psi in dihedralDefinitions in readProtein.h
-                if(m==1)
-                {
-                  strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, "psi");
-                }
-                //add more conditions for chi angles. Output is random bytes for some amino acids.
-                //but may need more systematic ordering of dihedralDefinitions
+
+                strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, DihedralDefinitions[m][4]);
 
                 //residue is identified by third atom in dihedral because that will always be in the ith residue. Could have used second atom also.
                 //this will not work if omega is to be incorporated. but currently no plans to do so.

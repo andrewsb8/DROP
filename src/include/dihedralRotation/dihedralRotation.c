@@ -100,7 +100,7 @@ void updatePositions(struct protein *prot, double newPositions[3], int atomNumbe
   }
 }
 
-double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngleChange, bool backbone, int chi_num)
+double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngleChange, bool backbone)
 {
   //translate all atoms such that the second atom of the dihedral of interest is at the origin
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1];
@@ -158,27 +158,20 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
   }
   else //rotate side chain instead
   {
-    if(chi_num == 1) //which chi angle is being rotated, chi 1 or chi 2?
+    //bool to find sc atoms in dihedral. don't want to rotate whole side chain, only atoms which come after relevant dihedral
+    int found = 0;
+
+    for(int k = 0; k < prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].num_sc_atoms; k++)
     {
-      //int ala2_sidechain_temp[4] = {17,18,19,20}; //temporary to test sidechain rotation method. Need better, general implementation
-      int ile2_chi1[13] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ,19};
-      //int leu2_chi1[13] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ,19};
-      //int val2_chi1[10] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-      for(int i = 0; i < 13; i++)
+      //residue/dihedral is identified by third atom in dihedral, consistent with readProtein.c
+      if(prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] == prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[k])
       {
-        double *tmp = vectorRotate(prot->atoms[ile2_chi1[i]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
-        updatePositions(prot, tmp, ile2_chi1[i]-1);
-        free(tmp);
+        found = 1;
       }
-    }
-    else if(chi_num == 2)
-    {
-      int ile2_chi2[6] = {14, 15, 16, 17, 18, 19};
-      //int leu2_chi2[9] = {11, 12, 13, 14, 15, 16, 17, 18 ,19};
-      for(int i = 0; i < 6; i++)
+      if(found == 1)
       {
-        double *tmp = vectorRotate(prot->atoms[ile2_chi2[i]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
-        updatePositions(prot, tmp, ile2_chi2[i]-1);
+        double *tmp = vectorRotate(prot->atoms[prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[k]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
+        updatePositions(prot, tmp, prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[k]-1);
         free(tmp);
       }
     }
