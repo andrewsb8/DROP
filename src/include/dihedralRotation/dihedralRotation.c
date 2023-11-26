@@ -170,8 +170,8 @@ double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralA
       }
       if(found == 1)
       {
-        double *tmp = vectorRotate(prot->atoms[prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[j]].coordinates,2,(PI/180.0)*dihedralAngleChange);
-        updatePositions(prot, tmp, prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[j]);
+        double *tmp = vectorRotate(prot->atoms[prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[j]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
+        updatePositions(prot, tmp, prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[j]-1);
         free(tmp);
       }
     }
