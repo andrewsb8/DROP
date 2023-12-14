@@ -55,13 +55,14 @@ void stericClashes(int argc, char **argv, char *stringArgv)
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix. Default: true" },
     { "list_clashes", 'c', "[Boolean]", 0, "Choose to list atomic clashes in log file. 0 does not print list. Default: 1." },
+    { "", 'f', "", OPTION_HIDDEN, "" }, //gets rid of error for -f flag
     { 0 }
   };
 
   //DEFAULTS
   struct arguments args = {NULL, "drop.log", 1, 1};
   //parse options
-  struct argp stericClashesArgp = { stericClashesOptions, stericClashesParse, 0, 0 };
+  struct argp stericClashesArgp = { stericClashesOptions, stericClashesParse, 0, 0, NULL };
   argp_parse(&stericClashesArgp, argc, argv, 0, 0, &args);
 
   if (fileExists(args.input_file) == -1)

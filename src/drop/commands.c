@@ -31,20 +31,6 @@ void printCommandList()
   }
 }
 
-//assigns -f option and argument to null terminator for the
-//child function which won't be able to parse an -f option
-void stripFArgv(int argc, char **argv)
-{
-  for(int i = 0; i < argc; i++)
-  {
-    if( (strcmp(argv[i], "-f") == 0) ||  (strcmp(argv[i], "--func") == 0))
-    {
-      argv[i] = "\0";
-      argv[i++] = "\0";
-    }
-  }
-}
-
 //assigns all of argv to the null terminator
 void stripAllArgv(int argc, char **argv)
 {
@@ -73,8 +59,6 @@ bool findCommand(char *func, int argc, char **argv)
   //make a string of argv arguments for the log file output
   char *stringArgv = makeStringArgv(argc, argv);
 
-  stripFArgv(argc, argv); //get rid of '-f FUNCTION' to avoid argp errors
-
   //search available commands or functions
   if ( strcmp(func, commandList[0][0]) == 0 )
   {
@@ -89,7 +73,7 @@ bool findCommand(char *func, int argc, char **argv)
 
   if(found)
   {
-    stripAllArgv(argc, argv); //all argv is made the null terminator so main will not throw an error
+    stripAllArgv(argc, argv); //all argv is made the null terminator so parser will not throw an error passing back to main
   }
 
   return found;
