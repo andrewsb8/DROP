@@ -15,7 +15,7 @@ struct arguments
   char *output_file;
   char *log_file;
   int res_number;
-  char dih_type[4];
+  char dih_type[5];
   double angle;
   char *extension;
   bool conect;
