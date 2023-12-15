@@ -15,10 +15,7 @@ struct arguments
   char *output_file;
   char *log_file;
   int res_number;
-  char dih_type[5];
-  double angle;
-  char *extension;
-  bool conect;
+  float resolution;
   bool bond_matrix;
 };
 
@@ -47,24 +44,9 @@ static int stericScanParse(int key, char *arg, struct argp_state *state)
         a->res_number = atoi(arg);
         break;
       }
-      case 'd':
+      case 'r':
       {
-        strcpy(a->dih_type, arg);
-        break;
-      }
-      case 'a':
-      {
-        a->angle = atof(arg);
-        break;
-      }
-      case 'e':
-      {
-        a->extension = arg;
-        break;
-      }
-      case 'c':
-      {
-        a->conect = atoi(arg);
+        a->resolution = atof(arg);
         break;
       }
       case 'b':
@@ -105,6 +87,11 @@ void stericScan(int argc, char **argv, char *stringArgv)
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
   processInput(&prot, args.input_file, log, args.bond_matrix, stringArgv);
+
+  /*TO DO
+  how to have loops depend on the number of chi angles?
+  rotate "highest" chi angle and have nested lists do the rest. check stericClashes at each step, then continue rotating
+  */
 
   fclose(log);
   return;

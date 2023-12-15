@@ -16,7 +16,7 @@ struct arguments
   char *log_file;
   int res_number;
   char dih_type[5];
-  double angle;
+  float angle;
   char *extension;
   bool conect;
   bool bond_matrix;
