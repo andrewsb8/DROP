@@ -107,7 +107,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
-  inputInfo(&prot, args.input_file, log, args.bond_matrix, stringArgv);
+  processInput(&prot, args.input_file, log, args.bond_matrix, stringArgv);
 
   //find dihedral to change based on user input
   int index = findDihedral(&prot, args.res_number, args.dih_type);

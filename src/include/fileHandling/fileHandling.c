@@ -13,7 +13,7 @@ int fileExists(char *filename)
   return access(filename, F_OK);
 }
 
-void inputInfo(struct protein *prot, char *input_file, FILE *log, bool print_bond_matrix, char *stringArgv)
+void processInput(struct protein *prot, char *input_file, FILE *log, bool print_bond_matrix, char *stringArgv)
 {
   fprintf(log, "Command Line: %s\n\n", stringArgv);
   if (fileExists(input_file) == -1)

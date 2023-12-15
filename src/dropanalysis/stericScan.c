@@ -104,7 +104,7 @@ void stericScan(int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
-  inputInfo(&prot, args.input_file, log, args.bond_matrix, stringArgv);
+  processInput(&prot, args.input_file, log, args.bond_matrix, stringArgv);
 
   fclose(log);
   return;

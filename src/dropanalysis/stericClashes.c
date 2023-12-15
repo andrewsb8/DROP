@@ -65,15 +65,9 @@ void stericClashes(int argc, char **argv, char *stringArgv)
   struct argp stericClashesArgp = { stericClashesOptions, stericClashesParse, 0, 0, NULL };
   argp_parse(&stericClashesArgp, argc, argv, 0, 0, &args);
 
-  if (fileExists(args.input_file) == -1)
-  {
-    fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
-    exit(1);
-  }
-
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
-  inputInfo(&prot, args.input_file, log, args.bond_matrix, stringArgv);
+  processInput(&prot, args.input_file, log, args.bond_matrix, stringArgv);
 
   if(!args.list_clashes)
   {
