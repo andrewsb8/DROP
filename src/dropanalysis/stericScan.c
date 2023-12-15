@@ -4,10 +4,10 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "setDihedral.h"
-#include "../include/fileHandling/fileHandling.h"
+#include "stericScan.h"
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
+#include "../include/fileHandling/fileHandling.h"
 
 struct arguments
 {
@@ -22,7 +22,7 @@ struct arguments
   bool bond_matrix;
 };
 
-static int setDihedralParse(int key, char *arg, struct argp_state *state)
+static int stericScanParse(int key, char *arg, struct argp_state *state)
 {
   struct arguments *a = state->input;
   switch(key)
@@ -81,9 +81,9 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
   return 0;
 }
 
-void setDihedral(int argc, char **argv, char *stringArgv)
+void stericScan(int argc, char **argv, char *stringArgv)
 {
-  struct argp_option setDihedralOptions[] =
+  struct argp_option stericScanOptions[] =
   {
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
@@ -102,62 +102,12 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   //DEFAULTS
   struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 1, NULL};
   //parse options
-  struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
-  argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
+  struct argp stericScanArgp = { stericScanOptions, stericScanParse, 0, 0 };
+  argp_parse(&stericScanArgp, argc, argv, 0, 0, &args);
 
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
   inputInfo(&prot, args.input_file, log, args.bond_matrix, stringArgv);
-
-  //find dihedral to change based on user input
-  int index = findDihedral(&prot, args.res_number, args.dih_type);
-  if (index == -1)
-  {
-    fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
-    fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
-    exit(1);
-  }
-  else
-  {
-    fprintf(log, "Found dihedral number: %d\n\n", index);
-  }
-
-  //is the angle being changed the backbone or side chain?
-  bool backbone;
-  if( strcmp(args.dih_type, "phi") == 0 || strcmp(args.dih_type, "psi") == 0 )
-  {
-    backbone = true;
-  }
-  else
-  {
-    backbone = false;
-  }
-
-  //calculate the angle change based on current angle and angle defined by command line
-  double dih_angle_change = args.angle - prot.dihedrals[index].dihedral_angle ;
-  fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", args.dih_type, args.res_number, dih_angle_change);
-
-  //rotate the dihedral
-  rotateDihedral(&prot, index, dih_angle_change, backbone);
-  prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
-
-  fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n", args.angle, prot.dihedrals[index].dihedral_angle);
-
-  //print out structure after rotation
-  if(strcmp(args.extension, "pdb") == 0)
-  {
-    writePDB(&prot, args.output_file, 's', 0, args.conect);
-  }
-  else if(strcmp(args.extension, "xyz") == 0)
-  {
-    writeXYZ(&prot, args.output_file, "Frame 1", 's', 0, 0);
-  }
-  else
-  {
-    fprintf(log, "Error: File extension for output not recognized.\n");
-    fprintf(stderr, "Error: File extension for output not recognized.\n");
-    exit(1);
-  }
 
   fclose(log);
   return;

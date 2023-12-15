@@ -80,7 +80,7 @@ static char *DihedralDefinitions[][5] = { //can't use int to set this array size
 };
 static int numberDihedralTypes = sizeof(DihedralDefinitions)/sizeof(DihedralDefinitions[0]);
 
-void readPDB(struct protein *prot,char *filename, FILE *log_file, bool print_bond_matrix);
+void readPDB(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix);
 bool isBackbone(char *atomtype);
 char * substr(char * s, int x, int y);
 char * removeSpaces(char *string);

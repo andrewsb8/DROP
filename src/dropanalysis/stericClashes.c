@@ -70,17 +70,10 @@ void stericClashes(int argc, char **argv, char *stringArgv)
     fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
     exit(1);
   }
-
-  //log command line inputs
-  FILE *log = fopen(args.log_file, "w");
-  fprintf(log, "Command Line: %s\n\n", stringArgv);
-
-  //initialize protein struct and begin analysis
-  fprintf(log, "Reading structure file: %s\n\n", args.input_file);
+  
   struct protein prot;
-  readPDB(&prot, args.input_file, log, args.bond_matrix);
-
-  fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
+  FILE *log = fopen(args.log_file, "w");
+  inputInfo(&prot, args.input_file, log, args.bond_matrix, stringArgv);
 
   if(!args.list_clashes)
   {

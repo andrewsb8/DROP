@@ -7,10 +7,12 @@
 #include "commands.h"
 #include "../dropanalysis/setDihedral.h"
 #include "../dropanalysis/stericClashes.h"
+#include "../dropanalysis/stericScan.h"
 
-const char *commandList[][2]={
+const char *commandList[][3]={
   {"setDihedral", "Change a single user-specified dihedral angle for a given residue."},
-  {"stericClashes", "Counts the number of atomic overlaps according to atomic radii used by Ramachandran."}
+  {"stericClashes", "Counts the number of atomic overlaps according to atomic radii used by Ramachandran."},
+  {"stericScan", "Reports average number of steric clashes in structure over the Ramachandran space of an amino acid."}
 };
 const int commandListLen = sizeof(commandList)/sizeof(commandList[0]);
 
@@ -68,6 +70,11 @@ bool findCommand(char *func, int argc, char **argv)
   else if ( strcmp(func, commandList[1][0]) == 0 )
   {
     stericClashes(argc, argv, stringArgv);
+    found = true;
+  }
+  else if ( strcmp(func, commandList[2][0]) == 0 )
+  {
+    stericScan(argc, argv, stringArgv);
     found = true;
   }
 
