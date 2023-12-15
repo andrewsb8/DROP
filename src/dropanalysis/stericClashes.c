@@ -50,7 +50,7 @@ void stericClashes(int argc, char **argv, char *stringArgv)
 {
   struct argp_option stericClashesOptions[] =
   {
-    { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
+    { 0, 0, 0, 0, "./drop -f stericClashes Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix. Default: true" },
@@ -70,7 +70,7 @@ void stericClashes(int argc, char **argv, char *stringArgv)
     fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
     exit(1);
   }
-  
+
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
   inputInfo(&prot, args.input_file, log, args.bond_matrix, stringArgv);

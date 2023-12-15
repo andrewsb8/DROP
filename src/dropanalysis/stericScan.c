@@ -85,22 +85,19 @@ void stericScan(int argc, char **argv, char *stringArgv)
 {
   struct argp_option stericScanOptions[] =
   {
-    { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
+    { 0, 0, 0, 0, "./drop -f stericScan Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
-    { "output", 'o', "[Output File]", 0, "Output file. Options: see -e for options." },
+    { "output", 'o', "[Output File]", 0, "Output .txt file with three columns: phi, psi, average number of clashes." },
     { "log", 'l', "[Log File]", 0, "Output log file" },
-    { "resnum", 'n', "INT", 0, "Residue Number" },
-    { "dihtype", 'd', "[Dihedral Type]", 0, "phi, psi" },
-    { "dihangle", 'a', "FLOAT", 0, "Target dihedral angle in degrees" },
-    { "extension", 'e', "[Output File Extension]", 0, "Options: pdb, xyz" },
-    { "conect", 'c', "BOOL", 0, "Include CONECT records in PDB. 0 does not print conect. Default: 0." },
+    { "resnum", 'n', "INT", 0, "Residue Number for analysis" },
+    { "resolution", 'r', "FLOAT", 0, "Resolution of Ramachandran space (and therefore dihedral rotation magnitude). Default: 2 deg" },
     { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix to log file. Default: true" },
     { "", 'f', "", OPTION_HIDDEN, "" }, //gets rid of error for -f flag
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 1, NULL};
+  struct arguments args = {NULL, "rama.txt", "drop.log", 1, 2, 1, NULL};
   //parse options
   struct argp stericScanArgp = { stericScanOptions, stericScanParse, 0, 0 };
   argp_parse(&stericScanArgp, argc, argv, 0, 0, &args);
