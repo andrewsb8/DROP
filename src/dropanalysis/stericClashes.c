@@ -81,6 +81,7 @@ void stericClashes(int argc, char **argv, char *stringArgv)
   int num_clashes = countClashes(&prot, log, args.list_clashes);
 
   fprintf(log, "Number of steric clashes: %d\n\n", num_clashes);
+  fprintf(stderr, "Number of steric clashes: %d\n\n", num_clashes);
 
   fclose(log);
   return;
