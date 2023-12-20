@@ -68,13 +68,13 @@ int findDihedral(struct protein *prot, int rnum, char *dtype, FILE *log)
 
   if (index == -1)
   {
-    fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
-    fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
+    fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n", dtype, rnum);
+    fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n", dtype, rnum);
     exit(1);
   }
   else
   {
-    fprintf(log, "Found dihedral number: %d\n\n", index);
+    fprintf(log, "Found dihedral index: %d\n", index);
     return index;
   }
 }

@@ -93,6 +93,10 @@ void stericScan(int argc, char **argv, char *stringArgv)
   rotate "highest" chi angle and have nested lists do the rest. check stericClashes at each step, then continue rotating
   */
 
+  //set backbone dihedral angles to top left of Ramachandran distribution
+  int phi_index = findDihedral(&prot, args.res_number, "phi", log);
+  int psi_index = findDihedral(&prot, args.res_number, "psi", log);
+
   fclose(log);
   return;
 }
