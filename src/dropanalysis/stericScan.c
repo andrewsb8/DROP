@@ -112,14 +112,15 @@ void stericScan(int argc, char **argv, char *stringArgv)
   int chi1_index = findDihedral(&prot, args.res_number, "chi1", log);
 
   //for now, just hard code loops for chi1, phi, and psi to do alanine and valine
+  FILE *output = fopen(args.output_file, "w+");
   double range = 360 / args.resolution;
   double clashes = 0;
 
   //phi loop
-  for(int i = 0; i < 1; i++)
+  for(int i = 0; i < range; i++)
   {
     //psi loop
-    for(int j = 0; j < 1; j++)
+    for(int j = 0; j < range; j++)
     {
       double clashes = 0;
       //chi 1 loop
@@ -131,19 +132,20 @@ void stericScan(int argc, char **argv, char *stringArgv)
       }
 
       printf("%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, clashes/range);
+      writeRamaDistribution(output, prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, clashes/range);
 
       rotateDihedral(&prot, chi1_index, args.resolution, 0);
       prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
 
-      rotateDihedral(&prot, psi_index, args.resolution, 0);
+      rotateDihedral(&prot, psi_index, -args.resolution, 1);
       prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
 
     }
 
-    rotateDihedral(&prot, psi_index, args.resolution, 0);
-    prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
+    //placeholder to add a line between changing phi values for gnuplot
+    writeRamaDistribution(output, 999, 999, 999);
 
-    rotateDihedral(&prot, phi_index, args.resolution, 0);
+    rotateDihedral(&prot, phi_index, args.resolution, 1);
     prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
 
   }

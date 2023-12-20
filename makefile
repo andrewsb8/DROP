@@ -6,6 +6,7 @@ compile:
 	gcc -c src/drop/drop.c
 	gcc -c src/drop/commands.c
 	gcc -c src/include/readProtein/readProtein.c
+	gcc -c src/include/rama/rama.c
 	gcc -c src/include/vectorCalculus/vectorCalculus.c
 	gcc -c src/include/dihedralRotation/dihedralRotation.c
 	gcc -c src/include/stericClash/stericClash.c
@@ -14,7 +15,7 @@ compile:
 	gcc -c src/dropanalysis/setDihedral.c
 	gcc -c src/dropanalysis/stericClashes.c
 	gcc -c src/dropanalysis/stericScan.c
-	gcc -o drop drop.o commands.o readProtein.o setDihedral.o dihedralRotation.o vectorCalculus.o fileHandling.o fatal.o stericClashes.o stericClash.o stericScan.o -lm
+	gcc -o drop drop.o commands.o readProtein.o setDihedral.o dihedralRotation.o vectorCalculus.o fileHandling.o fatal.o stericClashes.o stericClash.o stericScan.o rama.o -lm
 	rm *.o
 
 all: compile
