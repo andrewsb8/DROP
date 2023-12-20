@@ -8,6 +8,8 @@
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
 #include "../include/fileHandling/fileHandling.h"
+#include "../include/stericClash/stericClash.h"
+#include "../include/rama/rama.h"
 
 struct arguments
 {
@@ -15,7 +17,7 @@ struct arguments
   char *output_file;
   char *log_file;
   int res_number;
-  float resolution;
+  double resolution;
   bool bond_matrix;
 };
 
@@ -72,7 +74,7 @@ void stericScan(int argc, char **argv, char *stringArgv)
     { "output", 'o', "[Output File]", 0, "Output .txt file with three columns: phi, psi, average number of clashes." },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "resnum", 'n', "INT", 0, "Residue Number for analysis. Default: 2 (first amino acid will typically not have both backbone angles defined)." },
-    { "resolution", 'r', "FLOAT", 0, "Resolution of Ramachandran space (and therefore dihedral rotation magnitude). Default: 2 deg" },
+    { "resolution", 'r', "DOUBLE", 0, "Resolution of Ramachandran space (and therefore dihedral rotation magnitude). Default: 2 deg" },
     { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix to log file. Default: true" },
     { "", 'f', "", OPTION_HIDDEN, "" }, //gets rid of error for -f flag
     { 0 }
@@ -94,6 +96,7 @@ void stericScan(int argc, char **argv, char *stringArgv)
   */
 
   //set backbone dihedral angles to top left of Ramachandran distribution
+  //might want a conditional here to avoid unnecessary processing...
   int phi_index = findDihedral(&prot, args.res_number, "phi", log);
   double phi_change = -179 - prot.dihedrals[phi_index].dihedral_angle ;
   fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", "phi", args.res_number, phi_change);
@@ -106,7 +109,45 @@ void stericScan(int argc, char **argv, char *stringArgv)
   rotateDihedral(&prot, psi_index, psi_change, 1);
   prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
 
-  writePDB(&prot, "check.pdb", 's', 0, 1);
+  int chi1_index = findDihedral(&prot, args.res_number, "chi1", log);
+
+  //for now, just hard code loops for chi1, phi, and psi to do alanine and valine
+  double range = 360 / args.resolution;
+  double clashes = 0;
+
+  //phi loop
+  for(int i = 0; i < 1; i++)
+  {
+    //psi loop
+    for(int j = 0; j < 1; j++)
+    {
+      double clashes = 0;
+      //chi 1 loop
+      for (int k = 0; k < range; k++)
+      {
+        clashes += countClashes(&prot, log, 0);
+        rotateDihedral(&prot, chi1_index, args.resolution, 0);
+        prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
+      }
+
+      printf("%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, clashes/range);
+
+      rotateDihedral(&prot, chi1_index, args.resolution, 0);
+      prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
+
+      rotateDihedral(&prot, psi_index, args.resolution, 0);
+      prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
+
+    }
+
+    rotateDihedral(&prot, psi_index, args.resolution, 0);
+    prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
+
+    rotateDihedral(&prot, phi_index, args.resolution, 0);
+    prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
+
+  }
+
 
   fclose(log);
   return;
