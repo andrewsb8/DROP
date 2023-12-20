@@ -104,9 +104,9 @@ void stericScan(int argc, char **argv, char *stringArgv)
   double psi_change = 179 - prot.dihedrals[psi_index].dihedral_angle ;
   fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", "psi", args.res_number, psi_change);
   rotateDihedral(&prot, psi_index, psi_change, 1);
-  prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
+  prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
 
-  
+  writePDB(&prot, "check.pdb", 's', 0, 1);
 
   fclose(log);
   return;
