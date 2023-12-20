@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "../exceptions/fatal.h"
 #include "../readProtein/readProtein.h"
 #include "fileHandling.h"
 
@@ -18,9 +19,7 @@ void processInput(struct protein *prot, char *input_file, FILE *log, bool print_
   fprintf(log, "Command Line: %s\n\n", stringArgv);
   if (fileExists(input_file) == -1)
   {
-    fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
-    fprintf(log, "ERROR: Input file does not exist. Exiting.\n");
-    exit(1);
+    drop_fatal(log, "ERROR: Input file does not exist. Exiting.\n");
   }
 
 

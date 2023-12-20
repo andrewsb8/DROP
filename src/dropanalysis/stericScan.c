@@ -106,6 +106,8 @@ void stericScan(int argc, char **argv, char *stringArgv)
   rotateDihedral(&prot, psi_index, psi_change, 1);
   prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
 
+  
+
   fclose(log);
   return;
 }

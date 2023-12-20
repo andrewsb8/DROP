@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "setDihedral.h"
+#include "../include/exceptions/fatal.h"
 #include "../include/fileHandling/fileHandling.h"
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
@@ -144,9 +145,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   }
   else
   {
-    fprintf(log, "Error: File extension for output not recognized.\n");
-    fprintf(stderr, "Error: File extension for output not recognized.\n");
-    exit(1);
+    drop_fatal(log, "Error: File extension for output not recognized.\n");
   }
 
   fclose(log);
