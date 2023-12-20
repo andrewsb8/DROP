@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#**********************************************************************************
+#The plot in rama is altered such that the y axis is from -170 - 190 degrees. This
+#script plots the Ramachandran plot without this correction.
+
+#Author: Brian Andrews
+#Last Date Modified: 10/17/2019
+#**********************************************************************************
+
+protein_name=$1
+
+#create the Ramachandran plot
+gnuplot <<- EOF
+  set pm3d map
+  set key off
+  set xtics 60 font "Helvetica,21"
+  set mxtics 2
+  set ytics 60 font "Helvetica,21"
+  set mytics 2
+  set cbtics font "Helvetica,21"
+  # set grid xtics ytics
+  # set grid mxtics mytics
+  set palette defined (0.0 "white", 0.05 "blue",  0.15 "green", 0.3 "yellow", 0.5 "orange", 0.7 "red", 1.0 "magenta")
+  set size square
+  set term postscript eps enhanced solid color
+  set cbrange [0.0:1.0]
+  set xlabel "{Chi1}" font "Helvetica,26" offset 0, -1
+  set ylabel "{Chi2}" font "Helvetica,26" offset -3, 0
+  set xrange [-200:200]
+  set yrange [-200:200]
+
+  splot "${protein_name}.txt" using 1:2:3 palette
+
+  set term postscript solid color
+  set output "rama_${protein_name}.eps"
+  replot
+EOF
