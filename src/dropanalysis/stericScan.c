@@ -71,7 +71,7 @@ void stericScan(int argc, char **argv, char *stringArgv)
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "output", 'o', "[Output File]", 0, "Output .txt file with three columns: phi, psi, average number of clashes." },
     { "log", 'l', "[Log File]", 0, "Output log file" },
-    { "resnum", 'n', "INT", 0, "Residue Number for analysis" },
+    { "resnum", 'n', "INT", 0, "Residue Number for analysis. Default: 2 (first amino acid will typically not have both backbone angles defined)." },
     { "resolution", 'r', "FLOAT", 0, "Resolution of Ramachandran space (and therefore dihedral rotation magnitude). Default: 2 deg" },
     { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix to log file. Default: true" },
     { "", 'f', "", OPTION_HIDDEN, "" }, //gets rid of error for -f flag
@@ -79,7 +79,7 @@ void stericScan(int argc, char **argv, char *stringArgv)
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "rama.txt", "drop.log", 1, 2, 1, NULL};
+  struct arguments args = {NULL, "rama.txt", "drop.log", 2, 2, 1, NULL};
   //parse options
   struct argp stericScanArgp = { stericScanOptions, stericScanParse, 0, 0 };
   argp_parse(&stericScanArgp, argc, argv, 0, 0, &args);

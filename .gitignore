@@ -5,6 +5,7 @@ results/clash_distributions/rama_*
 *.pdb
 *.log
 *.o
+*.xbgf
 build
 copyright-template.txt
 drop
