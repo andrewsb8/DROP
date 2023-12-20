@@ -95,7 +95,16 @@ void stericScan(int argc, char **argv, char *stringArgv)
 
   //set backbone dihedral angles to top left of Ramachandran distribution
   int phi_index = findDihedral(&prot, args.res_number, "phi", log);
+  double phi_change = -179 - prot.dihedrals[phi_index].dihedral_angle ;
+  fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", "phi", args.res_number, phi_change);
+  rotateDihedral(&prot, phi_index, phi_change, 1);
+  prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
+
   int psi_index = findDihedral(&prot, args.res_number, "psi", log);
+  double psi_change = 179 - prot.dihedrals[psi_index].dihedral_angle ;
+  fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", "psi", args.res_number, psi_change);
+  rotateDihedral(&prot, psi_index, psi_change, 1);
+  prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
 
   fclose(log);
   return;
