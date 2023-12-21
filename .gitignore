@@ -1,9 +1,9 @@
-*.txt
 *.xyz
-*.pdb
-*.log
-*.o
-*.xbgf
+/*.pdb
+/*.o
+/*.xbgf
+/*.log
+/*.txt
 build
 copyright-template.txt
 drop
