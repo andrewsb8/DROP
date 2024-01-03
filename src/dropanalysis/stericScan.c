@@ -110,12 +110,60 @@ void stericScan(int argc, char **argv, char *stringArgv)
   prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
 
   int chi1_index = findDihedral(&prot, args.res_number, "chi1", log);
+  int chi2_index = findDihedral(&prot, args.res_number, "chi2", log);
 
   //for now, just hard code loops for chi1, phi, and psi to do alanine and valine
   FILE *output = fopen(args.output_file, "w+");
   double range = 360 / args.resolution;
   double clashes = 0;
 
+  for(int i = 0; i < range; i++)
+  {
+    //psi loop
+    for(int j = 0; j < range; j++)
+    {
+      double clashes = 0;
+      //chi 1 loop
+      for(int k = 0; k < range; k++)
+      {
+        //chi 2 loop
+        for(int m = 0; m < range; m++)
+        {
+
+          clashes += countClashes(&prot, log, 0);
+          rotateDihedral(&prot, chi2_index, args.resolution, 0);
+          prot.dihedrals[chi2_index].dihedral_angle = calculateDihedral(&prot, chi2_index);
+
+        }
+
+        rotateDihedral(&prot, chi2_index, args.resolution, 0);
+        prot.dihedrals[chi2_index].dihedral_angle = calculateDihedral(&prot, chi2_index);
+
+        rotateDihedral(&prot, chi1_index, args.resolution, 0);
+        prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
+
+      }
+
+      printf("%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, clashes/(range*range));
+      writeRamaDistribution(output, prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, clashes/(range*range));
+
+      rotateDihedral(&prot, psi_index, -args.resolution, 1);
+      prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
+
+    }
+
+    //placeholder to add a line between changing phi values for gnuplot
+    writeRamaDistribution(output, 999, 999, 999);
+
+    rotateDihedral(&prot, phi_index, args.resolution, 1);
+    prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
+
+  }
+
+  printf("%f %f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, prot.dihedrals[chi1_index].dihedral_angle, prot.dihedrals[chi2_index].dihedral_angle);
+
+
+  /* loop structure for only amino acids with a chi1
   //phi loop
   for(int i = 0; i < range; i++)
   {
@@ -148,9 +196,9 @@ void stericScan(int argc, char **argv, char *stringArgv)
     rotateDihedral(&prot, phi_index, args.resolution, 1);
     prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
 
-  }
+  }*/
 
-
+  fclose(output);
   fclose(log);
   return;
 }
