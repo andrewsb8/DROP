@@ -7,4 +7,4 @@ results/clash_distributions/rama_*
 *.o
 build
 copyright-template.txt
-drop
+./drop
