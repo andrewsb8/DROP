@@ -12,7 +12,7 @@
 const char *commandList[][2]={
   {"setDihedral", "Change a single user-specified dihedral angle for a given residue."},
   {"stericClashes", "Counts the number of atomic overlaps according to atomic radii used by Ramachandran."},
-  {"measureDihedral", "Parses structure and provides log with structure and dihedral information."}
+  {"measureDihedrals", "Parses structure and provides log with structure and dihedral information."}
 };
 const int commandListLen = sizeof(commandList)/sizeof(commandList[0]);
 
