@@ -6,11 +6,13 @@
 
 #include "commands.h"
 #include "../dropanalysis/setDihedral.h"
+#include "../dropanalysis/measureDihedral.h"
 #include "../dropanalysis/stericClashes.h"
 
 const char *commandList[][2]={
   {"setDihedral", "Change a single user-specified dihedral angle for a given residue."},
-  {"stericClashes", "Counts the number of atomic overlaps according to atomic radii used by Ramachandran."}
+  {"stericClashes", "Counts the number of atomic overlaps according to atomic radii used by Ramachandran."},
+  {"measureDihedral", "Parses structure and provides log with structure and dihedral information."}
 };
 const int commandListLen = sizeof(commandList)/sizeof(commandList[0]);
 
@@ -23,7 +25,7 @@ void printCommandList()
   for (int i = 0; i < commandListLen; i++)
   {
     fprintf(stderr, "%d: ", i+1);
-    for (int j = 0; j < 2; j++) //2 accounts for the command and the description
+    for (int j = 0; j < commandListLen; j++) //2 accounts for the command and the description
     {
       fprintf(stderr, "%s - ", commandList[i][j]);
     }
@@ -68,6 +70,11 @@ bool findCommand(char *func, int argc, char **argv)
   else if ( strcmp(func, commandList[1][0]) == 0 )
   {
     stericClashes(argc, argv, stringArgv);
+    found = true;
+  }
+  else if ( strcmp(func, commandList[2][0]) == 0 )
+  {
+    measureDihedral(argc, argv, stringArgv);
     found = true;
   }
 
