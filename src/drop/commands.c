@@ -6,7 +6,7 @@
 
 #include "commands.h"
 #include "../dropanalysis/setDihedral.h"
-#include "../dropanalysis/measureDihedral.h"
+#include "../dropanalysis/measureDihedrals.h"
 #include "../dropanalysis/stericClashes.h"
 
 const char *commandList[][2]={
@@ -74,7 +74,7 @@ bool findCommand(char *func, int argc, char **argv)
   }
   else if ( strcmp(func, commandList[2][0]) == 0 )
   {
-    measureDihedral(argc, argv, stringArgv);
+    measureDihedrals(argc, argv, stringArgv);
     found = true;
   }
 

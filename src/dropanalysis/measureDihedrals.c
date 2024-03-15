@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "measureDihedral.h"
+#include "measureDihedrals.h"
 #include "../include/readProtein/readProtein.h"
 #include "../include/fileHandling/fileHandling.h"
 
@@ -16,7 +16,7 @@ struct arguments
   bool bond_matrix;
 };
 
-static int measureDihedralParse(int key, char *arg, struct argp_state *state)
+static int measureDihedralsParse(int key, char *arg, struct argp_state *state)
 {
   struct arguments *a = state->input;
   switch(key)
@@ -50,9 +50,9 @@ static int measureDihedralParse(int key, char *arg, struct argp_state *state)
   return 0;
 }
 
-void measureDihedral(int argc, char **argv, char *stringArgv)
+void measureDihedrals(int argc, char **argv, char *stringArgv)
 {
-  struct argp_option measureDihedralOptions[] =
+  struct argp_option measureDihedralsOptions[] =
   {
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
@@ -66,8 +66,8 @@ void measureDihedral(int argc, char **argv, char *stringArgv)
   //DEFAULTS
   struct arguments args = {NULL, "output.pdb", "drop.log", 1, NULL};
   //parse options
-  struct argp measureDihedralArgp = { measureDihedralOptions, measureDihedralParse, 0, 0 };
-  argp_parse(&measureDihedralArgp, argc, argv, 0, 0, &args);
+  struct argp measureDihedralsArgp = { measureDihedralsOptions, measureDihedralsParse, 0, 0 };
+  argp_parse(&measureDihedralsArgp, argc, argv, 0, 0, &args);
 
   if (fileExists(args.input_file) == -1)
   {
