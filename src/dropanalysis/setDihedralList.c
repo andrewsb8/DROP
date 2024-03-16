@@ -30,7 +30,7 @@ static int setDihedralListParse(int key, char *arg, struct argp_state *state)
         a->input_file = arg;
         break;
       }
-      case 'id':
+      case 'd':
       {
         a->input_dih_list = arg;
         break;
@@ -75,7 +75,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
   {
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
-    { "input_dih_list", 'id', "[Input Dihedral List File]", 0, "Input pdb file" },
+    { "input_dih_list", 'd', "[Input Dihedral List File]", 0, "Input pdb file" },
     { "output", 'o', "[Output File]", 0, "Output file. Options: see -e for options." },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "extension", 'e', "[Output File Extension]", 0, "Options: pdb, xyz" },
