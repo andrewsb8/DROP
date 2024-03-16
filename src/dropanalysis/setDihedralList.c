@@ -122,9 +122,9 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
   while((read = getline(&line,&len,dih_list)) != -1)
   {
     //parse space separated line - residue number dihedral type dihedral angle
-    char *line_split = strtok(line, " ");
+    char *line_split = strtok(line, " \t");
     int lens = strlen(line_split);
-    char stringT[3][lens];
+    char *stringT[3][10];
     int count = 0;
     while(line_split != NULL)
     {
@@ -133,9 +133,9 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
         fprintf(stderr, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
         exit(1);
       }
-      printf("%s\n%d %s\n", line, lens, line_split);
-      strcpy(stringT[count], line_split); //see if strings are the same
+      strcpy(stringT[count], line_split);
       count++;
+      line_split = strtok(NULL, " \t");
     }
 
     int res_number = atoi(stringT[0]);
