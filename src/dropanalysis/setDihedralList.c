@@ -86,9 +86,9 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 1, NULL};
+  struct arguments args = {NULL, NULL, "output.pdb", "drop.log", "pdb", 0, 1, NULL};
   //parse options
-  struct argp setDihedralListArgp = { setDihedralListOptions, setDihedralParse, 0, 0 };
+  struct argp setDihedralListArgp = { setDihedralListOptions, setDihedralListParse, 0, 0 };
   argp_parse(&setDihedralListArgp, argc, argv, 0, 0, &args);
 
   if (fileExists(args.input_file) == -1)
@@ -98,7 +98,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
   }
   if (fileExists(args.input_dih_list) == -1)
   {
-    fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
+    fprintf(stderr, "ERROR: Input dihedral list does not exist. Exiting.\n");
     exit(1);
   }
 
@@ -115,17 +115,31 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
 
   fprintf(log, "Starting structure manipulation from dihedral list: %s\n", args.input_dih_list);
   FILE *dih_list;
+  char * line = NULL;
+  size_t len = 0;
+  ssize_t read;
   dih_list = fopen(args.input_dih_list, "r");
-  while((read = getline(&line,&len,fp)) != -1)
+  while((read = getline(&line,&len,dih_list)) != -1)
   {
-    //parse line - residue number, dihedral type, dihedral angle
+    //parse space separated line - residue number dihedral type dihedral angle
+    char *line_split = strtok(line, " ");
+    int lens = strlen(line_split);
+    if(lens != 3)
+    {
+      fprintf(stderr, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+      exit(1);
+    }
+
+    int res_number = atoi(line_split[0]);
+    char *dih_type = line_split[1];
+    float angle = atof(line_split[2]);
 
     //find dihedral to change based on user input
-    int index = findDihedral(&prot, args.res_number, args.dih_type);
+    int index = findDihedral(&prot, res_number, dih_type);
     if (index == -1)
     {
-      fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
-      fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
+      fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", dih_type, res_number);
+      fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", dih_type, res_number);
       exit(1);
     }
     else
@@ -135,7 +149,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
 
     //is the angle being changed the backbone or side chain?
     bool backbone;
-    if( strcmp(args.dih_type, "phi") == 0 || strcmp(args.dih_type, "psi") == 0 )
+    if( strcmp(dih_type, "phi") == 0 || strcmp(dih_type, "psi") == 0 )
     {
       backbone = true;
     }
@@ -145,14 +159,14 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
     }
 
     //calculate the angle change based on current angle and angle defined by command line
-    double dih_angle_change = args.angle - prot.dihedrals[index].dihedral_angle ;
-    fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", args.dih_type, args.res_number, dih_angle_change);
+    double dih_angle_change = angle - prot.dihedrals[index].dihedral_angle;
+    fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", dih_type, res_number, dih_angle_change);
 
     //rotate the dihedral
     rotateDihedral(&prot, index, dih_angle_change, backbone);
     prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
 
-    fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n", args.angle, prot.dihedrals[index].dihedral_angle);
+    fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n", angle, prot.dihedrals[index].dihedral_angle);
 
   }
   //print out structure after rotation
