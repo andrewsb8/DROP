@@ -124,15 +124,23 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
     //parse space separated line - residue number dihedral type dihedral angle
     char *line_split = strtok(line, " ");
     int lens = strlen(line_split);
-    if(lens != 3)
+    char stringT[3][lens];
+    int count = 0;
+    while(line_split != NULL)
     {
-      fprintf(stderr, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
-      exit(1);
+      if(count > 2)
+      {
+        fprintf(stderr, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+        exit(1);
+      }
+      printf("%s\n%d %s\n", line, lens, line_split);
+      strcpy(stringT[count], line_split); //see if strings are the same
+      count++;
     }
 
-    int res_number = atoi(line_split[0]);
-    char *dih_type = line_split[1];
-    float angle = atof(line_split[2]);
+    int res_number = atoi(stringT[0]);
+    char *dih_type = stringT[1];
+    float angle = atof(stringT[2]);
 
     //find dihedral to change based on user input
     int index = findDihedral(&prot, res_number, dih_type);
