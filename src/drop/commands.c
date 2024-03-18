@@ -26,7 +26,7 @@ void printCommandList()
   for (int i = 0; i < commandListLen; i++)
   {
     fprintf(stderr, "%d: ", i+1);
-    for (int j = 0; j < commandListLen; j++) //2 accounts for the command and the description
+    for (int j = 0; j < 2; j++) //2 accounts for the command and the description
     {
       fprintf(stderr, "%s - ", commandList[i][j]);
     }
