@@ -8,13 +8,13 @@ NOTE: There are no dynamics happening here. The dihedral angles of the Villin He
 
 First, let's take a 5-mer polyarginine in a beta sheet configuration and convert it to an alpha helix conformation. Our initial conformation is:
 
-[polyRbeta](Polyarginine/poly-R-beta.png)
+![polyRbeta](Polyarginine/poly-R-beta.png)
 
 Then we will run the following command from the parent directory: ```./drop -f setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/beta-to-helix.txt -o poly-R-helix.pdb```
 
 Here is a visualization of ```poly-R-helix.pdb```:
 
-[polyRhelix](Polyarginine/poly-R-alpha.pdb)
+![polyRhelix](Polyarginine/poly-R-alpha.pdb)
 
 Both images have the peptide oriented with the N-terminus and C-terminus at the top and bottom center, respectively. You can also do this with side chain torsions or combinations of backbone and side chain torsions in the file provided to ```-d```.
 
