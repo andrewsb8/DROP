@@ -14,6 +14,8 @@ Then we will run the following command from the parent directory: ```./drop -f s
 
 Here is a visualization of ```poly-R-helix.pdb```:
 
+[polyRhelix](Polyarginine/poly-R-alpha.pdb)
 
+Both images have the peptide oriented with the N-terminus and C-terminus at the top and bottom center, respectively. You can also do this with side chain torsions or combinations of backbone and side chain torsions in the file provided to ```-d```.
 
 ### Villin Headpiece
