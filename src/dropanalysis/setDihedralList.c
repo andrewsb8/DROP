@@ -121,61 +121,62 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
   dih_list = fopen(args.input_dih_list, "r");
   while((read = getline(&line,&len,dih_list)) != -1)
   {
-    //parse space separated line - residue number dihedral type dihedral angle
-    char *line_split = strtok(line, " \t");
-    int lens = strlen(line_split);
-    char *stringT[3][10];
-    int count = 0;
-    while(line_split != NULL)
+    if(line[0] != '#')
     {
-      if(count > 2)
+      //parse space separated line - residue number dihedral type dihedral angle
+      char *line_split = strtok(line, " \t");
+      char *stringT[3][10];
+      int count = 0;
+      while(line_split != NULL)
       {
-        fprintf(stderr, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+        if(count > 2)
+        {
+          fprintf(stderr, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+          exit(1);
+        }
+        strcpy(stringT[count], line_split);
+        count++;
+        line_split = strtok(NULL, " \t");
+      }
+
+      int res_number = atoi(stringT[0]);
+      char *dih_type = stringT[1];
+      float angle = atof(stringT[2]);
+
+      //find dihedral to change based on user input
+      int index = findDihedral(&prot, res_number, dih_type);
+      if (index == -1)
+      {
+        fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", dih_type, res_number);
+        fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", dih_type, res_number);
         exit(1);
       }
-      strcpy(stringT[count], line_split);
-      count++;
-      line_split = strtok(NULL, " \t");
+      else
+      {
+        fprintf(log, "Found dihedral number: %d\n\n", index);
+      }
+
+      //is the angle being changed the backbone or side chain?
+      bool backbone;
+      if( strcmp(dih_type, "phi") == 0 || strcmp(dih_type, "psi") == 0 )
+      {
+        backbone = true;
+      }
+      else
+      {
+        backbone = false;
+      }
+
+      //calculate the angle change based on current angle and angle defined by command line
+      double dih_angle_change = angle - prot.dihedrals[index].dihedral_angle;
+      fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", dih_type, res_number, dih_angle_change);
+
+      //rotate the dihedral
+      rotateDihedral(&prot, index, dih_angle_change, backbone);
+      prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
+
+      fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n", angle, prot.dihedrals[index].dihedral_angle);
     }
-
-    int res_number = atoi(stringT[0]);
-    char *dih_type = stringT[1];
-    float angle = atof(stringT[2]);
-
-    //find dihedral to change based on user input
-    int index = findDihedral(&prot, res_number, dih_type);
-    if (index == -1)
-    {
-      fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", dih_type, res_number);
-      fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", dih_type, res_number);
-      exit(1);
-    }
-    else
-    {
-      fprintf(log, "Found dihedral number: %d\n\n", index);
-    }
-
-    //is the angle being changed the backbone or side chain?
-    bool backbone;
-    if( strcmp(dih_type, "phi") == 0 || strcmp(dih_type, "psi") == 0 )
-    {
-      backbone = true;
-    }
-    else
-    {
-      backbone = false;
-    }
-
-    //calculate the angle change based on current angle and angle defined by command line
-    double dih_angle_change = angle - prot.dihedrals[index].dihedral_angle;
-    fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", dih_type, res_number, dih_angle_change);
-
-    //rotate the dihedral
-    rotateDihedral(&prot, index, dih_angle_change, backbone);
-    prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
-
-    fprintf(log, "Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n", angle, prot.dihedrals[index].dihedral_angle);
-
   }
   //print out structure after rotation
   if(strcmp(args.extension, "pdb") == 0)

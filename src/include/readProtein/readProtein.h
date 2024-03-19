@@ -74,8 +74,9 @@ static char *DihedralDefinitions[][5] = { //can't use int to set this array size
   {"N", "CA", "CB", "HB3", "chi1"}, //Ala "chi 1" (use HB3 b/c no other amino acid has this atom type)
   {"N", "CA", "CB", "CG1", "chi1"}, //Ile, Val chi 1
   {"N", "CA", "CB", "CG", "chi1"}, //Leu, Arg chi 1
-  {"CA", "CB", "CG1", "CD", "chi2"}, //Ile, Arg chi 2
+  {"CA", "CB", "CG1", "CD", "chi2"}, //Ile chi 2
   {"CA", "CB", "CG", "CD1", "chi2"}, //Leu chi 2
+  {"CA", "CB", "CG", "CD", "chi2"}, //Arg chi 2
   {"CB", "CG", "CD", "NE", "chi3"}, //Arg chi 3
   {"CG", "CD", "NE", "CZ", "chi4"}, //Arg chi 4
   {"CD", "NE", "CZ", "NH1", "chi5"}, //Arg chi 5
