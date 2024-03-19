@@ -3,7 +3,7 @@ Dihedral Rotation Of Proteins (DROP)
 
 Copyright 2023- Brian Andrews.
 
-The repository contains a work-in-progress command line tool which can manipulate protein structures by rotating dihedral angles. This tool will be used to investigate accessible regions of the high-dimensional conformation space of proteins based on atomic overlaps. More factors may be added to the analysis in the future.
+The repository contains a work-in-progress command line tool which can manipulate protein structures by rotating dihedral angles. It has tools which will be useful for preparing protein structures for visualizations in presentations, lectures, or papers and preparing protein structures for simulation. This tool will be used to investigate accessible regions of the high-dimensional conformation space of proteins based on atomic overlaps. More factors may be added to the analysis in the future.
 
 ### Installation
 
@@ -21,6 +21,16 @@ The tool is organized as follows:
 - See "child" options for the different commands: ```./drop -f [command string from -c] --help```
 
 After compilation, you can export the path to the DROP executable to use the tool without the ```./```.
+
+### Examples
+
+To measure the dihedral angles of a given structure, use ```measureDihedrals```. To manipulate protein structures, you can use ```setDihedral``` or ```setDihedralList```. The former allows for the modification of one dihedral angle and the latter allows the user to provide a list of dihedral angles in a file to change in the structure. First example for ```setDihedral```:
+
+```./drop -f setDihedral -i example_files/ILE_conect_110.pdb -n 2 -d phi -a -60 -o output.pdb```
+
+And you can visualize ```output.pdb``` with your favorite visualization tool like VMD or PyMol. ```setDihedralList``` has examples in ```examples/README```, but here's an example command:
+
+```./drop -f setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/beta-to-helix.txt -o poly-R-helix.pdb```
 
 ### Known Issues
 
