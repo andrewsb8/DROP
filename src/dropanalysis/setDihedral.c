@@ -20,7 +20,6 @@ struct arguments
   float angle;
   char *extension;
   bool conect;
-  bool bond_matrix;
 };
 
 static int setDihedralParse(int key, char *arg, struct argp_state *state)
@@ -68,11 +67,6 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
         a->conect = atoi(arg);
         break;
       }
-      case 'b':
-      {
-        a->bond_matrix = atoi(arg);
-        break;
-      }
       case 'f':
       {
         break;
@@ -95,13 +89,12 @@ void setDihedral(int argc, char **argv, char *stringArgv)
     { "dihangle", 'a', "FLOAT", 0, "Target dihedral angle in degrees" },
     { "extension", 'e', "[Output File Extension]", 0, "Options: pdb, xyz" },
     { "conect", 'c', "BOOL", 0, "Include CONECT records in PDB. 0 does not print conect. Default: 0." },
-    { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix to log file. Default: true" },
     { "", 'f', "", OPTION_HIDDEN, "" }, //gets rid of error for -f flag
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 1, NULL};
+  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, NULL};
   //parse options
   struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
   argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
