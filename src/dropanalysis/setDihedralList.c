@@ -8,6 +8,7 @@
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
 #include "../include/fileHandling/fileHandling.h"
+#include "../include/exceptions/fatal.h"
 
 struct arguments
 {
@@ -84,17 +85,6 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
   struct argp setDihedralListArgp = { setDihedralListOptions, setDihedralListParse, 0, 0 };
   argp_parse(&setDihedralListArgp, argc, argv, 0, 0, &args);
 
-  if (fileExists(args.input_file) == -1)
-  {
-    fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
-    exit(1);
-  }
-  if (fileExists(args.input_dih_list) == -1)
-  {
-    fprintf(stderr, "ERROR: Input dihedral list does not exist. Exiting.\n");
-    exit(1);
-  }
-
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
   processInput(&prot, args.input_file, log, 0, 0, stringArgv);
@@ -117,7 +107,8 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
       {
         if(count > 2)
         {
-          drop_fatal(log, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+          char *message = sprintf("ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+          drop_fatal(log, message);
         }
         strcpy(stringT[count], line_split);
         count++;
