@@ -97,7 +97,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
-  processInput(&prot, args.input_file, log, 0, args.bond_matrix, stringArgv);
+  processInput(&prot, args.input_file, log, 0, 0, stringArgv);
 
   fprintf(log, "Starting structure manipulation from dihedral list: %s\n", args.input_dih_list);
   FILE *dih_list;
