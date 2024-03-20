@@ -22,7 +22,6 @@ void processInput(struct protein *prot, char *input_file, FILE *log, bool calc_b
     drop_fatal(log, "ERROR: Input file does not exist. Exiting.\n");
   }
 
-
   fprintf(log, "Reading structure file: %s\n\n", input_file);
 
   readPDB(prot, input_file, log, calc_bond_matrix, print_bond_matrix);

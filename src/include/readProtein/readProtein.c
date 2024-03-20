@@ -261,7 +261,6 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool cal
     countCovalentBonds(prot, log_file, print_bond_matrix);
   }
 
-  printf("\n\n");
   return;
 }
 
