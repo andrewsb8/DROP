@@ -6,6 +6,7 @@
 
 #include "commands.h"
 #include "../dropanalysis/setDihedral.h"
+#include "../dropanalysis/setDihedralList.h"
 #include "../dropanalysis/measureDihedrals.h"
 #include "../dropanalysis/stericClashes.h"
 #include "../dropanalysis/stericScan.h"

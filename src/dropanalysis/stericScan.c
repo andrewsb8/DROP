@@ -88,7 +88,7 @@ void stericScan(int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
-  processInput(&prot, args.input_file, log, args.bond_matrix, stringArgv);
+  processInput(&prot, args.input_file, log, 1, args.bond_matrix, stringArgv);
 
   /*TO DO
   how to have loops depend on the number of chi angles?

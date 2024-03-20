@@ -75,8 +75,9 @@ void measureDihedrals(int argc, char **argv, char *stringArgv)
     exit(1);
   }
 
+  struct protein prot;
   FILE *log = fopen(args.log_file, "w");
-  processInput(&prot, args.input_file, log, args.bond_matrix, stringArgv);
+  processInput(&prot, args.input_file, log, 0, args.bond_matrix, stringArgv);
 
   fclose(log);
   return;

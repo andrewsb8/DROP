@@ -102,16 +102,9 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
     exit(1);
   }
 
-  //log command line inputs
-  FILE *log = fopen(args.log_file, "w");
-  fprintf(log, "Command Line: %s\n\n", stringArgv);
-
-  //initialize protein struct and begin analysis
-  fprintf(log, "Reading structure file: %s\n\n", args.input_file);
   struct protein prot;
-  readPDB(&prot, args.input_file, log, 0, args.bond_matrix);
-
-  fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
+  FILE *log = fopen(args.log_file, "w");
+  processInput(&prot, args.input_file, log, 0, args.bond_matrix, stringArgv);
 
   fprintf(log, "Starting structure manipulation from dihedral list: %s\n", args.input_dih_list);
   FILE *dih_list;
@@ -143,7 +136,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
       float angle = atof(stringT[2]);
 
       //find dihedral to change based on user input
-      int index = findDihedral(&prot, res_number, dih_type);
+      int index = findDihedral(&prot, res_number, dih_type, log);
       if (index == -1)
       {
         fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", dih_type, res_number);
