@@ -78,7 +78,7 @@ void stericClashes(int argc, char **argv, char *stringArgv)
   //initialize protein struct and begin analysis
   fprintf(log, "Reading structure file: %s\n\n", args.input_file);
   struct protein prot;
-  readPDB(&prot, args.input_file, log, args.bond_matrix);
+  readPDB(&prot, args.input_file, log, 1, args.bond_matrix);
 
   fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
 

@@ -84,11 +84,11 @@ static char *DihedralDefinitions[][5] = { //can't use int to set this array size
 };
 static int numberDihedralTypes = sizeof(DihedralDefinitions)/sizeof(DihedralDefinitions[0]);
 
-void readPDB(struct protein *prot,char *filename, FILE *log_file, bool print_bond_matrix);
+void readPDB(struct protein *prot,char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix);
 bool isBackbone(char *atomtype);
 char * substr(char * s, int x, int y);
 char * removeSpaces(char *string);
-void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix);
+void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix);
 void makeBondMatrix(struct protein *prot);
 void countCovalentBonds(struct protein *prot, FILE *log_file, bool print_bond_matrix);
 int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount);
