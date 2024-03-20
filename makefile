@@ -17,7 +17,7 @@ compile:
 	gcc -c src/dropanalysis/measureDihedrals.c
 	gcc -c src/dropanalysis/stericClashes.c
 	gcc -c src/dropanalysis/stericScan.c
-	gcc -o drop drop.o commands.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o stericScan.o dihedralRotation.o vectorCalculus.o fileHandling.o stericClashes.o stericClash.o -lm
+	gcc -o drop drop.o commands.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o stericScan.o dihedralRotation.o vectorCalculus.o fileHandling.o stericClashes.o stericClash.o fatal.o rama.o -lm
 	rm *.o
 
 all: compile
