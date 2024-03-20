@@ -1,9 +1,10 @@
+results/movies/trialanine*
+results/clash_distributions/rama_*
+/*.txt
 *.xyz
 /*.pdb
-/*.o
-/*.xbgf
-/*.log
-/*.txt
+*.log
+*.o
 build
 copyright-template.txt
-drop
+/drop

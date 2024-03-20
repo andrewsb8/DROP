@@ -6,11 +6,14 @@
 
 #include "commands.h"
 #include "../dropanalysis/setDihedral.h"
+#include "../dropanalysis/measureDihedrals.h"
 #include "../dropanalysis/stericClashes.h"
 #include "../dropanalysis/stericScan.h"
 
-const char *commandList[][3]={
+const char *commandList[][2]={
+  {"measureDihedrals", "Parses structure and provides log with structure and dihedral information."},
   {"setDihedral", "Change a single user-specified dihedral angle for a given residue."},
+  {"setDihedralList", "Change several dihedrals from a user-provided input file with a list of dihedrals and angles."},
   {"stericClashes", "Counts the number of atomic overlaps according to atomic radii used by Ramachandran."},
   {"stericScan", "Reports average number of steric clashes in structure over the Ramachandran space of an amino acid."}
 };
@@ -64,15 +67,25 @@ bool findCommand(char *func, int argc, char **argv)
   //search available commands or functions
   if ( strcmp(func, commandList[0][0]) == 0 )
   {
-    setDihedral(argc, argv, stringArgv);
+    measureDihedrals(argc, argv, stringArgv);
     found = true;
   }
   else if ( strcmp(func, commandList[1][0]) == 0 )
   {
-    stericClashes(argc, argv, stringArgv);
+    setDihedral(argc, argv, stringArgv);
     found = true;
   }
   else if ( strcmp(func, commandList[2][0]) == 0 )
+  {
+    setDihedralList(argc, argv, stringArgv);
+    found = true;
+  }
+  else if ( strcmp(func, commandList[3][0]) == 0 )
+  {
+    stericClashes(argc, argv, stringArgv);
+    found = true;
+  }
+  else if ( strcmp(func, commandList[4][0]) == 0 )
   {
     stericScan(argc, argv, stringArgv);
     found = true;
