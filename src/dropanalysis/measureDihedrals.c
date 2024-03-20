@@ -11,7 +11,6 @@
 struct arguments
 {
   char *input_file;
-  char *output_file;
   char *log_file;
 };
 
@@ -23,11 +22,6 @@ static int measureDihedralsParse(int key, char *arg, struct argp_state *state)
       case 'i':
       {
         a->input_file = arg;
-        break;
-      }
-      case 'o':
-      {
-        a->output_file = arg;
         break;
       }
       case 'l':
@@ -50,14 +44,13 @@ void measureDihedrals(int argc, char **argv, char *stringArgv)
   {
     { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
-    { "output", 'o', "[Output File]", 0, "Output file. Options: see -e for options." },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "", 'f', "", OPTION_HIDDEN, "" }, //gets rid of error for -f flag
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "output.pdb", "drop.log", NULL};
+  struct arguments args = {NULL, "drop.log", NULL};
   //parse options
   struct argp measureDihedralsArgp = { measureDihedralsOptions, measureDihedralsParse, 0, 0 };
   argp_parse(&measureDihedralsArgp, argc, argv, 0, 0, &args);
