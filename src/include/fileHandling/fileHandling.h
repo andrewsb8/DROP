@@ -2,6 +2,6 @@
 #define FILEHANDLING_H_
 
 int fileExists(char *filename);
-void inputInfo(struct protein *prot, char *input_file, FILE *log, bool print_bond_matrix, char *stringArgv);
+void processInput(struct protein *prot, char *input_file, FILE *log, bool calc_bond_matrix, bool print_bond_matrix, char *stringArgv);
 
 #endif
