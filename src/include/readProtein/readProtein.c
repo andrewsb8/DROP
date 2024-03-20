@@ -7,7 +7,7 @@
 #include "readProtein.h"
 #include "../dihedralRotation/dihedralRotation.h"
 
-void readPDB(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix)
+void readPDB(struct protein *prot, char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix)
 {
   FILE *fp;
   char * line = NULL;
@@ -121,7 +121,7 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file, bool print_bo
   prot->number_of_atoms = line_number;
   prot->number_of_residues = prot->atoms[line_number-1].residue_number;
 
-  readPDBbonds(prot, filename, log_file, print_bond_matrix);
+  readPDBbonds(prot, filename, log_file, calc_bond_matrix, print_bond_matrix);
   identifyDihedrals(prot);
 
   //log initial dihedral angle values
@@ -185,7 +185,7 @@ char * removeSpaces(char *string)
   return string;
 }
 
-void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix)
+void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix)
 {
   FILE *fp;
   char * line = NULL;
@@ -256,8 +256,11 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool pri
 
   prot->number_of_bonds = line_number;
 
-  makeBondMatrix(prot);
-  countCovalentBonds(prot, log_file, print_bond_matrix);
+  if(calc_bond_matrix)
+  {
+    makeBondMatrix(prot);
+    countCovalentBonds(prot, log_file, print_bond_matrix);
+  }
 
   printf("\n\n");
   return;

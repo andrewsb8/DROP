@@ -73,22 +73,32 @@ static char *DihedralDefinitions[][5] = { //can't use int to set this array size
   {"N", "CA", "C", "N", "psi"},  //psi
   {"N", "CA", "CB", "HB3", "chi1"}, //Ala "chi 1" (use HB3 b/c no other amino acid has this atom type)
   {"N", "CA", "CB", "CG1", "chi1"}, //Ile, Val chi 1
-  {"N", "CA", "CB", "CG", "chi1"}, //Leu, Arg chi 1
+  {"N", "CA", "CB", "CG", "chi1"}, //Leu, Arg, Asn, Asp, Gln, Glu, His, Lys, Met, Phe, Pro, Trp, Tyr chi 1
+  {"N", "CA", "CB", "SG", "chi1"}, //Cys chi 1
+  {"N", "CA", "CB", "OG", "chi1"}, //Ser chi 1
+  {"N", "CA", "CB", "OG1", "chi1"}, //Thr chi 1
+  {"CA", "CB", "CG", "CD", "chi2"}, //Arg, Gln, Glu, Lys, Pro chi 2
   {"CA", "CB", "CG1", "CD", "chi2"}, //Ile chi 2
-  {"CA", "CB", "CG", "CD1", "chi2"}, //Leu chi 2
-  {"CA", "CB", "CG", "CD", "chi2"}, //Arg chi 2
+  {"CA", "CB", "CG", "CD1", "chi2"}, //Leu, Phe, Trp, Tyr chi 2
+  {"CA", "CB", "CG", "OD1", "chi2"}, //Asn, Asp chi 2
+  {"CA", "CB", "CG", "ND1", "chi2"}, //His chi 2
+  {"CA", "CB", "CG", "SD", "chi2"}, //Met chi 2
   {"CB", "CG", "CD", "NE", "chi3"}, //Arg chi 3
+  {"CB", "CG", "CD", "OE1", "chi3"}, //Gln, Glu chi 3
+  {"CB", "CG", "CD", "CE", "chi3"}, //Lys chi 3
+  {"CB", "CG", "SD", "CE", "chi3"}, //Met chi 3
   {"CG", "CD", "NE", "CZ", "chi4"}, //Arg chi 4
+  {"CG", "CD", "CE", "NZ", "chi4"}, //Lys chi 4
   {"CD", "NE", "CZ", "NH1", "chi5"}, //Arg chi 5
   {"C", "C", "C", "C", "cust"} //dihedral for butane
 };
 static int numberDihedralTypes = sizeof(DihedralDefinitions)/sizeof(DihedralDefinitions[0]);
 
-void readPDB(struct protein *prot,char *filename, FILE *log_file, bool print_bond_matrix);
+void readPDB(struct protein *prot,char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix);
 bool isBackbone(char *atomtype);
 char * substr(char * s, int x, int y);
 char * removeSpaces(char *string);
-void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool print_bond_matrix);
+void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix);
 void makeBondMatrix(struct protein *prot);
 void countCovalentBonds(struct protein *prot, FILE *log_file, bool print_bond_matrix);
 int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int atom2, int found, int *covalentBondCount);
