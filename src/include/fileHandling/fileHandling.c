@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "fileHandling.h"
 #include "../exceptions/fatal.h"
 #include "../readProtein/readProtein.h"
 

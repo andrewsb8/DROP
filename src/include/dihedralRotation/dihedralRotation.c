@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdbool.h>
 
-#include "dihedralRotation.h"
+
 #include "../exceptions/fatal.h"
 #include "../readProtein/readProtein.h"
 #include "../vectorCalculus/vectorCalculus.h"
