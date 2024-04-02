@@ -8,6 +8,7 @@
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
 #include "../include/fileHandling/fileHandling.h"
+#include "../include/exceptions/fatal.h"
 
 struct arguments
 {
@@ -73,7 +74,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
 {
   struct argp_option setDihedralListOptions[] =
   {
-    { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
+    { 0, 0, 0, 0, "./drop -f setDihedralList Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "input_dih_list", 'd', "[Input Dihedral List File]", 0, "Input pdb file" },
     { "output", 'o', "[Output File]", 0, "Output file. Options: see -e for options." },
@@ -86,32 +87,20 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, NULL, "output.pdb", "drop.log", "pdb", 0, 1, NULL};
+  struct arguments args = {NULL, NULL, "output.pdb", "drop.log", "pdb", 0, 1};
   //parse options
   struct argp setDihedralListArgp = { setDihedralListOptions, setDihedralListParse, 0, 0 };
   argp_parse(&setDihedralListArgp, argc, argv, 0, 0, &args);
 
-  if (fileExists(args.input_file) == -1)
-  {
-    fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
-    exit(1);
-  }
   if (fileExists(args.input_dih_list) == -1)
   {
     fprintf(stderr, "ERROR: Input dihedral list does not exist. Exiting.\n");
     exit(1);
   }
 
-  //log command line inputs
-  FILE *log = fopen(args.log_file, "w");
-  fprintf(log, "Command Line: %s\n\n", stringArgv);
-
-  //initialize protein struct and begin analysis
-  fprintf(log, "Reading structure file: %s\n\n", args.input_file);
   struct protein prot;
-  readPDB(&prot, args.input_file, log, 0, args.bond_matrix);
-
-  fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
+  FILE *log = fopen(args.log_file, "w");
+  processInput(&prot, args.input_file, log, 0, 0, stringArgv);
 
   fprintf(log, "Starting structure manipulation from dihedral list: %s\n", args.input_dih_list);
   FILE *dih_list;
@@ -131,7 +120,9 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
       {
         if(count > 2)
         {
-          fprintf(stderr, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+          char *message;
+          sprintf(message, "ERROR: Line in dihedral list has more or fewer than 3 elements.\nline: %s\n Exiting.\n", line);
+          drop_fatal(log, message);
           exit(1);
         }
         strcpy(stringT[count], line_split);
@@ -144,17 +135,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
       float angle = atof(stringT[2]);
 
       //find dihedral to change based on user input
-      int index = findDihedral(&prot, res_number, dih_type);
-      if (index == -1)
-      {
-        fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", dih_type, res_number);
-        fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", dih_type, res_number);
-        exit(1);
-      }
-      else
-      {
-        fprintf(log, "Found dihedral number: %d\n\n", index);
-      }
+      int index = findDihedral(&prot, res_number, dih_type, log);
 
       //is the angle being changed the backbone or side chain?
       bool backbone;

@@ -8,6 +8,7 @@
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
 #include "../include/fileHandling/fileHandling.h"
+#include "../include/exceptions/fatal.h"
 
 struct arguments
 {
@@ -100,40 +101,17 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 1, NULL};
+  struct arguments args = {NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 1};
   //parse options
   struct argp setDihedralArgp = { setDihedralOptions, setDihedralParse, 0, 0 };
   argp_parse(&setDihedralArgp, argc, argv, 0, 0, &args);
 
-  if (fileExists(args.input_file) == -1)
-  {
-    fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
-    exit(1);
-  }
-
-  //log command line inputs
-  FILE *log = fopen(args.log_file, "w");
-  fprintf(log, "Command Line: %s\n\n", stringArgv);
-
-  //initialize protein struct and begin analysis
-  fprintf(log, "Reading structure file: %s\n\n", args.input_file);
   struct protein prot;
-  readPDB(&prot, args.input_file, log, 0, args.bond_matrix);
-
-  fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
+  FILE *log = fopen(args.log_file, "w");
+  processInput(&prot, args.input_file, log, 0, 0, stringArgv);
 
   //find dihedral to change based on user input
-  int index = findDihedral(&prot, args.res_number, args.dih_type);
-  if (index == -1)
-  {
-    fprintf(log, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
-    fprintf(stderr, "Error: dihedral angle %s in residue number %d was not found.\n\n", args.dih_type, args.res_number);
-    exit(1);
-  }
-  else
-  {
-    fprintf(log, "Found dihedral number: %d\n\n", index);
-  }
+  int index = findDihedral(&prot, args.res_number, args.dih_type, log);
 
   //is the angle being changed the backbone or side chain?
   bool backbone;
@@ -167,8 +145,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   }
   else
   {
-    fprintf(log, "Error: File extension for output not recognized.\n");
-    fprintf(stderr, "Error: File extension for output not recognized.\n");
+    drop_fatal(log, "Error: File extension for output not recognized.\n");
     exit(1);
   }
 

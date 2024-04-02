@@ -7,7 +7,7 @@ The repository contains a work-in-progress command line tool which can manipulat
 
 ### Installation
 
-You can compile DROP with ```make``` in the parent directory. (Not working yet) Although it is recommended to make a ```build``` directory and execute ```make -C /path/to/DROP```.
+You can compile DROP with ```make``` in the parent directory.
 
 ### Usage
 
@@ -34,6 +34,6 @@ And you can visualize ```output.pdb``` with your favorite visualization tool lik
 
 ### Known Issues
 
-- Order of command line arguments may not be memory safe because of the way argp was implemented. See Issue #2 for details.
+- "Parent" option ```-f``` or ```-c``` must come first after the executable. See Issue #10 for more details.
 
 NOTE: files in 'src/archive/results' cannot be currently replicated by compiling from source. The c files used for completing those analyses are in 'src/archive/run' and are currently being refactored into the new code. The code and results are being preserved until testing shows the results are reproducible after refactoring is completed.

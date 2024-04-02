@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
 #include "vectorCalculus.h"
 
 //Calculates the magnitude of a vector
