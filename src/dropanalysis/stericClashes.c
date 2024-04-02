@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "stericClashes.h"
+#include "../include/exceptions/fatal.h"
 #include "../include/readProtein/readProtein.h"
 #include "../include/stericClash/stericClash.h"
 #include "../include/fileHandling/fileHandling.h"
@@ -67,7 +68,7 @@ void stericClashes(int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
-  processInput(&prot, args.input_file, log, 0, 0, stringArgv);
+  processInput(&prot, args.input_file, log, 1, args.bond_matrix, stringArgv);
 
   if(!args.list_clashes)
   {

@@ -121,7 +121,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
         if(count > 2)
         {
           char *message;
-          sprintf(message, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+          sprintf(message, "ERROR: Line in dihedral list has more or fewer than 3 elements.\nline: %s\n Exiting.\n", line);
           drop_fatal(log, message);
           exit(1);
         }
