@@ -50,7 +50,7 @@ void stericClashes(int argc, char **argv, char *stringArgv)
 {
   struct argp_option stericClashesOptions[] =
   {
-    { 0, 0, 0, 0, "./drop -f setDihedral Options:\n" },
+    { 0, 0, 0, 0, "./drop -f stericClashes Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix. Default: true" },
@@ -65,22 +65,9 @@ void stericClashes(int argc, char **argv, char *stringArgv)
   struct argp stericClashesArgp = { stericClashesOptions, stericClashesParse, 0, 0, NULL };
   argp_parse(&stericClashesArgp, argc, argv, 0, 0, &args);
 
-  if (fileExists(args.input_file) == -1)
-  {
-    fprintf(stderr, "ERROR: Input file does not exist. Exiting.\n");
-    exit(1);
-  }
-
-  //log command line inputs
-  FILE *log = fopen(args.log_file, "w");
-  fprintf(log, "Command Line: %s\n\n", stringArgv);
-
-  //initialize protein struct and begin analysis
-  fprintf(log, "Reading structure file: %s\n\n", args.input_file);
   struct protein prot;
-  readPDB(&prot, args.input_file, log, 1, args.bond_matrix);
-
-  fprintf(log, "Done reading structure file: %s\n\n", args.input_file);
+  FILE *log = fopen(args.log_file, "w");
+  processInput(&prot, args.input_file, log, 0, 0, stringArgv);
 
   if(!args.list_clashes)
   {
