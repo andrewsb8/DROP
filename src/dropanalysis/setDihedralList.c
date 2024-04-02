@@ -8,6 +8,7 @@
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
 #include "../include/fileHandling/fileHandling.h"
+#include "../include/exceptions/fatal.h"
 
 struct arguments
 {
@@ -119,7 +120,9 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
       {
         if(count > 2)
         {
-          fprintf(stderr, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+          char *message;
+          sprintf(message, "ERROR: Line in dihedral list has more or fewer than 3 elements.\n%line: s\n Exiting.\n", line);
+          drop_fatal(log, message);
           exit(1);
         }
         strcpy(stringT[count], line_split);

@@ -4,7 +4,9 @@
 #include <stdbool.h>
 #include <math.h>
 #include <assert.h>
+
 #include "readProtein.h"
+#include "../exceptions/fatal.h"
 #include "../dihedralRotation/dihedralRotation.h"
 
 void readPDB(struct protein *prot, char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix)
@@ -113,8 +115,7 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file, bool calc_bon
 
   if (line_number == 0)
   {
-    fprintf(stderr, "ERROR: No ATOM entries in the input file. Exiting.\n");
-    fprintf(log_file, "ERROR: No ATOM entries in the input file. Exiting\n");
+    drop_fatal(log, "ERROR: No ATOM entries in the input file. Exiting.\n");
     exit(1);
   }
 
@@ -249,8 +250,7 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool cal
 
   if (line_number == 0)
   {
-    fprintf(stderr, "ERROR: No CONECT entries in the input file. No bonds were read or inferred from structure. Exiting.\n");
-    fprintf(log_file, "ERROR: No CONECT entries in the input file. No bonds were read or inferred from structure. Exiting.\n");
+    drop_fatal(log, "ERROR: No CONECT entries in the input file. No bonds were read or inferred from structure. Exiting.\n");
     exit(1);
   }
 
