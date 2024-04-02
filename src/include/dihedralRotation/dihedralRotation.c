@@ -78,7 +78,7 @@ double determineSign(struct protein *prot, int dihedralNumber)
 }
 
 //find index associated with the relevant dihedral information
-int findDihedral(struct protein *prot, int rnum, char *dtype)
+int findDihedral(struct protein *prot, int rnum, char *dtype, FILE *log)
 {
   int index = -1;
   for (int i = 0; i < prot->number_of_dihedrals; i++)
@@ -89,7 +89,18 @@ int findDihedral(struct protein *prot, int rnum, char *dtype)
       index = i;
     }
   }
-  return index;
+
+  if (index == -1)
+  {
+    char *message;
+    sprintf(message, "Error: dihedral angle %s in residue number %d was not found.\n", dtype, rnum);
+    drop_fatal(log, message);
+  }
+  else
+  {
+    fprintf(log, "Found dihedral index: %d\n", index);
+    return index;
+  }
 }
 
 void updatePositions(struct protein *prot, double newPositions[3], int atomNumber)
