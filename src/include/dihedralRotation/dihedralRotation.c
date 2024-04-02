@@ -3,6 +3,8 @@
 #include <string.h>
 #include <math.h>
 #include <stdbool.h>
+
+#include "../exceptions/fatal.h"
 #include "../readProtein/readProtein.h"
 #include "../dihedralRotation/dihedralRotation.h"
 #include "../vectorCalculus/vectorCalculus.h"

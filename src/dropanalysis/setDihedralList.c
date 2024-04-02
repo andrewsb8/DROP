@@ -87,7 +87,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, NULL, "output.pdb", "drop.log", "pdb", 0, 1, NULL};
+  struct arguments args = {NULL, NULL, "output.pdb", "drop.log", "pdb", 0, 1};
   //parse options
   struct argp setDihedralListArgp = { setDihedralListOptions, setDihedralListParse, 0, 0 };
   argp_parse(&setDihedralListArgp, argc, argv, 0, 0, &args);

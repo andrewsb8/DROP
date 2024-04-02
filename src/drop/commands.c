@@ -5,8 +5,9 @@
 #include <argp.h>
 
 #include "commands.h"
-#include "../dropanalysis/setDihedral.h"
 #include "../dropanalysis/measureDihedrals.h"
+#include "../dropanalysis/setDihedral.h"
+#include "../dropanalysis/setDihedralList.h"
 #include "../dropanalysis/stericClashes.h"
 
 const char *commandList[][2]={
