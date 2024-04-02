@@ -4,9 +4,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "fileHandling.h"
 #include "../exceptions/fatal.h"
 #include "../readProtein/readProtein.h"
-#include "fileHandling.h"
 
 //does the file exist? returns -1 if not
 int fileExists(char *filename)

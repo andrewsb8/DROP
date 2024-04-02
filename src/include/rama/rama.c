@@ -3,6 +3,8 @@
 #include <string.h>
 #include <math.h>
 #include <mpi.h>
+
+#include "rama.h"
 #include "../readProtein/readProtein.h"
 
 void writeRamaDistribution(char *filename, int frame, float phi, float psi, float value)

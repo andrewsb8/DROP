@@ -4,8 +4,8 @@
 #include <math.h>
 #include <stdbool.h>
 
-#include "../readProtein/readProtein.h"
 #include "stericClash.h"
+#include "../readProtein/readProtein.h"
 #include "../vectorCalculus/vectorCalculus.h"
 
 //may turn different radii into an option to be selected
