@@ -1,9 +1,6 @@
 #!/bin/bash
 
 #**********************************************************************************
-#The plot in rama is altered such that the y axis is from -170 - 190 degrees. This
-#script plots the Ramachandran plot without this correction.
-
 #Author: Brian Andrews
 #Last Date Modified: 10/17/2019
 #**********************************************************************************
