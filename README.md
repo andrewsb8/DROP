@@ -3,7 +3,13 @@ Dihedral Rotation Of Proteins (DROP)
 
 Copyright 2023- Brian Andrews.
 
-The repository contains a work-in-progress command line tool which can manipulate protein structures by rotating dihedral angles. It has tools which will be useful for preparing protein structures for visualizations in presentations, lectures, or papers and preparing protein structures for simulation. This tool will be used to investigate accessible regions of the high-dimensional conformation space of proteins based on atomic overlaps. More factors may be added to the analysis in the future.
+### What this tool is:
+
+The repository contains a work-in-progress command line tool which can manipulate protein structures by rotating dihedral angles. It has tools which will be useful for preparing protein structures for visualizations in presentations, lectures, or papers and preparing protein structures for simulation. This tool will be used to investigate accessible regions of the high-dimensional conformation space of proteins based on atomic overlaps. The scope of this project will continue to expand over time with additional modules for analyzing and manipulating molecular structures.
+
+### What this tool is not:
+
+This is not a pdb (or any structure file) preprocessing tool. It requires a sanitized pdb file and currently require CONECT records for covalent bonds. I personally use [GROMACS](https://www.gromacs.org/) ([gitlab](https://gitlab.com/gromacs/gromacs)) to produce ordered pdb files and CONECT records. See ```scripts/generate-conect/``` for more details. The requirement for CONECT records will be removed for some modules in the future (see Issue #15 for more details).
 
 ### Installation
 
@@ -28,7 +34,7 @@ To measure the dihedral angles of a given structure, use ```measureDihedrals```.
 
 ```./drop -f setDihedral -i example_files/ILE_conect_110.pdb -n 2 -d phi -a -60 -o output.pdb```
 
-And you can visualize ```output.pdb``` with your favorite visualization tool like VMD or PyMol. ```setDihedralList``` has examples in ```examples/README```, but here's an example command:
+which changes the dihedral angle phi of residue 2 to -60 degrees. You can visualize ```output.pdb``` with your favorite visualization tool like VMD or PyMol. ```setDihedralList``` has examples in ```examples/README```, but here's an example command:
 
 ```./drop -f setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/beta-to-helix.txt -o poly-R-helix.pdb```
 
