@@ -28,3 +28,9 @@ void processInput(struct protein *prot, char *input_file, FILE *log, bool calc_b
   fprintf(log, "Done reading structure file: %s\n\n", input_file);
   return;
 }
+
+
+void writeFileLine(FILE *file, char *message)
+{
+  fprintf(file, message);
+}
