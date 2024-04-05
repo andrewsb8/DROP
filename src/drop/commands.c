@@ -9,6 +9,7 @@
 #include "../dropanalysis/setDihedral.h"
 #include "../dropanalysis/setDihedralList.h"
 #include "../dropanalysis/stericClashes.h"
+#include "../dropanalysis/stericScan.h"
 
 const char *commandList[][2]={
   {"measureDihedrals", "Parses structure and provides log with structure and dihedral information."},
