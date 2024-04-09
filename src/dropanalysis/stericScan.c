@@ -109,7 +109,7 @@ void stericScan(int argc, char **argv, char *stringArgv)
   prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
 
   int chi1_index = findDihedral(&prot, args.res_number, "chi1", log);
-  //int chi2_index = findDihedral(&prot, args.res_number, "chi2", log);
+  int chi2_index = findDihedral(&prot, args.res_number, "chi2", log);
 
   //for now, just hard code loops for chi1, phi, and psi to do alanine and valine
   FILE *output = fopen(args.output_file, "w+");
@@ -117,7 +117,8 @@ void stericScan(int argc, char **argv, char *stringArgv)
   double clashes = 0;
   char *message[40];
 
-  /*for(int i = 0; i < range; i++)
+  //loop for AAs with chi2
+  for(int i = 0; i < range; i++)
   {
     //psi loop
     for(int j = 0; j < range; j++)
@@ -144,11 +145,9 @@ void stericScan(int argc, char **argv, char *stringArgv)
 
       }
 
-      char *message;
       sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, clashes/(range*range));
       printf("%s", message);
       writeFileLine(output, message);
-      free(message);
 
       rotateDihedral(&prot, psi_index, -args.resolution, 1);
       prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
@@ -162,10 +161,10 @@ void stericScan(int argc, char **argv, char *stringArgv)
 
   }
 
-  printf("%f %f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, prot.dihedrals[chi1_index].dihedral_angle, prot.dihedrals[chi2_index].dihedral_angle);*/
+  printf("%f %f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, prot.dihedrals[chi1_index].dihedral_angle, prot.dihedrals[chi2_index].dihedral_angle);
 
 
-  //loop structure for only amino acids with a chi1
+  /*//loop structure for only amino acids with a chi1
   //phi loop
   for(int i = 0; i < range; i++)
   {
@@ -198,7 +197,9 @@ void stericScan(int argc, char **argv, char *stringArgv)
     rotateDihedral(&prot, phi_index, args.resolution, 1);
     prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
 
-  }
+  }*/
+
+  free(message);
 
   fclose(output);
   fclose(log);

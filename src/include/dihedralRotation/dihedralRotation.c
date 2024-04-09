@@ -51,6 +51,7 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
 
   free(cross1);
   free(cross2);
+  free(doublecross);
 
   return signedAngle;
 }
@@ -97,6 +98,7 @@ int findDihedral(struct protein *prot, int rnum, char *dtype, FILE *log)
     char *message;
     sprintf(message, "Error: dihedral angle %s in residue number %d was not found.\n", dtype, rnum);
     drop_fatal(log, message);
+    free(message);
   }
   else
   {

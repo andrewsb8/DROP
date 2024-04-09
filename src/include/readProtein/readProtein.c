@@ -170,7 +170,6 @@ char * substr(char * s, int x, int y)
 }
 
 //remove spaces from strings
-//taken from here: https://www.educative.io/edpresso/how-to-remove-spaces-from-a-string-in-c
 char * removeSpaces(char *string)
 {
   int space_count = 0;
