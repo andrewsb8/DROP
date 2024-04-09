@@ -69,6 +69,14 @@ double determineSign(struct protein *prot, int dihedralNumber)
   double *doublecross = crossProduct(cross1, cross2);
 
   double ip = dotProduct(vec1, doublecross);
+
+  free(vec1);
+  free(vec2);
+  free(vec3);
+  free(cross1);
+  free(cross2);
+  free(doublecross);
+
   if (ip < 0)
   {
     return -1;

@@ -1,3 +1,6 @@
+#ifndef READPROTEIN_H_
+#define READPROTEIN_H_
+
 struct _atoms
 {
   int atom_number;
@@ -112,3 +115,5 @@ void writePDB(struct protein *prot,char *filename,char type,int frame, bool cone
 void writePDBmultiframe(struct protein *prot, FILE *fp, int frame);
 void writePDBsingleframe(struct protein *prot, FILE *fp);
 void writePDBConect(struct protein *prot, FILE *fp);
+
+#endif

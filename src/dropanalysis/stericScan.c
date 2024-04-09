@@ -199,8 +199,6 @@ void stericScan(int argc, char **argv, char *stringArgv)
 
   }*/
 
-  free(message);
-
   fclose(output);
   fclose(log);
   return;
