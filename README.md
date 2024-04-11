@@ -43,3 +43,15 @@ which changes the dihedral angle phi of residue 2 to -60 degrees. You can visual
 - "Parent" option ```-f``` or ```-c``` must come first after the executable. See Issue #10 for more details.
 
 NOTE: files in 'src/archive/results' cannot be currently replicated by compiling from source. The c files used for completing those analyses are in 'src/archive/run' and are currently being refactored into the new code. The code and results are being preserved until testing shows the results are reproducible after refactoring is completed.
+
+### Citation
+
+If you use this work for research or presentations, please consider citing this repository.
+
+@software{Andrews_DROP_2024,
+  author = {Andrews, Brian},
+  title = {{Dihedral Rotation of Proteins (DROP)}},
+  url = {https://github.com/andrewsb8/DROP/tree/main},
+  version = {0.0.1},
+  year = {2024}
+}
