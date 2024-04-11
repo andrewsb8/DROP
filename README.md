@@ -48,6 +48,7 @@ NOTE: files in 'src/archive/results' cannot be currently replicated by compiling
 
 If you use this work for research or presentations, please consider citing this repository.
 
+```
 @software{Andrews_DROP_2024,
   author = {Andrews, Brian},
   title = {{Dihedral Rotation of Proteins (DROP)}},
@@ -55,3 +56,4 @@ If you use this work for research or presentations, please consider citing this 
   version = {0.0.1},
   year = {2024}
 }
+```
