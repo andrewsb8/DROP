@@ -13,6 +13,7 @@ struct arguments
   char *input_file;
   char *output_file;
   char *log_file;
+  char *dihedral_list;
   bool bond_matrix;
 };
 
@@ -41,6 +42,11 @@ static int measureDihedralsParse(int key, char *arg, struct argp_state *state)
         a->bond_matrix = atoi(arg);
         break;
       }
+      case 'd':
+      {
+        a->dihedral_list = arg;
+        break;
+      }
       case 'f':
       {
         break;
@@ -59,12 +65,13 @@ void measureDihedrals(int argc, char **argv, char *stringArgv)
     { "output", 'o', "[Output File]", 0, "Output file. Options: see -e for options." },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix to log file. Default: true" },
+    { "dihedral_list", 'd', "[Output File]", 0, "Optional output file to print the dihedral information to a file that can be modified and used as an input file for setDihedralList."},
     { "", 'f', "", OPTION_HIDDEN, "" }, //gets rid of error for -f flag
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "output.pdb", "drop.log", 1};
+  struct arguments args = {NULL, "output.pdb", "drop.log", NULL, 1};
   //parse options
   struct argp measureDihedralsArgp = { measureDihedralsOptions, measureDihedralsParse, 0, 0 };
   argp_parse(&measureDihedralsArgp, argc, argv, 0, 0, &args);
@@ -72,6 +79,17 @@ void measureDihedrals(int argc, char **argv, char *stringArgv)
   struct protein prot;
   FILE *log = fopen(args.log_file, "w");
   processInput(&prot, args.input_file, log, 0, 0, stringArgv);
+
+  if(args.dihedral_list)
+  {
+    FILE *dih_list = fopen(args.dihedral_list, "w");
+    fprintf(dih_list, "#resnum residue dihedral-angle angle\n");
+    for(int i = 0; i < prot.number_of_dihedrals; i++)
+    {
+      fprintf(dih_list, "%d %s %s %f\n", prot.dihedrals[i].dihedral_resNum, prot.dihedrals[i].dihedral_resName, prot.dihedrals[i].dihedral_angType, prot.dihedrals[i].dihedral_angle);
+    }
+    fclose(dih_list);
+  }
 
   fclose(log);
   return;
