@@ -30,7 +30,7 @@ double dotProduct(double vector1[3], double vector2[3])
 //calculate the sum of components of two vectors
 double * vectorAdd(double vector1[3], double vector2[3])
 {
-  double *result = malloc(sizeof(double) * 3); //NOTE: this line throws a warning but does not break the code
+  double *result = malloc(sizeof(double) * 3);
   for(int i = 0; i < 3; i++)
   {
     result[i] = vector2[i] + vector1[i];
@@ -41,7 +41,7 @@ double * vectorAdd(double vector1[3], double vector2[3])
 //calculate the difference of components of two vectors
 double * vectorSubtract(double vector1[3], double vector2[3])
 {
-  double *result = malloc(sizeof(double) * 3); //NOTE: this line throws a warning but does not break the code
+  double *result = malloc(sizeof(double) * 3);
   for(int i = 0; i < 3; i++)
   {
     result[i] = vector2[i] - vector1[i];
