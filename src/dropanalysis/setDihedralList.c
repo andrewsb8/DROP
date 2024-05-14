@@ -130,8 +130,6 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
         drop_fatal(log, message);
       }
 
-      printf("hey this worked\n");
-
       int res_number = atoi(stringT[0]);
       char *residue = stringT[1];
       char *dih_type = stringT[2];
