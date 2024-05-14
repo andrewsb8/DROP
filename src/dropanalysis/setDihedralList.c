@@ -118,17 +118,19 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
       int count = 0;
       while(line_split != NULL)
       {
-        if(count > 3)
-        {
-          char *message;
-          sprintf(message, "ERROR: Line in dihedral list has more or fewer than 4 elements.\nline: %s\n Exiting.\n", line);
-          drop_fatal(log, message);
-          exit(1);
-        }
         strcpy(stringT[count], line_split);
         count++;
         line_split = strtok(NULL, " \t");
       }
+
+      if(count != 4)
+      {
+        char *message[40];
+        sprintf(message, "ERROR: Line in dihedral list has more or fewer than 4 elements in line %s of the input dihedral list. Exiting.\n", line);
+        drop_fatal(log, message);
+      }
+
+      printf("hey this worked\n");
 
       int res_number = atoi(stringT[0]);
       char *residue = stringT[1];
