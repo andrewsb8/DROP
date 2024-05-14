@@ -1,4 +1,4 @@
-#resnum dihedral-angle angle
+#resnum residue dihedral-angle angle
 1 ARG chi1 -60
 1 ARG chi2 -60
 1 ARG chi3 -60
