@@ -114,14 +114,14 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
     {
       //parse space separated line - residue number dihedral type dihedral angle
       char *line_split = strtok(line, " \t");
-      char *stringT[3][10];
+      char *stringT[4][10];
       int count = 0;
       while(line_split != NULL)
       {
-        if(count > 2)
+        if(count > 3)
         {
           char *message;
-          sprintf(message, "ERROR: Line in dihedral list has more or fewer than 3 elements.\nline: %s\n Exiting.\n", line);
+          sprintf(message, "ERROR: Line in dihedral list has more or fewer than 4 elements.\nline: %s\n Exiting.\n", line);
           drop_fatal(log, message);
           exit(1);
         }
@@ -131,8 +131,9 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
       }
 
       int res_number = atoi(stringT[0]);
-      char *dih_type = stringT[1];
-      float angle = atof(stringT[2]);
+      char *residue = stringT[1];
+      char *dih_type = stringT[2];
+      float angle = atof(stringT[3]);
 
       //find dihedral to change based on user input
       int index = findDihedral(&prot, res_number, dih_type, log);
@@ -170,9 +171,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
   }
   else
   {
-    fprintf(log, "Error: File extension for output not recognized.\n");
-    fprintf(stderr, "Error: File extension for output not recognized.\n");
-    exit(1);
+    drop_fatal(log, "Error: File extension for output not recognized.\n");
   }
 
   fclose(log);

@@ -1,9 +1,9 @@
 #resnum dihedral-angle angle
-1 psi -45
-2 phi -60
-2 psi -45
-3 phi -60
-3 psi -45
-4 phi -60
-4 psi -45
-5 phi -60
+1 ARG psi -45
+2 ARG phi -60
+2 ARG psi -45
+3 ARG phi -60
+3 ARG psi -45
+4 ARG phi -60
+4 ARG psi -45
+5 ARG phi -60
