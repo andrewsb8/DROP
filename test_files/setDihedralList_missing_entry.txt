@@ -1,5 +1,5 @@
-#resnum residue dihedral-angle angle
-1 ARG psi -45
+#resnum dihedral-angle angle
+1 ARG ARG psi -45
 2 ARG phi -60
 2 ARG psi -45
 3 ARG phi -60
