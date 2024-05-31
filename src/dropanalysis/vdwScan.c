@@ -7,7 +7,7 @@
 #include "vdwScan.h"
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
-#include "../include/stericClash/stericClash.h"
+#include "../include/vdwEnergy/vdwEnergy.h"
 #include "../include/fileHandling/fileHandling.h"
 
 struct arguments
@@ -114,7 +114,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   //for now, just hard code loops for chi1, phi, and psi to do alanine and valine
   FILE *output = fopen(args.output_file, "w+");
   double range = 360 / args.resolution;
-  double clashes = 0;
+  double energy_sum = 0;
   char *message[40];
 
   //loop for AAs with chi2
@@ -131,7 +131,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
         for(int m = 0; m < range; m++)
         {
 
-          //energy_sum += vdwEnergy(&prot, log, 0);
+          energy_sum += calculateVDWEnergy(&prot, log);
           rotateDihedral(&prot, chi2_index, args.resolution, 0);
           prot.dihedrals[chi2_index].dihedral_angle = calculateDihedral(&prot, chi2_index);
 
@@ -145,7 +145,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
 
       }
 
-      //sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range*range));
+      sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range*range));
       printf("%s", message);
       writeFileLine(output, message);
 
@@ -161,9 +161,6 @@ void vdwScan(int argc, char **argv, char *stringArgv)
 
   }
 
-  printf("%f %f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, prot.dihedrals[chi1_index].dihedral_angle, prot.dihedrals[chi2_index].dihedral_angle);
-
-
   /*//loop structure for only amino acids with a chi1
   //phi loop
   for(int i = 0; i < range; i++)
@@ -175,12 +172,12 @@ void vdwScan(int argc, char **argv, char *stringArgv)
       //chi 1 loop
       for (int k = 0; k < range; k++)
       {
-        clashes += countClashes(&prot, log, 0);
+        energy_sum += calculateVDWEnergy(&prot, log);
         rotateDihedral(&prot, chi1_index, args.resolution, 0);
         prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
       }
 
-      sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, clashes/(range));
+      sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range));
       printf("%s", message);
       writeFileLine(output, message);
 
