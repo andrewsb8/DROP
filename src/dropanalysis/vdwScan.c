@@ -117,7 +117,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   double energy_sum = 0;
   char *message[40];
 
-  //loop for AAs with chi2
+  /*//loop for AAs with chi2
   for(int i = 0; i < range; i++)
   {
     //psi loop
@@ -159,9 +159,9 @@ void vdwScan(int argc, char **argv, char *stringArgv)
     rotateDihedral(&prot, phi_index, args.resolution, 1);
     prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
 
-  }
+  }*/
 
-  /*//loop structure for only amino acids with a chi1
+  //loop structure for only amino acids with a chi1
   //phi loop
   for(int i = 0; i < range; i++)
   {
@@ -179,7 +179,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
 
       sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range));
       printf("%s", message);
-      writeFileLine(output, message);
+      //writeFileLine(output, message);
 
       rotateDihedral(&prot, chi1_index, args.resolution, 0);
       prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
@@ -189,12 +189,12 @@ void vdwScan(int argc, char **argv, char *stringArgv)
 
     }
 
-    writeFileLine(output, "\n");
+    //writeFileLine(output, "\n");
 
     rotateDihedral(&prot, phi_index, args.resolution, 1);
     prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
 
-  }*/
+  }
 
   fclose(output);
   fclose(log);
