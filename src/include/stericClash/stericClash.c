@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdbool.h>
 
-
+//keep imports in this order to avoid type conflict error
 #include "../readProtein/readProtein.h"
 #include "stericClash.h"
 #include "../vectorCalculus/vectorCalculus.h"
