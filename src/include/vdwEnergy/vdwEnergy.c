@@ -76,6 +76,11 @@ double calculateVDWEnergy(struct protein *prot, FILE *log)
         double *bond_vector = vectorSubtract(prot->atoms[i].coordinates,prot->atoms[j].coordinates);
         distance = vectorMagnitude(bond_vector);
         free(bond_vector);
+        if(distance <= 1.0 && ((isBackbone(prot->atoms[i].atom_type) && !isBackbone(prot->atoms[j].atom_type)) || (!isBackbone(prot->atoms[i].atom_type) && isBackbone(prot->atoms[j].atom_type)) ))
+        {
+          printf("%f %s %s %d %s %s %d\n", distance, prot->atoms[i].atom_type, prot->atoms[i].atom_name, prot->atoms[i].atom_number, prot->atoms[j].atom_type, prot->atoms[j].atom_name, prot->atoms[j].atom_number);
+          return NAN;
+        }
         mixed_sigma = mixedSigma(prot->atoms[i].atom_name, prot->atoms[j].atom_name);
         mixed_epsilon = mixedEpsilon(prot->atoms[i].atom_name, prot->atoms[j].atom_name);
         energy += pairVDWEnergy(distance, mixed_epsilon, mixed_sigma);

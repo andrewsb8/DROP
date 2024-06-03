@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <argp.h>
+#include <math.h>
 #include <string.h>
 #include <stdbool.h>
 
@@ -109,12 +110,14 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
 
   int chi1_index = findDihedral(&prot, args.res_number, "chi1", log);
-  int chi2_index = findDihedral(&prot, args.res_number, "chi2", log);
+  //int chi2_index = findDihedral(&prot, args.res_number, "chi2", log);
 
   //for now, just hard code loops for chi1, phi, and psi to do alanine and valine
   FILE *output = fopen(args.output_file, "w+");
   double range = 360 / args.resolution;
   double energy_sum = 0;
+  double energy = 0;
+  int clashes = 0;
   char *message[40];
 
   /*//loop for AAs with chi2
@@ -123,15 +126,23 @@ void vdwScan(int argc, char **argv, char *stringArgv)
     //psi loop
     for(int j = 0; j < range; j++)
     {
-      double clashes = 0;
+      double energy_sum = 0;
+      double norm = range*range; //normalization for AAs with 2 chi angles
       //chi 1 loop
       for(int k = 0; k < range; k++)
       {
         //chi 2 loop
         for(int m = 0; m < range; m++)
         {
-
-          energy_sum += calculateVDWEnergy(&prot, log);
+          energy = calculateVDWEnergy(&prot, log);
+          if(energy < 10000000000000) //only consider structures with less than this total energy in kJ/mol
+          {
+            energy_sum += energy;
+          }
+          else
+          {
+            norm = norm - 1; //subtract from normalization constant to reflect correct number of structures considered
+          }
           rotateDihedral(&prot, chi2_index, args.resolution, 0);
           prot.dihedrals[chi2_index].dihedral_angle = calculateDihedral(&prot, chi2_index);
 
@@ -145,7 +156,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
 
       }
 
-      sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range*range));
+      sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/norm);
       printf("%s", message);
       writeFileLine(output, message);
 
@@ -168,18 +179,27 @@ void vdwScan(int argc, char **argv, char *stringArgv)
     //psi loop
     for(int j = 0; j < range; j++)
     {
-      double clashes = 0;
+      double energy_sum = 0;
+      double range_one = range; //copy range (normalization) so I can change the value for invalid structures
       //chi 1 loop
       for (int k = 0; k < range; k++)
       {
-        energy_sum += calculateVDWEnergy(&prot, log);
+        energy = calculateVDWEnergy(&prot, log);
+        if(!isnan(energy))
+        {
+          energy_sum += energy;
+        }
+        else
+        {
+          range_one = range_one - 1; //subtract from normalization constant to reflect correct number of structures considered
+        }
         rotateDihedral(&prot, chi1_index, args.resolution, 0);
         prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
       }
 
-      sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range));
+      sprintf(message, "%f %f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range_one), range_one);
       printf("%s", message);
-      //writeFileLine(output, message);
+      writeFileLine(output, message);
 
       rotateDihedral(&prot, chi1_index, args.resolution, 0);
       prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
@@ -189,7 +209,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
 
     }
 
-    //writeFileLine(output, "\n");
+    writeFileLine(output, "\n");
 
     rotateDihedral(&prot, phi_index, args.resolution, 1);
     prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
