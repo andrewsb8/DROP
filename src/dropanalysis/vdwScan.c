@@ -135,7 +135,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
         for(int m = 0; m < range; m++)
         {
           energy = calculateVDWEnergy(&prot, log);
-          if(energy < 10000000000000) //only consider structures with less than this total energy in kJ/mol
+          if(!isnan(energy))
           {
             energy_sum += energy;
           }
@@ -197,7 +197,13 @@ void vdwScan(int argc, char **argv, char *stringArgv)
         prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
       }
 
-      sprintf(message, "%f %f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range_one), range_one);
+      // if no side chain configurations exist without a steric clash, assign high energy
+      if(energy_sum == 0 && range_one == 0){
+        energy_sum = 500000;
+        range_one = 1;
+      }
+
+      sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range_one));
       printf("%s", message);
       writeFileLine(output, message);
 

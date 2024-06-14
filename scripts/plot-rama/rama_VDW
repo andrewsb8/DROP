@@ -29,7 +29,7 @@ gnuplot <<- EOF
   set palette defined (0.0 "white", 0.05 "blue",  0.15 "green", 0.3 "yellow", 0.5 "orange", 0.7 "red", 1.0 "magenta")
   set size square
   set term postscript eps enhanced solid color
-  set cbrange [5000.0:20000.0]
+  set cbrange [-20.0:200.0]
   set xlabel "{Phi}" font "Helvetica,26" offset 0, -1
   set ylabel "{Psi}" font "Helvetica,26" offset -3, 0
   set xrange [-200:200]

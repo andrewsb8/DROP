@@ -8,6 +8,7 @@
 #include "../readProtein/readProtein.h"
 #include "vdwEnergy.h"
 #include "../vectorCalculus/vectorCalculus.h"
+#include "../stericClash/stericClash.h"
 
 //atom order: C, N, O, H
 //atom types from CHARMM36m: carbonyl C (peptide backbone), amide Nitrogen, carbonyl oxygen, nonpolar H
@@ -15,6 +16,9 @@
 struct VDW_params sigma = {3.56359, 3.29632, 3.02905, 2.35197};
 //units: kJ/mol
 struct VDW_params epsilon = {0.46024, 0.83680, 0.50208, 0.09204};
+
+//copied from stericClash.c, inner radii for steric clashes
+//struct VDW radii2 = {3.0, 2.7, 2.8, 2.2, 2.7, 2.6, 2.2, 2.6, 2.2, 1.9};
 
 double getParam(struct VDW_params *param, char *atom_name)
 {
@@ -54,7 +58,7 @@ double mixedSigma(char *atom_one_name, char *atom_two_name)
 
 double pairVDWEnergy(double distance, double epsilon, double sigma)
 {
-  return 4*epsilon*( pow(sigma/(distance), 12) - pow(sigma/(distance), 6) );
+  return 4*epsilon*( pow(sigma/distance, 12) - pow(sigma/distance, 6) );
 }
 
 //calculate VDW or LJ Energy for protein
@@ -76,9 +80,8 @@ double calculateVDWEnergy(struct protein *prot, FILE *log)
         double *bond_vector = vectorSubtract(prot->atoms[i].coordinates,prot->atoms[j].coordinates);
         distance = vectorMagnitude(bond_vector);
         free(bond_vector);
-        if(distance <= 1.0 && ((isBackbone(prot->atoms[i].atom_type) && !isBackbone(prot->atoms[j].atom_type)) || (!isBackbone(prot->atoms[i].atom_type) && isBackbone(prot->atoms[j].atom_type)) ))
+        if(distance < 0.9 * getVDWRadii(&radii, prot->atoms[i].atom_name, prot->atoms[j].atom_name) && ((isBackbone(prot->atoms[i].atom_type) && !isBackbone(prot->atoms[j].atom_type)) || (!isBackbone(prot->atoms[i].atom_type) && isBackbone(prot->atoms[j].atom_type)) ))
         {
-          printf("%f %s %s %d %s %s %d\n", distance, prot->atoms[i].atom_type, prot->atoms[i].atom_name, prot->atoms[i].atom_number, prot->atoms[j].atom_type, prot->atoms[j].atom_name, prot->atoms[j].atom_number);
           return NAN;
         }
         mixed_sigma = mixedSigma(prot->atoms[i].atom_name, prot->atoms[j].atom_name);
