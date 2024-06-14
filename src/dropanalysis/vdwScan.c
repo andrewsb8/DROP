@@ -19,6 +19,7 @@ struct arguments
   int res_number;
   double resolution;
   bool bond_matrix;
+  double gamma;
 };
 
 static int vdwScanParse(int key, char *arg, struct argp_state *state)
@@ -56,6 +57,11 @@ static int vdwScanParse(int key, char *arg, struct argp_state *state)
         a->bond_matrix = atoi(arg);
         break;
       }
+      case 'g':
+      {
+        a->gamma = atof(arg);
+        break;
+      }
       case 'f':
       {
         break;
@@ -76,12 +82,13 @@ void vdwScan(int argc, char **argv, char *stringArgv)
     { "resnum", 'n', "INT", 0, "Residue Number for analysis. Default: 2 (first amino acid will typically not have both backbone angles defined)." },
     { "resolution", 'r', "DOUBLE", 0, "Resolution of Ramachandran space (and therefore dihedral rotation magnitude). Default: 2 deg" },
     { "bond_matrix", 'b', "[Boolean]", 0, "Choose whether or not to print bond matrix to log file. Default: true" },
+    { "gamma", 'g', "[Boolean]", 0, "Factor for cutoff for allowed states based on steric cutoffs. Default: 1.0" },
     { "", 'f', "", OPTION_HIDDEN, "" }, //gets rid of error for -f flag
     { 0 }
   };
 
   //DEFAULTS
-  struct arguments args = {NULL, "rama.txt", "drop.log", 2, 2, 1};
+  struct arguments args = {NULL, "rama.txt", "drop.log", 2, 2, 1, 1.0};
   //parse options
   struct argp vdwScanArgp = { vdwScanOptions, vdwScanParse, 0, 0 };
   argp_parse(&vdwScanArgp, argc, argv, 0, 0, &args);
@@ -184,7 +191,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
       //chi 1 loop
       for (int k = 0; k < range; k++)
       {
-        energy = calculateVDWEnergy(&prot, log);
+        energy = calculateVDWEnergy(&prot, args.gamma, log);
         if(!isnan(energy))
         {
           energy_sum += energy;

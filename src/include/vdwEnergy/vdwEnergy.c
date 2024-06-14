@@ -62,7 +62,7 @@ double pairVDWEnergy(double distance, double epsilon, double sigma)
 }
 
 //calculate VDW or LJ Energy for protein
-double calculateVDWEnergy(struct protein *prot, FILE *log)
+double calculateVDWEnergy(struct protein *prot, double gamma, FILE *log)
 {
   double distance;
   double mixed_sigma;
@@ -80,7 +80,7 @@ double calculateVDWEnergy(struct protein *prot, FILE *log)
         double *bond_vector = vectorSubtract(prot->atoms[i].coordinates,prot->atoms[j].coordinates);
         distance = vectorMagnitude(bond_vector);
         free(bond_vector);
-        if(distance < 0.9 * getVDWRadii(&radii, prot->atoms[i].atom_name, prot->atoms[j].atom_name) && ((isBackbone(prot->atoms[i].atom_type) && !isBackbone(prot->atoms[j].atom_type)) || (!isBackbone(prot->atoms[i].atom_type) && isBackbone(prot->atoms[j].atom_type)) ))
+        if(distance < gamma * getVDWRadii(&radii, prot->atoms[i].atom_name, prot->atoms[j].atom_name) && ((isBackbone(prot->atoms[i].atom_type) && !isBackbone(prot->atoms[j].atom_type)) || (!isBackbone(prot->atoms[i].atom_type) && isBackbone(prot->atoms[j].atom_type)) ))
         {
           return NAN;
         }
