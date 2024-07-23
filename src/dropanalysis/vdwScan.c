@@ -10,6 +10,7 @@
 #include "../include/dihedralRotation/dihedralRotation.h"
 #include "../include/vdwEnergy/vdwEnergy.h"
 #include "../include/fileHandling/fileHandling.h"
+#include "../include/logging/logging.h"
 
 struct arguments
 {
@@ -100,6 +101,12 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   //array -> [phi index, psi index, chi1 index, ..., chi5 index]
   //value is -1 for any dihedral not detected
   int *dihedral_indices = findDihedrals(&prot, args.res_number, log);
+  if(dihedral_indices[0] == -1 || dihedral_indices[1] == -1)
+  {
+      char *message[40];
+      sprintf(message, "ERROR: One or both backbone dihedral angles not found in residue %d not found. Exiting.\n", args.res_number);
+      drop_fatal(log, message);
+  }
 
   //set backbone dihedral angles to top left of Ramachandran distribution
   double phi_change = -179 - prot.dihedrals[dihedral_indices[0]].dihedral_angle ;
@@ -113,47 +120,93 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   prot.dihedrals[dihedral_indices[1]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[1]);
 
   //for now, just hard code loops for chi1, phi, and psi to do alanine and valine
-  /*FILE *output = fopen(args.output_file, "w+");
+  FILE *output = fopen(args.output_file, "w+");
   double range = 360 / args.resolution;
+  double norm_factor = 1; //normalization factor for averaging
+  //start at h=2 b/c 0 and 1 are phi and psi, only normalize for side chains
+  for(int h = 2; h < sizeDihedralList; h++)
+  {
+      if(dihedral_indices[h] != -1) //if index is -1, dihedral not detected
+      {
+        norm_factor *= range;
+      }
+  }
   double energy_sum = 0;
   double energy = 0;
-  int clashes = 0;
   char *message[40];
 
-  //loop for AAs with chi2
+  //loop through dihedrals - TO DO: maybe do recursion here?
   for(int i = 0; i < range; i++)
   {
     //psi loop
     for(int j = 0; j < range; j++)
     {
       double energy_sum = 0;
-      double norm = range*range; //normalization for AAs with 2 chi angles
+      double norm = norm_factor;
       //chi 1 loop
       for(int k = 0; k < range; k++)
       {
         //chi 2 loop
         for(int m = 0; m < range; m++)
         {
-          energy = calculateVDWEnergy(&prot, args.gamma, log);
-          if(!isnan(energy))
+          //chi3 loop
+          for(int n = 0; n < range; n++)
           {
-            energy_sum += energy;
-          }
-          else
-          {
-            norm = norm - 1; //subtract from normalization constant to reflect correct number of structures considered
-          }
-          rotateDihedral(&prot, chi2_index, args.resolution, 0);
-          prot.dihedrals[chi2_index].dihedral_angle = calculateDihedral(&prot, chi2_index);
+            //chi4 loop
+            for(int p = 0; p < range; p++)
+            {
+                //chi5 loop
+                for(int q = 0; q < range; q++)
+                {
+                    energy = calculateVDWEnergy(&prot, args.gamma);
+                    if(!isnan(energy))
+                    {
+                        energy_sum += energy;
+                    }
+                    else
+                    {
+                        norm = norm - 1; //subtract from normalization constant to reflect correct number of structures considered
+                    }
+                    if(dihedral_indices[6] != -1)
+                    {
+                        rotateDihedral(&prot, dihedral_indices[6], args.resolution, 0);
+                        prot.dihedrals[dihedral_indices[6]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[6]);
+                    }
+                    else{break;}
 
+                }
+
+                if(dihedral_indices[5] != -1)
+                {
+                    rotateDihedral(&prot, dihedral_indices[5], args.resolution, 0);
+                    prot.dihedrals[dihedral_indices[5]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[5]);
+                }
+                else {break;}
+
+            }
+
+            if(dihedral_indices[4] != -1)
+            {
+                rotateDihedral(&prot, dihedral_indices[4], args.resolution, 0);
+                prot.dihedrals[dihedral_indices[4]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[4]);
+            }
+            else {break;}
+          }
+
+          if(dihedral_indices[3] != -1)
+          {
+              rotateDihedral(&prot, dihedral_indices[3], args.resolution, 0);
+              prot.dihedrals[dihedral_indices[3]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[3]);
+          }
+          else {break;}
         }
 
-        rotateDihedral(&prot, chi2_index, args.resolution, 0);
-        prot.dihedrals[chi2_index].dihedral_angle = calculateDihedral(&prot, chi2_index);
-
-        rotateDihedral(&prot, chi1_index, args.resolution, 0);
-        prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
-
+        if(dihedral_indices[2] != -1)
+        {
+            rotateDihedral(&prot, dihedral_indices[2], args.resolution, 0);
+            prot.dihedrals[dihedral_indices[2]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[2]);
+        }
+        else {break;}
       }
 
       // if no side chain configurations exist without a steric clash, assign high energy
@@ -162,23 +215,23 @@ void vdwScan(int argc, char **argv, char *stringArgv)
         norm = 1;
       }
 
-      sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/norm);
+      sprintf(message, "%f %f %f\n", prot.dihedrals[dihedral_indices[0]].dihedral_angle, prot.dihedrals[dihedral_indices[1]].dihedral_angle, energy_sum/norm);
       printf("%s", message);
       writeFileLine(output, message);
 
-      rotateDihedral(&prot, psi_index, -args.resolution, 1);
-      prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
+      rotateDihedral(&prot, dihedral_indices[1], -args.resolution, 1);
+      prot.dihedrals[dihedral_indices[1]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[1]);
 
     }
 
     writeFileLine(output, "\n");
 
-    rotateDihedral(&prot, phi_index, args.resolution, 1);
-    prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
+    rotateDihedral(&prot, dihedral_indices[0], args.resolution, 1);
+    prot.dihedrals[dihedral_indices[0]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[0]);
 
-  }*/
+  }
 
-  //fclose(output);
+  fclose(output);
   fclose(log);
   return;
 }

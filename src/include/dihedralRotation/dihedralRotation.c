@@ -133,7 +133,7 @@ void updatePositions(struct protein *prot, double newPositions[3], int atomNumbe
   }
 }
 
-double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngleChange, bool backbone)
+void rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngleChange, bool backbone)
 {
   //translate all atoms such that the second atom of the dihedral of interest is at the origin
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1];
