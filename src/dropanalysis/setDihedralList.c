@@ -136,7 +136,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
       float angle = atof(stringT[3]);
 
       //find dihedral to change based on user input
-      int index = findDihedral(&prot, res_number, dih_type, log);
+      int index = findDihedral(&prot, res_number, dih_type);
 
       //is the angle being changed the backbone or side chain?
       bool backbone;

@@ -111,7 +111,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   processInput(&prot, args.input_file, log, 0, 0, stringArgv);
 
   //find dihedral to change based on user input
-  int index = findDihedral(&prot, args.res_number, args.dih_type, log);
+  int index = findDihedral(&prot, args.res_number, args.dih_type);
 
   //is the angle being changed the backbone or side chain?
   bool backbone;

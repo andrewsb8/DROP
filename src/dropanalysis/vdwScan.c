@@ -97,12 +97,14 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   FILE *log = fopen(args.log_file, "w");
   processInput(&prot, args.input_file, log, 1, args.bond_matrix, stringArgv);
 
-  /*TO DO
-  how to have loops depend on the number of chi angles?
-  rotate "highest" chi angle and have nested lists do the rest. check stericClashes at each step, then continue rotating
-  */
+  int *dihedral_indices = findDihedrals(&prot, args.res_number);
 
-  //set backbone dihedral angles to top left of Ramachandran distribution
+  for(int j = 0; j < 7; j++)
+  {
+      printf("%d\n", dihedral_indices[j]);
+  }
+
+  /*//set backbone dihedral angles to top left of Ramachandran distribution
   //might want a conditional here to avoid unnecessary processing...
   int phi_index = findDihedral(&prot, args.res_number, "phi", log);
   double phi_change = -179 - prot.dihedrals[phi_index].dihedral_angle ;
@@ -127,7 +129,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   int clashes = 0;
   char *message[40];
 
-  /*//loop for AAs with chi2
+  //loop for AAs with chi2
   for(int i = 0; i < range; i++)
   {
     //psi loop
@@ -185,57 +187,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
 
   }*/
 
-  //loop structure for only amino acids with a chi1
-  //phi loop
-  for(int i = 0; i < range; i++)
-  {
-    //psi loop
-    for(int j = 0; j < range; j++)
-    {
-      double energy_sum = 0;
-      double range_one = range; //copy range (normalization) so I can change the value for invalid structures
-      //chi 1 loop
-      for (int k = 0; k < range; k++)
-      {
-        energy = calculateVDWEnergy(&prot, args.gamma, log);
-        if(!isnan(energy))
-        {
-          energy_sum += energy;
-        }
-        else
-        {
-          range_one = range_one - 1; //subtract from normalization constant to reflect correct number of structures considered
-        }
-        rotateDihedral(&prot, chi1_index, args.resolution, 0);
-        prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
-      }
-
-      // if no side chain configurations exist without a steric clash, assign high energy
-      if(energy_sum == 0 && range_one == 0){
-        energy_sum = 500000;
-        range_one = 1;
-      }
-
-      sprintf(message, "%f %f %f\n", prot.dihedrals[phi_index].dihedral_angle, prot.dihedrals[psi_index].dihedral_angle, energy_sum/(range_one));
-      printf("%s", message);
-      writeFileLine(output, message);
-
-      rotateDihedral(&prot, chi1_index, args.resolution, 0);
-      prot.dihedrals[chi1_index].dihedral_angle = calculateDihedral(&prot, chi1_index);
-
-      rotateDihedral(&prot, psi_index, -args.resolution, 1);
-      prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
-
-    }
-
-    writeFileLine(output, "\n");
-
-    rotateDihedral(&prot, phi_index, args.resolution, 1);
-    prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
-
-  }
-
-  fclose(output);
+  //fclose(output);
   fclose(log);
   return;
 }
