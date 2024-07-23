@@ -1,3 +1,6 @@
+#ifndef READPROTEIN_H_
+#define READPROTEIN_H_
+
 struct _atoms
 {
   int atom_number;
@@ -67,6 +70,9 @@ struct protein
 static char *backbone_atom_list[15] = { "N" ,"H1", "H2", "H3", "HN", "HA", "HA1", "HA2", "CA", "C", "O", "OT", "OT1", "OT2", "HT2" };
 static int size_bb_atom_list = sizeof(backbone_atom_list) / sizeof(backbone_atom_list)[0];
 
+static char *DihedralList[7] = {"phi", "psi", "chi1", "chi2", "chi3", "chi4", "chi5"};
+static int sizeDihedralList = sizeof(DihedralList)/sizeof(DihedralList[0]);
+
 //dihedral definitions for use in identifyDihedrals
 static char *DihedralDefinitions[][5] = { //can't use int to set this array size?
   {"C", "N", "CA", "C", "phi"}, //phi
@@ -92,7 +98,7 @@ static char *DihedralDefinitions[][5] = { //can't use int to set this array size
   {"CD", "NE", "CZ", "NH1", "chi5"}, //Arg chi 5
   {"C", "C", "C", "C", "cust"} //dihedral for butane
 };
-static int numberDihedralTypes = sizeof(DihedralDefinitions)/sizeof(DihedralDefinitions[0]);
+static int numberDihedralDefinitions = sizeof(DihedralDefinitions)/sizeof(DihedralDefinitions[0]);
 
 void readPDB(struct protein *prot,char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix);
 bool isBackbone(char *atomtype);
@@ -112,3 +118,5 @@ void writePDB(struct protein *prot,char *filename,char type,int frame, bool cone
 void writePDBmultiframe(struct protein *prot, FILE *fp, int frame);
 void writePDBsingleframe(struct protein *prot, FILE *fp);
 void writePDBConect(struct protein *prot, FILE *fp);
+
+#endif

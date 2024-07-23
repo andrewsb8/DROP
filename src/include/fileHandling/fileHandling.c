@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "../exceptions/fatal.h"
+#include "../logging/logging.h"
 #include "../readProtein/readProtein.h"
 
 //does the file exist? returns -1 if not
@@ -27,4 +27,10 @@ void processInput(struct protein *prot, char *input_file, FILE *log, bool calc_b
 
   fprintf(log, "Done reading structure file: %s\n\n", input_file);
   return;
+}
+
+
+void writeFileLine(FILE *file, char *message)
+{
+  fprintf(file, message);
 }

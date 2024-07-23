@@ -8,7 +8,7 @@
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
 #include "../include/fileHandling/fileHandling.h"
-#include "../include/exceptions/fatal.h"
+#include "../include/logging/logging.h"
 
 struct arguments
 {
@@ -111,7 +111,13 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   processInput(&prot, args.input_file, log, 0, 0, stringArgv);
 
   //find dihedral to change based on user input
-  int index = findDihedral(&prot, args.res_number, args.dih_type, log);
+  int index = findDihedral(&prot, args.res_number, args.dih_type);
+  if(index == -1)
+  {
+    char *message[40];
+    sprintf(message, "ERROR: Dihedral type %s in residue %d not found. Exiting.\n", args.dih_type, args.res_number);
+    drop_fatal(log, message);
+  }
 
   //is the angle being changed the backbone or side chain?
   bool backbone;

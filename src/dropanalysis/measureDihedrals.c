@@ -60,7 +60,7 @@ void measureDihedrals(int argc, char **argv, char *stringArgv)
 {
   struct argp_option measureDihedralsOptions[] =
   {
-    { 0, 0, 0, 0, "./drop -f measureDihedral Options:\n" },
+    { 0, 0, 0, 0, "./drop -f measureDihedrals Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
     { "output", 'o', "[Output File]", 0, "Output file. Options: see -e for options." },
     { "log", 'l', "[Log File]", 0, "Output log file" },
