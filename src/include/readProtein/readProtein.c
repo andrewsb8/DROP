@@ -6,7 +6,7 @@
 #include <assert.h>
 
 #include "readProtein.h"
-#include "../exceptions/fatal.h"
+#include "../exceptions/exceptions.h"
 #include "../dihedralRotation/dihedralRotation.h"
 
 void readPDB(struct protein *prot, char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix)

@@ -99,11 +99,6 @@ void vdwScan(int argc, char **argv, char *stringArgv)
 
   int *dihedral_indices = findDihedrals(&prot, args.res_number);
 
-  for(int j = 0; j < 7; j++)
-  {
-      printf("%d\n", dihedral_indices[j]);
-  }
-
   /*//set backbone dihedral angles to top left of Ramachandran distribution
   //might want a conditional here to avoid unnecessary processing...
   int phi_index = findDihedral(&prot, args.res_number, "phi", log);

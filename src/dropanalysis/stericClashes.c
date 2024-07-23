@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 #include "stericClashes.h"
-#include "../include/exceptions/fatal.h"
+#include "../include/exceptions/exceptions.h"
 #include "../include/readProtein/readProtein.h"
 #include "../include/stericClash/stericClash.h"
 #include "../include/fileHandling/fileHandling.h"

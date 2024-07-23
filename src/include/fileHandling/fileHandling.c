@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "../exceptions/fatal.h"
+#include "../exceptions/exceptions.h"
 #include "../readProtein/readProtein.h"
 
 //does the file exist? returns -1 if not

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "fatal.h"
+#include "exceptions.h"
 
 void drop_fatal(FILE *log, char *message)
 {

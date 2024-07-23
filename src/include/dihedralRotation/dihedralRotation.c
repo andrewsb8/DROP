@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 
-#include "../exceptions/fatal.h"
+#include "../exceptions/exceptions.h"
 #include "../readProtein/readProtein.h"
 #include "../vectorCalculus/vectorCalculus.h"
 
