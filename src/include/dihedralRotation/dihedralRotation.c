@@ -103,12 +103,18 @@ int findDihedral(struct protein *prot, int rnum, char *dtype)
   return index;
 }
 
-int * findDihedrals(struct protein *prot, int rnum)
+int * findDihedrals(struct protein *prot, int rnum, FILE *log)
 {
     int *indices = malloc(sizeof(int) * sizeDihedralList);
     for(int i = 0; i < sizeDihedralList; i++)
     {
         indices[i] = findDihedral(prot, rnum, DihedralList[i]);
+        if(indices[i] == -1)
+        {
+            char *message[40];
+            sprintf(message, "Warning: Dihedral type %s in residue %d not found.\n", DihedralList[i], rnum);
+            drop_warning(log, message);
+        }
     }
     return indices;
 }

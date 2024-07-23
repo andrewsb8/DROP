@@ -97,7 +97,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   FILE *log = fopen(args.log_file, "w");
   processInput(&prot, args.input_file, log, 1, args.bond_matrix, stringArgv);
 
-  int *dihedral_indices = findDihedrals(&prot, args.res_number);
+  int *dihedral_indices = findDihedrals(&prot, args.res_number, log);
 
   /*//set backbone dihedral angles to top left of Ramachandran distribution
   //might want a conditional here to avoid unnecessary processing...
