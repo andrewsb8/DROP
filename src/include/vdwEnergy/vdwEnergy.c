@@ -62,7 +62,7 @@ double pairVDWEnergy(double distance, double epsilon, double sigma)
 }
 
 //calculate VDW or LJ Energy for protein
-double calculateVDWEnergy(struct protein *prot, double gamma, FILE *log)
+double calculateVDWEnergy(struct protein *prot, double gamma)
 {
   double distance;
   double mixed_sigma;

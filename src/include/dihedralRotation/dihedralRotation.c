@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 
-#include "../exceptions/fatal.h"
+#include "../logging/logging.h"
 #include "../readProtein/readProtein.h"
 #include "../vectorCalculus/vectorCalculus.h"
 
@@ -89,7 +89,7 @@ double determineSign(struct protein *prot, int dihedralNumber)
 }
 
 //find index associated with the relevant dihedral information
-int findDihedral(struct protein *prot, int rnum, char *dtype, FILE *log)
+int findDihedral(struct protein *prot, int rnum, char *dtype)
 {
   int index = -1;
   for (int i = 0; i < prot->number_of_dihedrals; i++)
@@ -100,19 +100,29 @@ int findDihedral(struct protein *prot, int rnum, char *dtype, FILE *log)
       index = i;
     }
   }
+  return index;
+}
 
-  if (index == -1)
-  {
-    char *message;
-    sprintf(message, "Error: dihedral angle %s in residue number %d was not found.\n", dtype, rnum);
-    drop_fatal(log, message);
-    free(message);
-  }
-  else
-  {
-    fprintf(log, "Found dihedral index: %d\n", index);
-    return index;
-  }
+int * findDihedrals(struct protein *prot, int rnum, FILE *log)
+{
+    int *indices = malloc(sizeof(int) * sizeDihedralList);
+    for(int i = 0; i < sizeDihedralList; i++)
+    {
+        indices[i] = findDihedral(prot, rnum, DihedralList[i]);
+        if(indices[i] == -1 && i > 2)
+        {
+            char *message[40];
+            sprintf(message, "Warning: Dihedral type %s in residue %d not found.\n", DihedralList[i], rnum);
+            drop_warning(log, message);
+        }
+        else if(indices[i] == -1 && i < 2)
+        {
+            char *message[40];
+            sprintf(message, "ERROR: Dihedral type %s in residue %d not found. Backbone dihedrals are required for this calculation.\n", DihedralList[i], rnum);
+            drop_fatal(log, message);
+        }
+    }
+    return indices;
 }
 
 void updatePositions(struct protein *prot, double newPositions[3], int atomNumber)
@@ -123,7 +133,7 @@ void updatePositions(struct protein *prot, double newPositions[3], int atomNumbe
   }
 }
 
-double rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngleChange, bool backbone)
+void rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAngleChange, bool backbone)
 {
   //translate all atoms such that the second atom of the dihedral of interest is at the origin
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1];
