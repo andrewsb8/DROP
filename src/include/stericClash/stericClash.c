@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdbool.h>
 
-
+//keep imports in this order to avoid type conflict error
 #include "../readProtein/readProtein.h"
 #include "stericClash.h"
 #include "../vectorCalculus/vectorCalculus.h"
@@ -20,7 +20,6 @@ struct VDW radii = {3.0, 2.7, 2.8, 2.2, 2.7, 2.6, 2.2, 2.6, 2.2, 1.9};
 int countClashes(struct protein *prot, FILE *log, bool list_clashes)
 {
   double distance;
-  double min_distance_allowed;
   int count = 0;
 
   if(list_clashes)
@@ -33,21 +32,21 @@ int countClashes(struct protein *prot, FILE *log, bool list_clashes)
   {
     for(int j = i+1; j < prot->number_of_atoms; j++)
     {
-      //check that at least x number of covalent bonds are between the atoms being compared
+      //check that at least 4 number of covalent bonds are between the atoms being compared
       if(prot->atoms[i].covalent_bondArray[j-i-1] > 3)
       {
         //if this condition is satisfied, check distance between atoms, and the difference of van der waals distances
-        double *bond_vector = vectorSubtract(prot->atoms[i].coordinates,prot->atoms[j].coordinates);
+        double *bond_vector = vectorSubtract(prot->atoms[i].coordinates, prot->atoms[j].coordinates);
         distance = vectorMagnitude(bond_vector);
         free(bond_vector);
-        min_distance_allowed = getVDWRadii(&radii, prot->atoms[i].atom_name, prot->atoms[j].atom_name);
+        double min_distance_allowed = getVDWRadii(&radii, prot->atoms[i].atom_name, prot->atoms[j].atom_name);
         if(distance < min_distance_allowed)
         {
-          count += 1;
           if(list_clashes)
           {
             fprintf(log, "Clash: (%s%d)-(%s%d) [%f, %f]\n", prot->atoms[i].atom_name, prot->atoms[i].atom_number, prot->atoms[j].atom_name, prot->atoms[j].atom_number, min_distance_allowed, distance);
           }
+          count += 1;
         }
       }
     }

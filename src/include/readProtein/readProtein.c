@@ -6,7 +6,7 @@
 #include <assert.h>
 
 #include "readProtein.h"
-#include "../exceptions/fatal.h"
+#include "../logging/logging.h"
 #include "../dihedralRotation/dihedralRotation.h"
 
 void readPDB(struct protein *prot, char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix)
@@ -454,7 +454,7 @@ void identifyDihedrals(struct protein *prot)
 
   prot->number_of_dihedrals = 0;
 
-  for(int m = 0; m < numberDihedralTypes; m++)
+  for(int m = 0; m < numberDihedralDefinitions; m++)
   {
     for(int n = 0; n < prot->number_of_bonds; n++)
     {

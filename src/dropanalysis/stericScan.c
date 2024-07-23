@@ -96,20 +96,20 @@ void stericScan(int argc, char **argv, char *stringArgv)
 
   //set backbone dihedral angles to top left of Ramachandran distribution
   //might want a conditional here to avoid unnecessary processing...
-  int phi_index = findDihedral(&prot, args.res_number, "phi", log);
+  int phi_index = findDihedral(&prot, args.res_number, "phi");
   double phi_change = -179 - prot.dihedrals[phi_index].dihedral_angle ;
   fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", "phi", args.res_number, phi_change);
   rotateDihedral(&prot, phi_index, phi_change, 1);
   prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
 
-  int psi_index = findDihedral(&prot, args.res_number, "psi", log);
+  int psi_index = findDihedral(&prot, args.res_number, "psi");
   double psi_change = 179 - prot.dihedrals[psi_index].dihedral_angle ;
   fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", "psi", args.res_number, psi_change);
   rotateDihedral(&prot, psi_index, psi_change, 1);
   prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
 
-  int chi1_index = findDihedral(&prot, args.res_number, "chi1", log);
-  int chi2_index = findDihedral(&prot, args.res_number, "chi2", log);
+  int chi1_index = findDihedral(&prot, args.res_number, "chi1");
+  int chi2_index = findDihedral(&prot, args.res_number, "chi2");
 
   //for now, just hard code loops for chi1, phi, and psi to do alanine and valine
   FILE *output = fopen(args.output_file, "w+");

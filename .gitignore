@@ -9,3 +9,4 @@ build
 copyright-template.txt
 /drop
 *.mpg
+/*.eps

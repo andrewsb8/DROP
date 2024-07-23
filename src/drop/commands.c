@@ -10,13 +10,16 @@
 #include "../dropanalysis/setDihedralList.h"
 #include "../dropanalysis/stericClashes.h"
 #include "../dropanalysis/stericScan.h"
+#include "../dropanalysis/vdwScan.h"
+
 
 const char *commandList[][2]={
   {"measureDihedrals", "Parses structure and provides log with structure and dihedral information."},
   {"setDihedral", "Change a single user-specified dihedral angle for a given residue."},
   {"setDihedralList", "Change several dihedrals from a user-provided input file with a list of dihedrals and angles."},
   {"stericClashes", "Counts the number of atomic overlaps according to atomic radii used by Ramachandran."},
-  {"stericScan", "Calculates the average number of steric clashes in amino acid structures in Ramachandran Space."}
+  {"stericScan", "Calculates the average number of steric clashes in amino acid structures in Ramachandran Space."},
+  {"vdwScan", "Calculates the average Lennard-Jones energy in amino acid structures in Ramachandran Space."}
 };
 const int commandListLen = sizeof(commandList)/sizeof(commandList[0]);
 
@@ -89,6 +92,11 @@ bool findCommand(char *func, int argc, char **argv)
   else if ( strcmp(func, commandList[4][0]) == 0 )
   {
     stericScan(argc, argv, stringArgv);
+    found = true;
+  }
+  else if ( strcmp(func, commandList[5][0]) == 0 )
+  {
+    vdwScan(argc, argv, stringArgv);
     found = true;
   }
 
