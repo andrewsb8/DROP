@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 
-#include "../exceptions/exceptions.h"
+#include "../logging/logging.h"
 #include "../readProtein/readProtein.h"
 #include "../vectorCalculus/vectorCalculus.h"
 
@@ -109,11 +109,17 @@ int * findDihedrals(struct protein *prot, int rnum, FILE *log)
     for(int i = 0; i < sizeDihedralList; i++)
     {
         indices[i] = findDihedral(prot, rnum, DihedralList[i]);
-        if(indices[i] == -1)
+        if(indices[i] == -1 && i > 2)
         {
             char *message[40];
             sprintf(message, "Warning: Dihedral type %s in residue %d not found.\n", DihedralList[i], rnum);
             drop_warning(log, message);
+        }
+        else if(indices[i] == -1 && i < 2)
+        {
+            char *message[40];
+            sprintf(message, "ERROR: Dihedral type %s in residue %d not found. Backbone dihedrals are required for this calculation.\n", DihedralList[i], rnum);
+            drop_fatal(log, message);
         }
     }
     return indices;

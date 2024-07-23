@@ -8,7 +8,7 @@
 #include "../include/readProtein/readProtein.h"
 #include "../include/dihedralRotation/dihedralRotation.h"
 #include "../include/fileHandling/fileHandling.h"
-#include "../include/exceptions/exceptions.h"
+#include "../include/logging/logging.h"
 
 struct arguments
 {

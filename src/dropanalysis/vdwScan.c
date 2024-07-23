@@ -97,27 +97,23 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   FILE *log = fopen(args.log_file, "w");
   processInput(&prot, args.input_file, log, 1, args.bond_matrix, stringArgv);
 
+  //array -> [phi index, psi index, chi1 index, ..., chi5 index]
+  //value is -1 for any dihedral not detected
   int *dihedral_indices = findDihedrals(&prot, args.res_number, log);
 
-  /*//set backbone dihedral angles to top left of Ramachandran distribution
-  //might want a conditional here to avoid unnecessary processing...
-  int phi_index = findDihedral(&prot, args.res_number, "phi", log);
-  double phi_change = -179 - prot.dihedrals[phi_index].dihedral_angle ;
+  //set backbone dihedral angles to top left of Ramachandran distribution
+  double phi_change = -179 - prot.dihedrals[dihedral_indices[0]].dihedral_angle ;
   fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", "phi", args.res_number, phi_change);
-  rotateDihedral(&prot, phi_index, phi_change, 1);
-  prot.dihedrals[phi_index].dihedral_angle = calculateDihedral(&prot, phi_index);
+  rotateDihedral(&prot, dihedral_indices[0], phi_change, 1);
+  prot.dihedrals[dihedral_indices[0]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[0]);
 
-  int psi_index = findDihedral(&prot, args.res_number, "psi", log);
-  double psi_change = 179 - prot.dihedrals[psi_index].dihedral_angle ;
+  double psi_change = 179 - prot.dihedrals[dihedral_indices[1]].dihedral_angle ;
   fprintf(log, "Changing dihedral angle %s in residue number %d by %f degrees.\n\n", "psi", args.res_number, psi_change);
-  rotateDihedral(&prot, psi_index, psi_change, 1);
-  prot.dihedrals[psi_index].dihedral_angle = calculateDihedral(&prot, psi_index);
-
-  int chi1_index = findDihedral(&prot, args.res_number, "chi1", log);
-  //int chi2_index = findDihedral(&prot, args.res_number, "chi2", log);
+  rotateDihedral(&prot, dihedral_indices[1], psi_change, 1);
+  prot.dihedrals[dihedral_indices[1]].dihedral_angle = calculateDihedral(&prot, dihedral_indices[1]);
 
   //for now, just hard code loops for chi1, phi, and psi to do alanine and valine
-  FILE *output = fopen(args.output_file, "w+");
+  /*FILE *output = fopen(args.output_file, "w+");
   double range = 360 / args.resolution;
   double energy_sum = 0;
   double energy = 0;
