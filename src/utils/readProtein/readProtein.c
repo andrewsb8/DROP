@@ -9,7 +9,7 @@
 #include "../logging/logging.h"
 #include "../dihedralRotation/dihedralRotation.h"
 
-void readPDB(struct protein *prot, char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix)
+void readPDB(struct protein *prot, char *filename, FILE *log, bool calc_bond_matrix, bool print_bond_matrix)
 {
   FILE *fp;
   char * line = NULL;
@@ -122,19 +122,19 @@ void readPDB(struct protein *prot, char *filename, FILE *log_file, bool calc_bon
   prot->number_of_atoms = line_number;
   prot->number_of_residues = prot->atoms[line_number-1].residue_number;
 
-  readPDBbonds(prot, filename, log_file, calc_bond_matrix, print_bond_matrix);
+  readPDBbonds(prot, filename, log, calc_bond_matrix, print_bond_matrix);
   identifyDihedrals(prot);
 
   //log initial dihedral angle values
-  fprintf(log_file, "Number of dihedrals identified in structure: %d\n", prot->number_of_dihedrals);
-  fprintf(log_file, "Calculating initial dihedral angles.\nColumns: Angle, Angle Type (phi, psi, etc), Residue Name, Residue Number, Dihedral Number\n");
+  fprintf(log, "Number of dihedrals identified in structure: %d\n", prot->number_of_dihedrals);
+  fprintf(log, "Calculating initial dihedral angles.\nColumns: Angle, Angle Type (phi, psi, etc), Residue Name, Residue Number, Dihedral Number\n");
 
   for(int i = 0; i < prot->number_of_dihedrals; i++)
   {
     prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
-    fprintf(log_file, "%f %s %s %d %d\n", prot->dihedrals[i].dihedral_angle, prot->dihedrals[i].dihedral_angType, prot->dihedrals[i].dihedral_resName, prot->dihedrals[i].dihedral_resNum, i);
+    fprintf(log, "%f %s %s %d %d\n", prot->dihedrals[i].dihedral_angle, prot->dihedrals[i].dihedral_angType, prot->dihedrals[i].dihedral_resName, prot->dihedrals[i].dihedral_resNum, i);
   }
-  fprintf(log_file, "\n");
+  fprintf(log, "\n");
 
 }
 
@@ -185,7 +185,7 @@ char * removeSpaces(char *string)
   return string;
 }
 
-void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool calc_bond_matrix, bool print_bond_matrix)
+void readPDBbonds(struct protein *prot, char *filename, FILE *log, bool calc_bond_matrix, bool print_bond_matrix)
 {
   FILE *fp;
   char * line = NULL;
@@ -258,7 +258,7 @@ void readPDBbonds(struct protein *prot, char *filename, FILE *log_file, bool cal
   if(calc_bond_matrix)
   {
     makeBondMatrix(prot);
-    countCovalentBonds(prot, log_file, print_bond_matrix);
+    countCovalentBonds(prot, log, print_bond_matrix);
   }
 
   printf("\n\n");
@@ -290,7 +290,7 @@ void makeBondMatrix(struct protein *prot)
 }
 
 //count covalent bonds between atoms i and j via recursive search using the CONECT records
-void countCovalentBonds(struct protein *prot, FILE *log_file, bool print_bond_matrix)
+void countCovalentBonds(struct protein *prot, FILE *log, bool print_bond_matrix)
 {
   int warning = 0;
   static int covalentBondCount = 0;
@@ -311,7 +311,7 @@ void countCovalentBonds(struct protein *prot, FILE *log_file, bool print_bond_ma
           "check your pdb file as the results will not be accurate with this structure. "
           "Dihedral angles may be unrecognized because bond information is missing. See "
           "your log file for more details and your covalent bond matrix.\n\n", warning);
-          fprintf(log_file, "WARNING %d: There is a zero in your covalent bond matrix. "
+          fprintf(log, "WARNING %d: There is a zero in your covalent bond matrix. "
           "This means you either:\n\n1. Have at least one noncovalently bonded atom "
           "in your structure.\n2. Are missing or have incorrect CONECT records.\n\nPlease "
           "check your pdb file as the results will not be accurate with this structure. "
@@ -325,11 +325,11 @@ void countCovalentBonds(struct protein *prot, FILE *log_file, bool print_bond_ma
 
   if(print_bond_matrix)
   {
-    printCovalentBondMatrix(prot, log_file);
+    printCovalentBondMatrix(prot, log);
   }
   else
   {
-    fprintf(log_file, "Not printing covalent bond matrix\n\n");
+    fprintf(log, "Not printing covalent bond matrix\n\n");
   }
   return;
 }
@@ -393,19 +393,19 @@ int recursivePairSearch(struct protein *prot, int previousAtom, int atom1, int a
 }
 
 //prints the covalent bond arrays, aka matrix. typically used only for log file after pdb processing.
-void printCovalentBondMatrix(struct protein *prot, FILE *log_file)
+void printCovalentBondMatrix(struct protein *prot, FILE *log)
 {
-  fprintf(log_file, "Covalent Bond Matrix:\n");
+  fprintf(log, "Covalent Bond Matrix:\n");
   for(int u = 0; u < prot->number_of_atoms; u++)
   {
     for(int v = 0; v < prot->atoms[u].len_covalent_bondArray; v++)
     {
-      fprintf(log_file, "%d ", prot->atoms[u].covalent_bondArray[v]);
+      fprintf(log, "%d ", prot->atoms[u].covalent_bondArray[v]);
     }
-    fprintf(log_file, "\n");
+    fprintf(log, "\n");
   }
 
-  fprintf(log_file, "\n\n");
+  fprintf(log, "\n\n");
   return;
 }
 
