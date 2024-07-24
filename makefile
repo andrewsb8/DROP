@@ -5,13 +5,13 @@ buildDir = $(pwd)
 compile:
 	gcc -c src/drop/drop.c
 	gcc -c src/drop/commands.c
-	gcc -c src/include/logging/logging.c
-	gcc -c src/include/readProtein/readProtein.c
-	gcc -c src/include/vectorCalculus/vectorCalculus.c
-	gcc -c src/include/dihedralRotation/dihedralRotation.c
-	gcc -c src/include/vdwEnergy/vdwEnergy.c
-	gcc -c src/include/stericClash/stericClash.c
-	gcc -c src/include/fileHandling/fileHandling.c
+	gcc -c src/utils/logging/logging.c
+	gcc -c src/utils/readProtein/readProtein.c
+	gcc -c src/utils/vectorCalculus/vectorCalculus.c
+	gcc -c src/utils/dihedralRotation/dihedralRotation.c
+	gcc -c src/utils/vdwEnergy/vdwEnergy.c
+	gcc -c src/utils/stericClash/stericClash.c
+	gcc -c src/utils/fileHandling/fileHandling.c
 	gcc -c src/dropanalysis/setDihedral.c
 	gcc -c src/dropanalysis/setDihedralList.c
 	gcc -c src/dropanalysis/measureDihedrals.c

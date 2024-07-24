@@ -6,11 +6,11 @@
 #include <stdbool.h>
 
 #include "vdwScan.h"
-#include "../include/readProtein/readProtein.h"
-#include "../include/dihedralRotation/dihedralRotation.h"
-#include "../include/vdwEnergy/vdwEnergy.h"
-#include "../include/fileHandling/fileHandling.h"
-#include "../include/logging/logging.h"
+#include "../utils/readProtein/readProtein.h"
+#include "../utils/dihedralRotation/dihedralRotation.h"
+#include "../utils/vdwEnergy/vdwEnergy.h"
+#include "../utils/fileHandling/fileHandling.h"
+#include "../utils/logging/logging.h"
 
 struct arguments
 {

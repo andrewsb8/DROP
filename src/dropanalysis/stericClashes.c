@@ -5,10 +5,10 @@
 #include <stdbool.h>
 
 #include "stericClashes.h"
-#include "../include/logging/logging.h"
-#include "../include/readProtein/readProtein.h"
-#include "../include/stericClash/stericClash.h"
-#include "../include/fileHandling/fileHandling.h"
+#include "../utils/logging/logging.h"
+#include "../utils/readProtein/readProtein.h"
+#include "../utils/stericClash/stericClash.h"
+#include "../utils/fileHandling/fileHandling.h"
 
 struct arguments
 {

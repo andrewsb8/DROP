@@ -5,8 +5,8 @@
 #include <stdbool.h>
 
 #include "measureDihedrals.h"
-#include "../include/readProtein/readProtein.h"
-#include "../include/fileHandling/fileHandling.h"
+#include "../utils/readProtein/readProtein.h"
+#include "../utils/fileHandling/fileHandling.h"
 
 struct arguments
 {

@@ -5,11 +5,11 @@
 #include <stdbool.h>
 
 #include "stericScan.h"
-#include "../include/readProtein/readProtein.h"
-#include "../include/dihedralRotation/dihedralRotation.h"
-#include "../include/stericClash/stericClash.h"
-#include "../include/fileHandling/fileHandling.h"
-#include "../include/logging/logging.h"
+#include "../utils/readProtein/readProtein.h"
+#include "../utils/dihedralRotation/dihedralRotation.h"
+#include "../utils/stericClash/stericClash.h"
+#include "../utils/fileHandling/fileHandling.h"
+#include "../utils/logging/logging.h"
 
 struct arguments
 {
