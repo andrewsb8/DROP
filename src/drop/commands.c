@@ -64,7 +64,7 @@ char * makeStringArgv(int argc, char **argv)
 
 bool findCommand(char *func, int argc, char **argv)
 {
-  bool found = false;
+  bool found = true;
   //make a string of argv arguments for the log file output
   char *stringArgv = makeStringArgv(argc, argv);
 
@@ -72,38 +72,33 @@ bool findCommand(char *func, int argc, char **argv)
   if ( strcmp(func, commandList[0][0]) == 0 )
   {
     measureDihedrals(argc, argv, stringArgv);
-    found = true;
   }
   else if ( strcmp(func, commandList[1][0]) == 0 )
   {
     setDihedral(argc, argv, stringArgv);
-    found = true;
   }
   else if ( strcmp(func, commandList[2][0]) == 0 )
   {
     setDihedralList(argc, argv, stringArgv);
-    found = true;
   }
   else if ( strcmp(func, commandList[3][0]) == 0 )
   {
     stericClashes(argc, argv, stringArgv);
-    found = true;
   }
   else if ( strcmp(func, commandList[4][0]) == 0 )
   {
     stericScan(argc, argv, stringArgv);
-    found = true;
   }
   else if ( strcmp(func, commandList[5][0]) == 0 )
   {
     vdwScan(argc, argv, stringArgv);
-    found = true;
   }
-
-  if(found)
+  else
   {
-    stripAllArgv(argc, argv); //all argv is made the null terminator so parser will not throw an error passing back to main
+    found = false;
   }
 
+  stripAllArgv(argc, argv); //all argv is made the null terminator so parser will not throw an error passing back to main
   return found;
+
 }
