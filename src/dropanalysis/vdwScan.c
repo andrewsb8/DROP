@@ -78,7 +78,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   {
     { 0, 0, 0, 0, "./drop -f stericScan Options:\n" },
     { "input", 'i', "[Input File]", 0, "Input pdb file" },
-    { "output", 'o', "[Output File]", 0, "Output .txt file with three columns: phi, psi, average number of clashes." },
+    { "output", 'o', "[Output File]", 0, "Output .txt file with three columns: phi, psi, average Lennard-Jones energy in kJ/mol" },
     { "log", 'l', "[Log File]", 0, "Output log file" },
     { "resnum", 'n', "INT", 0, "Residue Number for analysis. Default: 2 (first amino acid will typically not have both backbone angles defined)." },
     { "resolution", 'r', "DOUBLE", 0, "Resolution of Ramachandran space (and therefore dihedral rotation magnitude). Default: 2 deg" },

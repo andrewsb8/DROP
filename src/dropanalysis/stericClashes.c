@@ -5,7 +5,6 @@
 #include <stdbool.h>
 
 #include "stericClashes.h"
-#include "../utils/logging/logging.h"
 #include "../utils/readProtein/readProtein.h"
 #include "../utils/stericClash/stericClash.h"
 #include "../utils/fileHandling/fileHandling.h"
