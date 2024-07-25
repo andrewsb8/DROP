@@ -103,7 +103,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   int *dihedral_indices = findDihedrals(&prot, args.res_number, log);
   if(dihedral_indices[0] == -1 || dihedral_indices[1] == -1)
   {
-      char *message[40];
+      char message[89];
       sprintf(message, "ERROR: One or both backbone dihedral angles not found in residue %d not found. Exiting.\n", args.res_number);
       drop_fatal(log, message);
   }
@@ -133,7 +133,7 @@ void vdwScan(int argc, char **argv, char *stringArgv)
   }
   double energy_sum = 0;
   double energy = 0;
-  char *message[40];
+  char message[50];
 
   //loop through dihedrals - TO DO: maybe do recursion here?
   for(int i = 0; i < range; i++)
