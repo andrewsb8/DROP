@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <math.h>
 #include <stdbool.h>
 
 //keep imports in this order to avoid type conflict error
@@ -108,7 +106,7 @@ double getVDWRadii(struct VDW *radii, char *atom_name, char *atom_name_2)
           return radii->OH;
       }
     default :
-      printf("No atom name defined for %s.\n", *atom_name);
+      printf("No atom name defined for %s.\n", atom_name);
       break;
   }
 }
