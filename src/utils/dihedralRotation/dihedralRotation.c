@@ -235,7 +235,7 @@ void rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAng
 //between rotations.
 //For now, the rotation methods in this file translate protein back to position in
 //box. But that is ok for now.
-double rotateDihedral_noTranslate(struct protein *prot, int dihedralNumber, double dihedralAngleChange)
+void rotateDihedral_noTranslate(struct protein *prot, int dihedralNumber, double dihedralAngleChange)
 {
   int atom_to_origin = prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1] - 1;
   //rotate all atoms about the z axis by the desired change here
