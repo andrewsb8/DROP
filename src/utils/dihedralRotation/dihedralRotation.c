@@ -4,12 +4,9 @@
 #include <math.h>
 #include <stdbool.h>
 
-
 #include "../logging/logging.h"
 #include "../readProtein/readProtein.h"
 #include "../vectorCalculus/vectorCalculus.h"
-
-long double PI = 3.14159265358979323846264338327950288419716939937510L;
 
 double calculateDihedral(struct protein *prot, int dihedralNumber)
 {
@@ -32,7 +29,7 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
   norm = vectorMagnitude(cross1)*vectorMagnitude(cross2);
   dot = dotProduct(cross1, cross2);
   angle_in_rads = acosl( dot/norm );
-  angle = (180/PI)*angle_in_rads;
+  angle = (180/M_PI)*angle_in_rads;
 
   double ip = dotProduct(vec1, doublecross);
   if (ip < 0)
@@ -184,7 +181,7 @@ void rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAng
   {
     for(int i = atom_rotation_index-1; i < prot->number_of_atoms; i++)
     {
-      double *tmp = vectorRotate(prot->atoms[i].coordinates,2,(PI/180.0)*dihedralAngleChange);
+      double *tmp = vectorRotate(prot->atoms[i].coordinates,2,(M_PI/180.0)*dihedralAngleChange);
       updatePositions(prot, tmp, i);
       free(tmp);
     }
@@ -203,7 +200,7 @@ void rotateDihedral(struct protein *prot, int dihedralNumber, double dihedralAng
       }
       if(found == 1)
       {
-        double *tmp = vectorRotate(prot->atoms[prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[k]-1].coordinates,2,(PI/180.0)*dihedralAngleChange);
+        double *tmp = vectorRotate(prot->atoms[prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[k]-1].coordinates,2,(M_PI/180.0)*dihedralAngleChange);
         updatePositions(prot, tmp, prot->residues[prot->dihedrals[dihedralNumber].dihedral_resNum-1].sidechain_atoms[k]-1);
         free(tmp);
       }
@@ -244,7 +241,7 @@ double rotateDihedral_noTranslate(struct protein *prot, int dihedralNumber, doub
   //rotate all atoms about the z axis by the desired change here
   for(int i = atom_to_origin+1; i < prot->number_of_atoms; i++)
   {
-    double *tmp = vectorRotate(prot->atoms[i].coordinates,2,(PI/180.0)*dihedralAngleChange);
+    double *tmp = vectorRotate(prot->atoms[i].coordinates,2,(M_PI/180.0)*dihedralAngleChange);
     updatePositions(prot, tmp, i);
     free(tmp);
   }
