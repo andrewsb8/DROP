@@ -131,7 +131,7 @@ void readPDB(struct protein *prot, char *filename, FILE *log, bool calc_bond_mat
   for(int i = 0; i < prot->number_of_dihedrals; i++)
   {
     prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
-    fprintf(log, "%f %s %s %d %d\n", prot->dihedrals[i].dihedral_angle, prot->dihedrals[i].dihedral_angType, prot->dihedrals[i].dihedral_resName, prot->dihedrals[i].dihedral_resNum, i);
+    fprintf(log, "%f %s %s %d %d\n", prot->dihedrals[i].dihedral_angle, *prot->dihedrals[i].dihedral_angType, *prot->dihedrals[i].dihedral_resName, prot->dihedrals[i].dihedral_resNum, i);
   }
   fprintf(log, "\n");
 
