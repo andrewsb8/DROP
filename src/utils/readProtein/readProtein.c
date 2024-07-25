@@ -474,11 +474,11 @@ void identifyDihedrals(struct protein *prot)
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] = prot->bonds[p].bond_atomNumbers[0];
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[3] = prot->bonds[p].bond_atomNumbers[1];
 
-                strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_angType, DihedralDefinitions[m][4]);
+                *prot->dihedrals[prot->number_of_dihedrals].dihedral_angType = DihedralDefinitions[m][4];
 
                 //residue is identified by third atom in dihedral because that will always be in the ith residue. Could have used second atom also.
                 //this will not work if omega is to be incorporated. but currently no plans to do so.
-                strcpy(prot->dihedrals[prot->number_of_dihedrals].dihedral_resName, prot->atoms[ prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] -1 ].residue);
+                *prot->dihedrals[prot->number_of_dihedrals].dihedral_resName = prot->atoms[ prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] -1 ].residue;
                 prot->dihedrals[prot->number_of_dihedrals].dihedral_resNum = prot->atoms[ prot->dihedrals[prot->number_of_dihedrals].dihedral_atomNumbers[2] -1 ].residue_number;
 
                 prot->number_of_dihedrals += 1;

@@ -86,13 +86,13 @@ double determineSign(struct protein *prot, int dihedralNumber)
 }
 
 //find index associated with the relevant dihedral information
-int findDihedral(struct protein *prot, int rnum, char dtype[5])
+int findDihedral(struct protein *prot, int rnum, char *dtype)
 {
   int index = -1;
   for (int i = 0; i < prot->number_of_dihedrals; i++)
   {
     if ( rnum == prot->dihedrals[i].dihedral_resNum &&
-         strcmp(dtype, prot->dihedrals[i].dihedral_angType) == 0 )
+         strcmp(dtype, *prot->dihedrals[i].dihedral_angType) == 0 )
     {
       index = i;
     }
