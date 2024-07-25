@@ -79,7 +79,7 @@ void measureDihedrals(int argc, char **argv, char *stringArgv)
     fprintf(dih_list, "#resnum residue dihedral-angle angle\n");
     for(int i = 0; i < prot.number_of_dihedrals; i++)
     {
-      fprintf(dih_list, "%d %s %s %f\n", prot.dihedrals[i].dihedral_resNum, prot.dihedrals[i].dihedral_resName, prot.dihedrals[i].dihedral_angType, prot.dihedrals[i].dihedral_angle);
+      fprintf(dih_list, "%d %s %s %f\n", prot.dihedrals[i].dihedral_resNum, *prot.dihedrals[i].dihedral_resName, *prot.dihedrals[i].dihedral_angType, prot.dihedrals[i].dihedral_angle);
     }
     fclose(dih_list);
   }
