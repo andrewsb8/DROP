@@ -114,7 +114,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
     {
       //parse space separated line - residue number dihedral type dihedral angle
       char *line_split = strtok(line, " \t");
-      char *stringT[4][10];
+      char stringT[4][10];
       int count = 0;
       while(line_split != NULL)
       {
@@ -125,7 +125,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
 
       if(count != 4)
       {
-        char *message[40];
+        char message[120];
         sprintf(message, "ERROR: Line in dihedral list has more or fewer than 4 elements in line %s of the input dihedral list. Exiting.\n", line);
         drop_fatal(log, message);
       }
@@ -139,7 +139,7 @@ void setDihedralList(int argc, char **argv, char *stringArgv)
       int index = findDihedral(&prot, res_number, dih_type);
       if(index == -1)
       {
-        char *message[40];
+        char message[70];
         sprintf(message, "ERROR: Dihedral type %s in residue %d on line %s not found. Exiting.\n", dih_type, res_number, line);
         drop_fatal(log, message);
       }
