@@ -86,7 +86,7 @@ double determineSign(struct protein *prot, int dihedralNumber)
 }
 
 //find index associated with the relevant dihedral information
-int findDihedral(struct protein *prot, int rnum, char *dtype)
+int findDihedral(struct protein *prot, int rnum, char dtype[5])
 {
   int index = -1;
   for (int i = 0; i < prot->number_of_dihedrals; i++)
@@ -108,13 +108,13 @@ int * findDihedrals(struct protein *prot, int rnum, FILE *log)
         indices[i] = findDihedral(prot, rnum, DihedralList[i]);
         if(indices[i] == -1 && i > 2)
         {
-            char *message[40];
+            char message[120];
             sprintf(message, "Warning: Dihedral type %s in residue %d not found.\n", DihedralList[i], rnum);
             drop_warning(log, message);
         }
         else if(indices[i] == -1 && i < 2)
         {
-            char *message[40];
+            char message[120];
             sprintf(message, "ERROR: Dihedral type %s in residue %d not found. Backbone dihedrals are required for this calculation.\n", DihedralList[i], rnum);
             drop_fatal(log, message);
         }
