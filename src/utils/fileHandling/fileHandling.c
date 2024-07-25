@@ -30,5 +30,5 @@ void processInput(struct protein *prot, char *input_file, FILE *log, bool calc_b
 
 void writeFileLine(FILE *file, char *message)
 {
-  fprintf(file, message);
+  fprintf(file, "%s", message);
 }
