@@ -517,30 +517,29 @@ void printXYZ(struct protein *prot)
 
 void writeXYZ(struct protein *prot, char *filename, char *comment, char type, int frame, int rank)
 {
-  FILE *fp;
-  fp = fopen(filename, "w");
-
   //use type variable to decide if writing a multiframe or single frame xyz
   switch(type){
     case 'm' :
       //printf("Writing multi-frame xyz file.\n");
-      writeXYZmultiframe(prot, fp, comment, frame, rank);
+      writeXYZmultiframe(prot, filename, comment, frame, rank);
       break;
     case 's' :
       fprintf(stderr, "Writing single-structure xyz file.\n");
-      writeXYZsingleframe(prot, fp, comment, rank);
+      writeXYZsingleframe(prot, filename, comment, rank);
       fprintf(stderr, "Completed XYZ structure generation. Filename: %s.\n", filename);
       break;
     default :
       printf("Please specify single-structure (s) or multi-frame (m) xyz option.\n");
       break;
   }
-  fclose(fp);
   return;
 }
 
-void writeXYZsingleframe(struct protein *prot, FILE *fp, char *comment, int rank)
+void writeXYZsingleframe(struct protein *prot, char *filename, char *comment, int rank)
 {
+  FILE *fp;
+  fp = fopen(filename, "w");
+
   fprintf(fp, "%d\n", prot->number_of_atoms);
   fprintf(fp, "Comment: %s\n", comment);
   for(int i = 0; i < prot->number_of_atoms; i++)
