@@ -3,21 +3,24 @@
 
 #include "logging.h"
 
-void drop_fatal(FILE *log, char *message)
+void
+drop_fatal (FILE * log, char *message)
 {
-  fprintf(log, "%s", message);
-  fprintf(stderr, "%s", message);
-  exit(1);
+  fprintf (log, "%s", message);
+  fprintf (stderr, "%s", message);
+  exit (1);
 }
 
-void drop_warning(FILE *log, char *message)
+void
+drop_warning (FILE * log, char *message)
 {
-  fprintf(log, "%s", message);
-  fprintf(stderr, "%s", message);
+  fprintf (log, "%s", message);
+  fprintf (stderr, "%s", message);
 }
 
-void drop_info(FILE *log, char *message)
+void
+drop_info (FILE * log, char *message)
 {
-  fprintf(log, "%s", message);
-  fprintf(stderr, "%s", message);
+  fprintf (log, "%s", message);
+  fprintf (stderr, "%s", message);
 }

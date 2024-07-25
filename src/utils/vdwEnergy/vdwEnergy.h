@@ -9,10 +9,10 @@ struct VDW_params
   double H;
 };
 
-double getParam(struct VDW_params *param, char * atom_name);
-double mixedEpsilon(char * atom_one_name, char * atom_two_name);
-double mixedSigma(char * atom_one_name, char * atom_two_name);
-double pairVDWEnergy(double distance, double epsilon, double sigma);
-double calculateVDWEnergy(struct protein *prot, double gamma);
+double getParam (struct VDW_params *param, char *atom_name);
+double mixedEpsilon (char *atom_one_name, char *atom_two_name);
+double mixedSigma (char *atom_one_name, char *atom_two_name);
+double pairVDWEnergy (double distance, double epsilon, double sigma);
+double calculateVDWEnergy (struct protein *prot, double gamma);
 
 #endif
