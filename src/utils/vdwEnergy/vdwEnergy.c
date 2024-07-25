@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
 #include <stdbool.h>
 
@@ -33,7 +32,7 @@ double getParam(struct VDW_params *param, char *atom_name)
     case 'H' :
       return param->H;
     default :
-      printf("No atom name defined for %s.\n", *atom_name);
+      printf("No atom name defined for %s.\n", atom_name);
       break;
   }
 }
