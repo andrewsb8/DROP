@@ -304,17 +304,14 @@ void countCovalentBonds(struct protein *prot, FILE *log, bool print_bond_matrix)
         if (covalentBondCount == 0)
         {
           warning = warning + 1;
-          fprintf(stderr, "WARNING %d: There is a zero in your covalent bond matrix. "
+          char message[500];
+          sprintf(message, "WARNING %d: There is a zero in your covalent bond matrix. "
           "This means you either:\n\n1. Have at least one noncovalently bonded atyom "
           "in your structure.\n2. Are missing or have incorrect CONECT records.\n\nPlease "
           "check your pdb file as the results will not be accurate with this structure. "
           "Dihedral angles may be unrecognized because bond information is missing. See "
           "your log file for more details and your covalent bond matrix.\n\n", warning);
-          fprintf(log, "WARNING %d: There is a zero in your covalent bond matrix. "
-          "This means you either:\n\n1. Have at least one noncovalently bonded atom "
-          "in your structure.\n2. Are missing or have incorrect CONECT records.\n\nPlease "
-          "check your pdb file as the results will not be accurate with this structure. "
-          "Dihedral angles may be unrecognized because bond information is missing.\n\n", warning);
+          drop_warning(log, message);
         }
         prot->atoms[h].covalent_bondArray[p-h-1] = covalentBondCount;
         covalentBondCount = 0;
