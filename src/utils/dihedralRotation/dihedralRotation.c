@@ -53,37 +53,6 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
   return signedAngle;
 }
 
-//temp function to be removed, returns sign of angle between vectors
-double determineSign(struct protein *prot, int dihedralNumber)
-{
-  double *vec1 = vectorSubtract(prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[0] - 1].coordinates, prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1] - 1].coordinates);
-  double *vec2 = vectorSubtract(prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[1] - 1].coordinates, prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] - 1].coordinates);
-  double *vec3 = vectorSubtract(prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] - 1].coordinates, prot->atoms[prot->dihedrals[dihedralNumber].dihedral_atomNumbers[3] - 1].coordinates);
-
-  double *cross1 = crossProduct(vec1,vec2);
-  double *cross2 = crossProduct(vec2,vec3);
-
-  double *doublecross = crossProduct(cross1, cross2);
-
-  double ip = dotProduct(vec1, doublecross);
-
-  free(vec1);
-  free(vec2);
-  free(vec3);
-  free(cross1);
-  free(cross2);
-  free(doublecross);
-
-  if (ip < 0)
-  {
-    return -1;
-  }
-  else
-  {
-    return 1;
-  }
-
-}
 
 //find index associated with the relevant dihedral information
 int findDihedral(struct protein *prot, int rnum, char *dtype)
