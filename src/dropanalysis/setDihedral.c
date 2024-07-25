@@ -114,7 +114,7 @@ void setDihedral(int argc, char **argv, char *stringArgv)
   int index = findDihedral(&prot, args.res_number, args.dih_type);
   if(index == -1)
   {
-    char *message[40];
+    char message[70];
     sprintf(message, "ERROR: Dihedral type %s in residue %d not found. Exiting.\n", args.dih_type, args.res_number);
     drop_fatal(log, message);
   }
