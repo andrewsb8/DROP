@@ -2,6 +2,8 @@ SHELL := /bin/bash
 #PATH  := node_modules/.bin:$(PATH)
 buildDir = $(pwd)
 
+all: compile
+
 compile:
 	gcc -c src/drop/drop.c
 	gcc -c src/drop/commands.c
@@ -21,4 +23,14 @@ compile:
 	gcc -o drop drop.o commands.o logging.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o dihedralRotation.o vectorCalculus.o fileHandling.o vdwEnergy.o stericClashes.o stericClash.o stericScan.o vdwScan.o -lm
 	rm *.o
 
-all: compile
+
+TESTFLAGS=-Wall -Wextra -Wconversion -Wredundant-decls -Wshadow -Wno-unused-parameter -O3
+
+test:
+	gcc $(TESTFLAGS) -c tests/test_main.c
+	gcc $(TESTFLAGS) -c tests/test_cases/mytests.c
+	gcc test_main.o mytests.o -o test_binary -lm
+	./test_binary
+
+testclean:
+	rm *.o test_binary
