@@ -11,6 +11,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modified by: Brian Andrews (August 2024)
  */
 
 #include <stdio.h>
@@ -27,8 +29,5 @@
 int main(int argc, const char *argv[])
 {
     int result = ctest_main(argc, argv);
-
-    printf("\nNOTE: some tests will fail, just to show how ctest works! ;)\n");
     return result;
 }
-
