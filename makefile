@@ -27,9 +27,7 @@ compile:
 TESTFLAGS=-Wall -Wextra -Wconversion -Wredundant-decls -Wshadow -Wno-unused-parameter -Wno-unused-variable -Wno-unused-result -O3
 
 test:
-	gcc $(TESTFLAGS) -c tests/test_main.c
-	gcc $(TESTFLAGS) -c tests/test_cases/mytests.c
-	gcc -c src/utils/readProtein/readProtein.c
-	gcc test_main.o mytests.o readProtein.o -o test_binary -lm
+	gcc $(TESTFLAGS) -c tests/test_drop.c
+	gcc test_drop.o -o test_binary -lm
 	-./test_binary
 	rm *.o test_binary
