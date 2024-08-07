@@ -11,7 +11,6 @@ START_TEST(test_version_output) {
         ck_abort_msg("Failed to run drop");
     }
 
-    /* Read the output. */
     fgets(path, sizeof(path)-1, fp);
     pclose(fp);
     ck_assert_str_eq(path, "DROP Version 0.0.1\n");

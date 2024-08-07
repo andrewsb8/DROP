@@ -24,10 +24,10 @@ compile:
 	rm *.o
 
 
-TESTFLAGS=-Wall -Wextra -Wconversion -Wredundant-decls -Wshadow -Wno-unused-parameter -Wno-unused-variable -Wno-unused-result -O3
+TESTFLAGS=-Iinclude -Wall -Wextra -g -lcheck -lm
 
 test:
 	gcc $(TESTFLAGS) -c tests/test_drop.c
-	gcc test_drop.o -o test_binary -lm
+	gcc test_drop.o -o test_binary
 	-./test_binary
 	rm *.o test_binary
