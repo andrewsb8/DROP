@@ -15,8 +15,9 @@ fileExists (char *filename)
 void
 printArgv (FILE * log, int argc, char **argv)
 {
-  fprintf(log, "Command line: ");
-  for (int i = 0; i < argc; i++)
+  //argp puts command at end of argv after parsing
+  fprintf(log, "Command line: %s %s ", argv[0], argv[argc-1]);
+  for (int i = 1; i < argc-1; i++)
 	{
 	  fprintf(log, "%s ", argv[i]);
 	}
