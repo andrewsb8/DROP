@@ -33,8 +33,8 @@ void
 printCommandList ()
 {
 
-  fprintf (stderr, "These are the commands available:\n\n");
-  fprintf (stderr, "EXAMPLE > #: function - description -\n\n");
+  fprintf (stderr, "These are the commands available:\n");
+  fprintf (stderr, "EXAMPLE > #: function - description -\n");
 
   for (int i = 0; i < commandListLen; i++)
 	{
@@ -43,7 +43,7 @@ printCommandList ()
 		{
 		  fprintf (stderr, "%s - ", commandList[i][j]);
 		}
-	  fprintf (stderr, "\n\n");
+	  fprintf (stderr, "\n");
 	}
 }
 

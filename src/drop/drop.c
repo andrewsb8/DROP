@@ -5,6 +5,7 @@
 
 #include "commands.h"
 
+const char *usage_messg = "USAGE: drop command [OPTIONS]. Use drop -? or drop --help for more information.\n";
 const char *program_bug_address =
   "https://github.com/andrewsb8/DROP/issues";
 const char *program_version = "DROP Version 0.0.1";
@@ -16,11 +17,14 @@ main (int argc, char *argv[])
 {
   if (argc < 2)
       {
-          fprintf(stderr, "usage message\n");
+          fprintf(stderr, "%s", usage_messg);
       }
   else if (strcmp(argv[1], "-?") == 0 || strcmp(argv[1], "--help") == 0)
       {
-          fprintf(stderr, "this is the help message\n");
+          fprintf(stderr, "Welcome to %s\n", program_version);
+          printCommandList();
+          fprintf(stderr, "Use drop command -? for more information.\n");
+          fprintf(stderr, "Report bugs to: %s\n", program_bug_address);
       }
   else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
       {
@@ -31,7 +35,7 @@ main (int argc, char *argv[])
       if (!findCommand (argc, argv))
           {
               fprintf(stderr, "Command %s not recognized.\n", argv[1]);
-              //print usage
+              fprintf(stderr, "%s", usage_messg);
           }
   }
   return 0;
