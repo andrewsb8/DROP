@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <argp.h>
@@ -48,22 +47,11 @@ printCommandList ()
 	}
 }
 
-//assigns all of argv to the null terminator
-void
-stripAllArgv (int argc, char **argv)
-{
-  for (int i = 0; i < argc; i++)
-	{
-	  argv[i] = "\0";
-	}
-}
-
 //makes a string of argv to print command line to log
 char *
 makeStringArgv (int argc, char **argv)
 {
-  char *strng;
-  strcpy (strng, argv[0]);
+  char *strng = argv[0];
   for (int i = 1; i < argc; i++)
 	{
 	  strcat (strng, " ");
@@ -75,9 +63,14 @@ makeStringArgv (int argc, char **argv)
 bool
 findCommand (char *func, int argc, char **argv)
 {
+  fprintf(stderr, "%s\n", func);
+  fprintf(stderr, "%d\n", strcmp(func, commandList[0][0]));
   bool found = true;
   //make a string of argv arguments for the log file output
   char *stringArgv = makeStringArgv (argc, argv);
+
+  fprintf(stderr, "erased?: %s\n", func);
+  fprintf(stderr, "%d\n", strcmp(func, commandList[0][0]));
 
   //search available commands or functions
   if (strcmp (func, commandList[0][0]) == 0)
@@ -109,7 +102,6 @@ findCommand (char *func, int argc, char **argv)
 	  found = false;
 	}
 
-  stripAllArgv (argc, argv);	//all argv is made the null terminator so parser will not throw an error passing back to main
   return found;
 
 }
