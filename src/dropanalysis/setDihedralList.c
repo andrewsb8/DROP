@@ -72,10 +72,10 @@ setDihedralListParse (int key, char *arg, struct argp_state *state)
 }
 
 void
-setDihedralList (int argc, char **argv, char *stringArgv)
+setDihedralList (int argc, char **argv)
 {
   struct argp_option setDihedralListOptions[] = {
-	{0, 0, 0, 0, "./drop -f setDihedralList Options:\n"},
+	{0, 0, 0, 0, "./drop setDihedralList Options:\n"},
 	{"input", 'i', "[Input File]", 0, "Input pdb file"},
 	{"input_dih_list", 'd', "[Input Dihedral List File]", 0,
 	 "Input pdb file"},
@@ -87,7 +87,6 @@ setDihedralList (int argc, char **argv, char *stringArgv)
 	 "Include CONECT records in PDB. 0 does not print conect. Default: 0."},
 	{"bond_matrix", 'b', "[Boolean]", 0,
 	 "Choose whether or not to print bond matrix to log file. Default: true"},
-	{"", 'f', "", OPTION_HIDDEN, ""},	//gets rid of error for -f flag
 	{0}
   };
 
@@ -108,7 +107,7 @@ setDihedralList (int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen (args.log_file, "w");
-  processInput (&prot, args.input_file, log, 0, 0, stringArgv);
+  processInput (&prot, args.input_file, log, 0, 0, argc, argv);
 
   fprintf (log, "Starting structure manipulation from dihedral list: %s\n",
 		   args.input_dih_list);

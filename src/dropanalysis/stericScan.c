@@ -67,10 +67,10 @@ stericScanParse (int key, char *arg, struct argp_state *state)
 }
 
 void
-stericScan (int argc, char **argv, char *stringArgv)
+stericScan (int argc, char **argv)
 {
   struct argp_option stericScanOptions[] = {
-	{0, 0, 0, 0, "./drop -f stericScan Options:\n"},
+	{0, 0, 0, 0, "./drop stericScan Options:\n"},
 	{"input", 'i', "[Input File]", 0, "Input pdb file"},
 	{"output", 'o', "[Output File]", 0,
 	 "Output .txt file with three columns: phi, psi, average number of clashes."},
@@ -81,7 +81,6 @@ stericScan (int argc, char **argv, char *stringArgv)
 	 "Resolution of Ramachandran space (and therefore dihedral rotation magnitude). Default: 2 deg"},
 	{"bond_matrix", 'b', "[Boolean]", 0,
 	 "Choose whether or not to print bond matrix to log file. Default: true"},
-	{"", 'f', "", OPTION_HIDDEN, ""},	//gets rid of error for -f flag
 	{0}
   };
 
@@ -93,7 +92,7 @@ stericScan (int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen (args.log_file, "w");
-  processInput (&prot, args.input_file, log, 1, args.bond_matrix, stringArgv);
+  processInput (&prot, args.input_file, log, 1, args.bond_matrix, argc, argv);
 
   //array -> [phi index, psi index, chi1 index, ..., chi5 index]
   //value is -1 for any dihedral not detected

@@ -5,82 +5,38 @@
 
 #include "commands.h"
 
-const char *argp_program_bug_address =
+const char *usage_messg = "USAGE: drop command [OPTIONS]. Use drop -? or drop --help for more information.\n";
+const char *program_bug_address =
   "https://github.com/andrewsb8/DROP/issues";
-const char *argp_program_version = "DROP Version 0.0.1";
+const char *program_version = "DROP Version 0.0.1";
 static char doc[] =
-  "DROP (Dihedral Rotation Of Proteins) -- A tool to investigate protein structures via direct manipulation of dihedral angles and steric clash analysis.";
-
-int num_master_options_read = 0;
-
-static int
-parse_opt (int key, char *arg, struct argp_state *state)
-{
-  //only allow one "parent" option, -f or -c, to be executed at a time
-  if (num_master_options_read == 0)
-	{
-	  switch (key)
-		{
-		  //function definition case
-		case 'f':
-		  {
-			//NULL case is handled by requiring -f in struct argp_option
-			if (!findCommand (arg, state->argc, state->argv))
-			  {
-				fprintf (stderr,
-						 "This is not an option for -f. See argp -c for details.\n");
-				argp_usage (state);
-			  }
-			num_master_options_read++;
-			break;
-		  }
-
-		  //print list of available commands
-		case 'c':
-		  {
-			if ((arg == NULL))
-			  {
-				printCommandList ();
-			  }
-			else				//block currently does not execute
-			  {
-				fprintf (stderr,
-						 "This option does not accept an argument.\n");
-				argp_usage (state);
-			  }
-			num_master_options_read++;
-			break;
-		  }
-
-		case ARGP_KEY_END:
-		  {
-			// Not enough arguments.
-			if (state->arg_num < 2)
-			  {
-				fprintf (stderr, "No arguments provided.\n");
-				argp_usage (state);
-			  }
-			break;
-		  }
-		}
-	}
-  return 0;
-}
+  "DROP (Dihedral Rotation Of Proteins) -- A command line tool to investigate protein structures via direct manipulation of dihedral angles.";
 
 int
 main (int argc, char *argv[])
 {
-  static struct argp_option options[] = {
-	{"func", 'f', "[Function String]", 0,
-	 "Identify Function. Must be first option specified!"},
-	{"commands", 'c', 0, OPTION_ARG_OPTIONAL, "See options for -f"},
-	{0, 0, 0, 0,
-	 "To see options for a specific function: ./drop -f [FUNC] --help"},
-	{0, 0, 0, 0, "Informational Options:"},
-	{0}
-  };
-
-  struct argp argp = { options, parse_opt, 0, 0 };
-
-  return argp_parse (&argp, argc, argv, 0, 0, 0);
+  if (argc < 2)
+      {
+          fprintf(stderr, "%s", usage_messg);
+      }
+  else if (strcmp(argv[1], "-?") == 0 || strcmp(argv[1], "--help") == 0)
+      {
+          fprintf(stderr, "Welcome to %s\n", program_version);
+          printCommandList();
+          fprintf(stderr, "Use drop command -? for more information.\n");
+          fprintf(stderr, "Report bugs to: %s\n", program_bug_address);
+      }
+  else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
+      {
+          fprintf(stderr, "%s\n", program_version);
+      }
+  else
+  {
+      if (!findCommand (argc, argv))
+          {
+              fprintf(stderr, "Command %s not recognized.\n", argv[1]);
+              fprintf(stderr, "%s", usage_messg);
+          }
+  }
+  return 0;
 }

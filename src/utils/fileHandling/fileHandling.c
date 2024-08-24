@@ -13,10 +13,24 @@ fileExists (char *filename)
 }
 
 void
-processInput (struct protein *prot, char *input_file, FILE * log,
-			  bool calc_bond_matrix, bool print_bond_matrix, char *stringArgv)
+printArgv (FILE * log, int argc, char **argv)
 {
-  fprintf (log, "Command Line: %s\n\n", stringArgv);
+  //argp puts command at end of argv after parsing
+  fprintf(log, "Command line: %s %s ", argv[0], argv[argc-1]);
+  for (int i = 1; i < argc-1; i++)
+	{
+	  fprintf(log, "%s ", argv[i]);
+	}
+  fprintf(log, "\n\n");
+  return;
+}
+
+void
+processInput (struct protein *prot, char *input_file, FILE * log,
+			  bool calc_bond_matrix, bool print_bond_matrix, int argc, char **argv)
+{
+  //make a string of argv arguments for the log file output
+  printArgv (log, argc, argv);
   if (fileExists (input_file) == -1)
 	{
 	  drop_fatal (log, "ERROR: Input file does not exist. Exiting.\n");

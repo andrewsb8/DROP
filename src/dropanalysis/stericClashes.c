@@ -48,17 +48,16 @@ stericClashesParse (int key, char *arg, struct argp_state *state)
 }
 
 void
-stericClashes (int argc, char **argv, char *stringArgv)
+stericClashes (int argc, char **argv)
 {
   struct argp_option stericClashesOptions[] = {
-	{0, 0, 0, 0, "./drop -f stericClashes Options:\n"},
+	{0, 0, 0, 0, "./drop stericClashes Options:\n"},
 	{"input", 'i', "[Input File]", 0, "Input pdb file"},
 	{"log", 'l', "[Log File]", 0, "Output log file"},
 	{"bond_matrix", 'b', "[Boolean]", 0,
 	 "Choose whether or not to print bond matrix. Default: true"},
 	{"list_clashes", 'c', "[Boolean]", 0,
 	 "Choose to list atomic clashes in log file. 0 does not print list. Default: 1."},
-	{"", 'f', "", OPTION_HIDDEN, ""},	//gets rid of error for -f flag
 	{0}
   };
 
@@ -71,7 +70,7 @@ stericClashes (int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen (args.log_file, "w");
-  processInput (&prot, args.input_file, log, 1, args.bond_matrix, stringArgv);
+  processInput (&prot, args.input_file, log, 1, args.bond_matrix, argc, argv);
 
   if (!args.list_clashes)
 	{
