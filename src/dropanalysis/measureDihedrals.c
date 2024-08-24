@@ -55,14 +55,13 @@ void
 measureDihedrals (int argc, char **argv)
 {
   struct argp_option measureDihedralsOptions[] = {
-	{0, 0, 0, 0, "./drop -f measureDihedrals Options:\n"},
+	{0, 0, 0, 0, "./drop measureDihedrals Options:\n"},
 	{"input", 'i', "[Input File]", 0, "Input pdb file"},
 	{"log", 'l', "[Log File]", 0, "Output log file"},
 	{"bond_matrix", 'b', "[Boolean]", 0,
 	 "Choose whether or not to print bond matrix to log file. Default: true"},
 	{"dihedral_list", 'd', "[Output File]", 0,
 	 "Optional output file name to print the dihedral information to a file that can be modified and used as an input file for setDihedralList."},
-	{"", 'f', "", OPTION_HIDDEN, ""},	//gets rid of error for -f flag
 	{0}
   };
 

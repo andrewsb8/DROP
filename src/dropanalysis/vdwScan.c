@@ -77,7 +77,7 @@ void
 vdwScan (int argc, char **argv)
 {
   struct argp_option vdwScanOptions[] = {
-	{0, 0, 0, 0, "./drop -f stericScan Options:\n"},
+	{0, 0, 0, 0, "./drop stericScan Options:\n"},
 	{"input", 'i', "[Input File]", 0, "Input pdb file"},
 	{"output", 'o', "[Output File]", 0,
 	 "Output .txt file with three columns: phi, psi, average Lennard-Jones energy in kJ/mol"},
@@ -90,7 +90,6 @@ vdwScan (int argc, char **argv)
 	 "Choose whether or not to print bond matrix to log file. Default: true"},
 	{"gamma", 'g', "[Boolean]", 0,
 	 "Factor for cutoff for allowed states based on steric cutoffs. Default: 1.0"},
-	{"", 'f', "", OPTION_HIDDEN, ""},	//gets rid of error for -f flag
 	{0}
   };
 

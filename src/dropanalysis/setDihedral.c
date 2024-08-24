@@ -87,7 +87,7 @@ void
 setDihedral (int argc, char **argv)
 {
   struct argp_option setDihedralOptions[] = {
-	{0, 0, 0, 0, "./drop -f setDihedral Options:\n"},
+	{0, 0, 0, 0, "./drop setDihedral Options:\n"},
 	{"input", 'i', "[Input File]", 0, "Input pdb file"},
 	{"output", 'o', "[Output File]", 0,
 	 "Output file. Options: see -e for options."},
@@ -101,7 +101,6 @@ setDihedral (int argc, char **argv)
 	 "Include CONECT records in PDB. 0 does not print conect. Default: 0."},
 	{"bond_matrix", 'b', "[Boolean]", 0,
 	 "Choose whether or not to print bond matrix to log file. Default: true"},
-	{"", 'f', "", OPTION_HIDDEN, ""},	//gets rid of error for -f flag
 	{0}
   };
 
