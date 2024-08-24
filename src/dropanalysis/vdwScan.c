@@ -74,7 +74,7 @@ vdwScanParse (int key, char *arg, struct argp_state *state)
 }
 
 void
-vdwScan (int argc, char **argv, char *stringArgv)
+vdwScan (int argc, char **argv)
 {
   struct argp_option vdwScanOptions[] = {
 	{0, 0, 0, 0, "./drop -f stericScan Options:\n"},
@@ -102,7 +102,7 @@ vdwScan (int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen (args.log_file, "w");
-  processInput (&prot, args.input_file, log, 1, args.bond_matrix, stringArgv);
+  processInput (&prot, args.input_file, log, 1, args.bond_matrix, argc, argv);
 
   //array -> [phi index, psi index, chi1 index, ..., chi5 index]
   //value is -1 for any dihedral not detected

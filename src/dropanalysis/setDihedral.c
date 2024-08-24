@@ -84,7 +84,7 @@ setDihedralParse (int key, char *arg, struct argp_state *state)
 }
 
 void
-setDihedral (int argc, char **argv, char *stringArgv)
+setDihedral (int argc, char **argv)
 {
   struct argp_option setDihedralOptions[] = {
 	{0, 0, 0, 0, "./drop -f setDihedral Options:\n"},
@@ -115,7 +115,7 @@ setDihedral (int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen (args.log_file, "w");
-  processInput (&prot, args.input_file, log, 0, 0, stringArgv);
+  processInput (&prot, args.input_file, log, 0, 0, argc, argv);
 
   //find dihedral to change based on user input
   int index = findDihedral (&prot, args.res_number, args.dih_type);

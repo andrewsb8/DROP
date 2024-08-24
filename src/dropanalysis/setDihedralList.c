@@ -72,7 +72,7 @@ setDihedralListParse (int key, char *arg, struct argp_state *state)
 }
 
 void
-setDihedralList (int argc, char **argv, char *stringArgv)
+setDihedralList (int argc, char **argv)
 {
   struct argp_option setDihedralListOptions[] = {
 	{0, 0, 0, 0, "./drop -f setDihedralList Options:\n"},
@@ -108,7 +108,7 @@ setDihedralList (int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen (args.log_file, "w");
-  processInput (&prot, args.input_file, log, 0, 0, stringArgv);
+  processInput (&prot, args.input_file, log, 0, 0, argc, argv);
 
   fprintf (log, "Starting structure manipulation from dihedral list: %s\n",
 		   args.input_dih_list);

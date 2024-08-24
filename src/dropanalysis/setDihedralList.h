@@ -3,6 +3,6 @@
 
 static int setDihedralListParse (int key, char *arg,
 								 struct argp_state *state);
-void setDihedralList (int argc, char **argv, char *stringArgv);
+void setDihedralList (int argc, char **argv);
 
 #endif

@@ -14,7 +14,6 @@ static char doc[] =
 int
 main (int argc, char *argv[])
 {
-  fprintf(stderr, "%s\n", argv[1]);
   if (strcmp(argv[1], "-?") == 0 || strcmp(argv[1], "--help") == 0)
       {
           fprintf(stderr, "this is the help message\n");
@@ -25,7 +24,7 @@ main (int argc, char *argv[])
       }
   else
   {
-      if (!findCommand (argv[1], argc, argv))
+      if (!findCommand (argc, argv))
           {
               fprintf(stderr, "Command %s not recognized.\n", argv[1]);
               //print usage

@@ -47,55 +47,35 @@ printCommandList ()
 	}
 }
 
-//makes a string of argv to print command line to log
-char *
-makeStringArgv (int argc, char **argv)
-{
-  char *strng = argv[0];
-  for (int i = 1; i < argc; i++)
-	{
-	  strcat (strng, " ");
-	  strcat (strng, argv[i]);
-	}
-  return strng;
-}
-
 bool
-findCommand (char *func, int argc, char **argv)
+findCommand (int argc, char **argv)
 {
-  fprintf(stderr, "%s\n", func);
-  fprintf(stderr, "%d\n", strcmp(func, commandList[0][0]));
   bool found = true;
-  //make a string of argv arguments for the log file output
-  char *stringArgv = makeStringArgv (argc, argv);
-
-  fprintf(stderr, "erased?: %s\n", func);
-  fprintf(stderr, "%d\n", strcmp(func, commandList[0][0]));
 
   //search available commands or functions
-  if (strcmp (func, commandList[0][0]) == 0)
+  if (strcmp (argv[1], commandList[0][0]) == 0)
 	{
-	  measureDihedrals (argc, argv, stringArgv);
+	  measureDihedrals (argc, argv);
 	}
-  else if (strcmp (func, commandList[1][0]) == 0)
+  else if (strcmp (argv[1], commandList[1][0]) == 0)
 	{
-	  setDihedral (argc, argv, stringArgv);
+	  setDihedral (argc, argv);
 	}
-  else if (strcmp (func, commandList[2][0]) == 0)
+  else if (strcmp (argv[1], commandList[2][0]) == 0)
 	{
-	  setDihedralList (argc, argv, stringArgv);
+	  setDihedralList (argc, argv);
 	}
-  else if (strcmp (func, commandList[3][0]) == 0)
+  else if (strcmp (argv[1], commandList[3][0]) == 0)
 	{
-	  stericClashes (argc, argv, stringArgv);
+	  stericClashes (argc, argv);
 	}
-  else if (strcmp (func, commandList[4][0]) == 0)
+  else if (strcmp (argv[1], commandList[4][0]) == 0)
 	{
-	  stericScan (argc, argv, stringArgv);
+	  stericScan (argc, argv);
 	}
-  else if (strcmp (func, commandList[5][0]) == 0)
+  else if (strcmp (argv[1], commandList[5][0]) == 0)
 	{
-	  vdwScan (argc, argv, stringArgv);
+	  vdwScan (argc, argv);
 	}
   else
 	{

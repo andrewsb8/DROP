@@ -12,10 +12,25 @@ fileExists (char *filename)
   return access (filename, F_OK);
 }
 
+//makes a string of argv to print command line to log
+char *
+makeStringArgv (int argc, char **argv)
+{
+  char *strng = argv[0];
+  for (int i = 1; i < argc; i++)
+	{
+	  strcat (strng, " ");
+	  strcat (strng, argv[i]);
+	}
+  return strng;
+}
+
 void
 processInput (struct protein *prot, char *input_file, FILE * log,
-			  bool calc_bond_matrix, bool print_bond_matrix, char *stringArgv)
+			  bool calc_bond_matrix, bool print_bond_matrix, int argc, char **argv)
 {
+  //make a string of argv arguments for the log file output
+  char *stringArgv = makeStringArgv (argc, argv);
   fprintf (log, "Command Line: %s\n\n", stringArgv);
   if (fileExists (input_file) == -1)
 	{

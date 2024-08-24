@@ -52,7 +52,7 @@ measureDihedralsParse (int key, char *arg, struct argp_state *state)
 }
 
 void
-measureDihedrals (int argc, char **argv, char *stringArgv)
+measureDihedrals (int argc, char **argv)
 {
   struct argp_option measureDihedralsOptions[] = {
 	{0, 0, 0, 0, "./drop -f measureDihedrals Options:\n"},
@@ -75,7 +75,7 @@ measureDihedrals (int argc, char **argv, char *stringArgv)
 
   struct protein prot;
   FILE *log = fopen (args.log_file, "w");
-  processInput (&prot, args.input_file, log, 0, 0, stringArgv);
+  processInput (&prot, args.input_file, log, 0, 0, argc, argv);
 
   if (args.dihedral_list)
 	{

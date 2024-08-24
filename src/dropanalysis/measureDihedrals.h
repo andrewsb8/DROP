@@ -3,6 +3,6 @@
 
 static int measureDihedralsParse (int key, char *arg,
 								  struct argp_state *state);
-void measureDihedrals (int argc, char **argv, char *stringArgv);
+void measureDihedrals (int argc, char **argv);
 
 #endif
