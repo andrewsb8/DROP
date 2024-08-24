@@ -14,7 +14,11 @@ static char doc[] =
 int
 main (int argc, char *argv[])
 {
-  if (strcmp(argv[1], "-?") == 0 || strcmp(argv[1], "--help") == 0)
+  if (argc < 2)
+      {
+          fprintf(stderr, "usage message\n");
+      }
+  else if (strcmp(argv[1], "-?") == 0 || strcmp(argv[1], "--help") == 0)
       {
           fprintf(stderr, "this is the help message\n");
       }
