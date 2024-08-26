@@ -4,7 +4,7 @@
 extern const char *commandList[][2];	/* list of commands and descriptions */
 extern const int commandListLen;	/* number of commands */
 
-void printCommandList ();
-bool findCommand (int argc, char **argv);
+void printCommandList();
+bool findCommand(int argc, char **argv);
 
 #endif
