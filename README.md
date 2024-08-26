@@ -51,4 +51,4 @@ If you use this work for research or presentations, please consider citing this 
 
 The ```indent``` package is used to format this code with the following command:
 
-```indent -linux [input file]```
+```indent -kr -ts4 [input file]```

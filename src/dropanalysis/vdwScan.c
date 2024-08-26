@@ -73,20 +73,25 @@ static int vdwScanParse(int key, char *arg, struct argp_state *state)
 void vdwScan(int argc, char **argv)
 {
 	struct argp_option vdwScanOptions[] = {
-		{0, 0, 0, 0, "./drop stericScan Options:\n"},
-		{"input", 'i', "[Input File]", 0, "Input pdb file"},
-		{"output", 'o', "[Output File]", 0,
-		 "Output .txt file with three columns: phi, psi, average Lennard-Jones energy in kJ/mol"},
-		{"log", 'l', "[Log File]", 0, "Output log file"},
-		{"resnum", 'n', "INT", 0,
-		 "Residue Number for analysis. Default: 2 (first amino acid will typically not have both backbone angles defined)."},
-		{"resolution", 'r', "DOUBLE", 0,
-		 "Resolution of Ramachandran space (and therefore dihedral rotation magnitude). Default: 2 deg"},
-		{"bond_matrix", 'b', "[Boolean]", 0,
-		 "Choose whether or not to print bond matrix to log file. Default: true"},
-		{"gamma", 'g', "[Boolean]", 0,
-		 "Factor for cutoff for allowed states based on steric cutoffs. Default: 1.0"},
-		{0}
+		{ 0, 0, 0, 0, "./drop stericScan Options:\n" },
+		{ "input", 'i', "[Input File]", 0, "Input pdb file" },
+		{ "output", 'o', "[Output File]", 0,
+		 "Output .txt file with three columns: phi, psi, average Lennard-Jones energy in kJ/mol"
+		 },
+		{ "log", 'l', "[Log File]", 0, "Output log file" },
+		{ "resnum", 'n', "INT", 0,
+		 "Residue Number for analysis. Default: 2 (first amino acid will typically not have both backbone angles defined)."
+		 },
+		{ "resolution", 'r', "DOUBLE", 0,
+		 "Resolution of Ramachandran space (and therefore dihedral rotation magnitude). Default: 2 deg"
+		 },
+		{ "bond_matrix", 'b', "[Boolean]", 0,
+		 "Choose whether or not to print bond matrix to log file. Default: true"
+		 },
+		{ "gamma", 'g', "[Boolean]", 0,
+		 "Factor for cutoff for allowed states based on steric cutoffs. Default: 1.0"
+		 },
+		{ 0 }
 	};
 
 	//DEFAULTS
@@ -98,7 +103,7 @@ void vdwScan(int argc, char **argv)
 	struct protein prot;
 	FILE *log = fopen(args.log_file, "w");
 	processInput(&prot, args.input_file, log, 1, args.bond_matrix, argc,
-		     argv);
+				 argv);
 
 	//array -> [phi index, psi index, chi1 index, ..., chi5 index]
 	//value is -1 for any dihedral not detected
@@ -106,33 +111,33 @@ void vdwScan(int argc, char **argv)
 	if (dihedral_indices[0] == -1 || dihedral_indices[1] == -1) {
 		char message[89];
 		sprintf(message,
-			"ERROR: One or both backbone dihedral angles not found in residue %d not found. Exiting.\n",
-			args.res_number);
+				"ERROR: One or both backbone dihedral angles not found in residue %d not found. Exiting.\n",
+				args.res_number);
 		drop_fatal(log, message);
 	}
 	//set backbone dihedral angles to top left of Ramachandran distribution
 	double phi_change =
-	    -179 - prot.dihedrals[dihedral_indices[0]].dihedral_angle;
+		-179 - prot.dihedrals[dihedral_indices[0]].dihedral_angle;
 	fprintf(log,
-		"Changing dihedral angle %s in residue number %d by %f degrees.\n\n",
-		"phi", args.res_number, phi_change);
+			"Changing dihedral angle %s in residue number %d by %f degrees.\n\n",
+			"phi", args.res_number, phi_change);
 	rotateDihedral(&prot, dihedral_indices[0], phi_change, 1);
 	prot.dihedrals[dihedral_indices[0]].dihedral_angle =
-	    calculateDihedral(&prot, dihedral_indices[0]);
+		calculateDihedral(&prot, dihedral_indices[0]);
 
 	double psi_change =
-	    179 - prot.dihedrals[dihedral_indices[1]].dihedral_angle;
+		179 - prot.dihedrals[dihedral_indices[1]].dihedral_angle;
 	fprintf(log,
-		"Changing dihedral angle %s in residue number %d by %f degrees.\n\n",
-		"psi", args.res_number, psi_change);
+			"Changing dihedral angle %s in residue number %d by %f degrees.\n\n",
+			"psi", args.res_number, psi_change);
 	rotateDihedral(&prot, dihedral_indices[1], psi_change, 1);
 	prot.dihedrals[dihedral_indices[1]].dihedral_angle =
-	    calculateDihedral(&prot, dihedral_indices[1]);
+		calculateDihedral(&prot, dihedral_indices[1]);
 
 	//for now, just hard code loops for chi1, phi, and psi to do alanine and valine
 	FILE *output = fopen(args.output_file, "w+");
 	double range = 360 / args.resolution;
-	double norm_factor = 1;	//normalization factor for averaging
+	double norm_factor = 1;		//normalization factor for averaging
 	//start at h=2 b/c 0 and 1 are phi and psi, only normalize for side chains
 	for (int h = 2; h < sizeDihedralList; h++) {
 		if (dihedral_indices[h] != -1)	//if index is -1, dihedral not detected
@@ -159,38 +164,25 @@ void vdwScan(int argc, char **argv)
 						//chi4 loop
 						for (int p = 0; p < range; p++) {
 							//chi5 loop
-							for (int q = 0;
-							     q < range; q++) {
+							for (int q = 0; q < range; q++) {
 								energy =
-								    calculateVDWEnergy
-								    (&prot,
-								     args.
-								     gamma);
-								if (!isnan
-								    (energy)) {
-									energy_sum
-									    +=
-									    energy;
+									calculateVDWEnergy(&prot, args.gamma);
+								if (!isnan(energy)) {
+									energy_sum += energy;
 								} else {
 									norm = norm - 1;	//subtract from normalization constant to reflect correct number of structures considered
 								}
 								if (dihedral_indices[6] != -1) {
 									rotateDihedral
-									    (&prot,
-									     dihedral_indices
-									     [6],
-									     args.
-									     resolution,
-									     0);
-									prot.
-									    dihedrals
-									    [dihedral_indices
-									     [6]].dihedral_angle
-									    =
-									    calculateDihedral
-									    (&prot,
-									     dihedral_indices
-									     [6]);
+										(&prot,
+										 dihedral_indices
+										 [6], args.resolution, 0);
+									prot.dihedrals
+										[dihedral_indices
+										 [6]].dihedral_angle
+										=
+										calculateDihedral
+										(&prot, dihedral_indices[6]);
 								} else {
 									break;
 								}
@@ -198,23 +190,17 @@ void vdwScan(int argc, char **argv)
 							}
 
 							if (dihedral_indices[5]
-							    != -1) {
+								!= -1) {
 								rotateDihedral
-								    (&prot,
-								     dihedral_indices
-								     [5],
-								     args.
-								     resolution,
-								     0);
-								prot.
-								    dihedrals
-								    [dihedral_indices
-								     [5]].dihedral_angle
-								    =
-								    calculateDihedral
-								    (&prot,
-								     dihedral_indices
-								     [5]);
+									(&prot,
+									 dihedral_indices
+									 [5], args.resolution, 0);
+								prot.dihedrals
+									[dihedral_indices
+									 [5]].dihedral_angle
+									=
+									calculateDihedral
+									(&prot, dihedral_indices[5]);
 							} else {
 								break;
 							}
@@ -223,20 +209,13 @@ void vdwScan(int argc, char **argv)
 
 						if (dihedral_indices[4] != -1) {
 							rotateDihedral(&prot,
-								       dihedral_indices
-								       [4],
-								       args.
-								       resolution,
-								       0);
-							prot.
-							    dihedrals
-							    [dihedral_indices
-							     [4]].
-							    dihedral_angle =
-							    calculateDihedral
-							    (&prot,
-							     dihedral_indices
-							     [4]);
+										   dihedral_indices
+										   [4], args.resolution, 0);
+							prot.dihedrals
+								[dihedral_indices
+								 [4]].dihedral_angle =
+								calculateDihedral
+								(&prot, dihedral_indices[4]);
 						} else {
 							break;
 						}
@@ -244,17 +223,11 @@ void vdwScan(int argc, char **argv)
 
 					if (dihedral_indices[3] != -1) {
 						rotateDihedral(&prot,
-							       dihedral_indices
-							       [3],
-							       args.resolution,
-							       0);
-						prot.
-						    dihedrals[dihedral_indices
-							      [3]].
-						    dihedral_angle =
-						    calculateDihedral(&prot,
-								      dihedral_indices
-								      [3]);
+									   dihedral_indices
+									   [3], args.resolution, 0);
+						prot.dihedrals[dihedral_indices
+									   [3]].dihedral_angle =
+							calculateDihedral(&prot, dihedral_indices[3]);
 					} else {
 						break;
 					}
@@ -262,13 +235,10 @@ void vdwScan(int argc, char **argv)
 
 				if (dihedral_indices[2] != -1) {
 					rotateDihedral(&prot,
-						       dihedral_indices[2],
-						       args.resolution, 0);
-					prot.dihedrals[dihedral_indices[2]].
-					    dihedral_angle =
-					    calculateDihedral(&prot,
-							      dihedral_indices
-							      [2]);
+								   dihedral_indices[2],
+								   args.resolution, 0);
+					prot.dihedrals[dihedral_indices[2]].dihedral_angle =
+						calculateDihedral(&prot, dihedral_indices[2]);
 				} else {
 					break;
 				}
@@ -281,17 +251,16 @@ void vdwScan(int argc, char **argv)
 			}
 
 			sprintf(message, "%f %f %f\n",
-				prot.dihedrals[dihedral_indices[0]].
-				dihedral_angle,
-				prot.dihedrals[dihedral_indices[1]].
-				dihedral_angle, energy_sum / norm);
+					prot.dihedrals[dihedral_indices[0]].dihedral_angle,
+					prot.dihedrals[dihedral_indices[1]].dihedral_angle,
+					energy_sum / norm);
 			printf("%s", message);
 			writeFileLine(output, message);
 
 			rotateDihedral(&prot, dihedral_indices[1],
-				       -args.resolution, 1);
+						   -args.resolution, 1);
 			prot.dihedrals[dihedral_indices[1]].dihedral_angle =
-			    calculateDihedral(&prot, dihedral_indices[1]);
+				calculateDihedral(&prot, dihedral_indices[1]);
 
 		}
 
@@ -299,7 +268,7 @@ void vdwScan(int argc, char **argv)
 
 		rotateDihedral(&prot, dihedral_indices[0], args.resolution, 1);
 		prot.dihedrals[dihedral_indices[0]].dihedral_angle =
-		    calculateDihedral(&prot, dihedral_indices[0]);
+			calculateDihedral(&prot, dihedral_indices[0]);
 
 	}
 

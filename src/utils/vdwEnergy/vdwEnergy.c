@@ -58,7 +58,7 @@ double mixedSigma(char *atom_one_name, char *atom_two_name)
 double pairVDWEnergy(double distance, double epsilon, double sigma)
 {
 	return 4 * epsilon * (pow(sigma / distance, 12) -
-			      pow(sigma / distance, 6));
+						  pow(sigma / distance, 6));
 }
 
 //calculate VDW or LJ Energy for protein
@@ -75,34 +75,28 @@ double calculateVDWEnergy(struct protein *prot, double gamma)
 			//check that at least 4 number of covalent bonds are between the atoms being compared
 			if (prot->atoms[i].covalent_bondArray[j - i - 1] > 3) {
 				double *bond_vector =
-				    vectorSubtract(prot->atoms[i].coordinates,
-						   prot->atoms[j].coordinates);
+					vectorSubtract(prot->atoms[i].coordinates,
+								   prot->atoms[j].coordinates);
 				distance = vectorMagnitude(bond_vector);
 				free(bond_vector);
 				if (distance <
-				    gamma * getVDWRadii(&radii,
-							prot->
-							atoms[i].atom_name,
-							prot->
-							atoms[j].atom_name)
-				    && ((isBackbone(prot->atoms[i].atom_type)
-					 && !isBackbone(prot->
-							atoms[j].atom_type))
-					||
-					(!isBackbone(prot->atoms[i].atom_type)
-					 && isBackbone(prot->
-						       atoms[j].atom_type)))) {
+					gamma * getVDWRadii(&radii,
+										prot->atoms[i].atom_name,
+										prot->atoms[j].atom_name)
+					&& ((isBackbone(prot->atoms[i].atom_type)
+						 && !isBackbone(prot->atoms[j].atom_type))
+						|| (!isBackbone(prot->atoms[i].atom_type)
+							&& isBackbone(prot->atoms[j].atom_type)))) {
 					return NAN;
 				}
 				mixed_sigma =
-				    mixedSigma(prot->atoms[i].atom_name,
-					       prot->atoms[j].atom_name);
+					mixedSigma(prot->atoms[i].atom_name,
+							   prot->atoms[j].atom_name);
 				mixed_epsilon =
-				    mixedEpsilon(prot->atoms[i].atom_name,
-						 prot->atoms[j].atom_name);
+					mixedEpsilon(prot->atoms[i].atom_name,
+								 prot->atoms[j].atom_name);
 				energy +=
-				    pairVDWEnergy(distance, mixed_epsilon,
-						  mixed_sigma);
+					pairVDWEnergy(distance, mixed_epsilon, mixed_sigma);
 			}
 		}
 	}

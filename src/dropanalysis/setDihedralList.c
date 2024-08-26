@@ -20,7 +20,8 @@ struct arguments {
 	bool bond_matrix;
 };
 
-static int setDihedralListParse(int key, char *arg, struct argp_state *state)
+static int setDihedralListParse(int key, char *arg,
+								struct argp_state *state)
 {
 	struct arguments *a = state->input;
 	switch (key) {
@@ -71,33 +72,35 @@ static int setDihedralListParse(int key, char *arg, struct argp_state *state)
 void setDihedralList(int argc, char **argv)
 {
 	struct argp_option setDihedralListOptions[] = {
-		{0, 0, 0, 0, "./drop setDihedralList Options:\n"},
-		{"input", 'i', "[Input File]", 0, "Input pdb file"},
-		{"input_dih_list", 'd', "[Input Dihedral List File]", 0,
-		 "Input pdb file"},
-		{"output", 'o', "[Output File]", 0,
-		 "Output file. Options: see -e for options."},
-		{"log", 'l', "[Log File]", 0, "Output log file"},
-		{"extension", 'e', "[Output File Extension]", 0,
-		 "Options: pdb, xyz"},
-		{"conect", 'c', "BOOL", 0,
-		 "Include CONECT records in PDB. 0 does not print conect. Default: 0."},
-		{"bond_matrix", 'b', "[Boolean]", 0,
-		 "Choose whether or not to print bond matrix to log file. Default: true"},
-		{0}
+		{ 0, 0, 0, 0, "./drop setDihedralList Options:\n" },
+		{ "input", 'i', "[Input File]", 0, "Input pdb file" },
+		{ "input_dih_list", 'd', "[Input Dihedral List File]", 0,
+		 "Input pdb file" },
+		{ "output", 'o', "[Output File]", 0,
+		 "Output file. Options: see -e for options." },
+		{ "log", 'l', "[Log File]", 0, "Output log file" },
+		{ "extension", 'e', "[Output File Extension]", 0,
+		 "Options: pdb, xyz" },
+		{ "conect", 'c', "BOOL", 0,
+		 "Include CONECT records in PDB. 0 does not print conect. Default: 0."
+		 },
+		{ "bond_matrix", 'b', "[Boolean]", 0,
+		 "Choose whether or not to print bond matrix to log file. Default: true"
+		 },
+		{ 0 }
 	};
 
 	//DEFAULTS
 	struct arguments args =
-	    { NULL, NULL, "output.pdb", "drop.log", "pdb", 0, 1 };
+		{ NULL, NULL, "output.pdb", "drop.log", "pdb", 0, 1 };
 	//parse options
 	struct argp setDihedralListArgp =
-	    { setDihedralListOptions, setDihedralListParse, 0, 0 };
+		{ setDihedralListOptions, setDihedralListParse, 0, 0 };
 	argp_parse(&setDihedralListArgp, argc, argv, 0, 0, &args);
 
 	if (fileExists(args.input_dih_list) == -1) {
 		fprintf(stderr,
-			"ERROR: Input dihedral list does not exist. Exiting.\n");
+				"ERROR: Input dihedral list does not exist. Exiting.\n");
 		exit(1);
 	}
 
@@ -105,8 +108,9 @@ void setDihedralList(int argc, char **argv)
 	FILE *log = fopen(args.log_file, "w");
 	processInput(&prot, args.input_file, log, 0, 0, argc, argv);
 
-	fprintf(log, "Starting structure manipulation from dihedral list: %s\n",
-		args.input_dih_list);
+	fprintf(log,
+			"Starting structure manipulation from dihedral list: %s\n",
+			args.input_dih_list);
 	FILE *dih_list;
 	char *line = NULL;
 	size_t len = 0;
@@ -127,8 +131,8 @@ void setDihedralList(int argc, char **argv)
 			if (count != 4) {
 				char message[120];
 				sprintf(message,
-					"ERROR: Line in dihedral list has more or fewer than 4 elements in line %s of the input dihedral list. Exiting.\n",
-					line);
+						"ERROR: Line in dihedral list has more or fewer than 4 elements in line %s of the input dihedral list. Exiting.\n",
+						line);
 				drop_fatal(log, message);
 			}
 
@@ -142,14 +146,14 @@ void setDihedralList(int argc, char **argv)
 			if (index == -1) {
 				char message[70];
 				sprintf(message,
-					"ERROR: Dihedral type %s in residue %d on line %s not found. Exiting.\n",
-					dih_type, res_number, line);
+						"ERROR: Dihedral type %s in residue %d on line %s not found. Exiting.\n",
+						dih_type, res_number, line);
 				drop_fatal(log, message);
 			}
 			//is the angle being changed the backbone or side chain?
 			bool backbone;
 			if (strcmp(dih_type, "phi") == 0
-			    || strcmp(dih_type, "psi") == 0) {
+				|| strcmp(dih_type, "psi") == 0) {
 				backbone = true;
 			} else {
 				backbone = false;
@@ -157,20 +161,19 @@ void setDihedralList(int argc, char **argv)
 
 			//calculate the angle change based on current angle and angle defined by command line
 			double dih_angle_change =
-			    angle - prot.dihedrals[index].dihedral_angle;
+				angle - prot.dihedrals[index].dihedral_angle;
 			fprintf(log,
-				"Changing dihedral angle %s in residue number %d by %f degrees.\n\n",
-				dih_type, res_number, dih_angle_change);
+					"Changing dihedral angle %s in residue number %d by %f degrees.\n\n",
+					dih_type, res_number, dih_angle_change);
 
 			//rotate the dihedral
-			rotateDihedral(&prot, index, dih_angle_change,
-				       backbone);
+			rotateDihedral(&prot, index, dih_angle_change, backbone);
 			prot.dihedrals[index].dihedral_angle =
-			    calculateDihedral(&prot, index);
+				calculateDihedral(&prot, index);
 
 			fprintf(log,
-				"Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n",
-				angle, prot.dihedrals[index].dihedral_angle);
+					"Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n",
+					angle, prot.dihedrals[index].dihedral_angle);
 		}
 	}
 	//print out structure after rotation
@@ -180,7 +183,7 @@ void setDihedralList(int argc, char **argv)
 		writeXYZ(&prot, args.output_file, "Frame 1", 's', 0, 0);
 	} else {
 		drop_fatal(log,
-			   "Error: File extension for output not recognized.\n");
+				   "Error: File extension for output not recognized.\n");
 	}
 
 	fclose(log);

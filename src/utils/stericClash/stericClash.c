@@ -22,7 +22,7 @@ int countClashes(struct protein *prot, FILE * log, bool list_clashes)
 
 	if (list_clashes) {
 		fprintf(log,
-			"Clash: (AtomType AtomNumber)-(AtomType AtomNumber) [Allowed Distance, Distance in Structure]\n");
+				"Clash: (AtomType AtomNumber)-(AtomType AtomNumber) [Allowed Distance, Distance in Structure]\n");
 	}
 	//loop through all atom combinations i and j where j > i
 	for (int i = 0; i < prot->number_of_atoms; i++) {
@@ -31,28 +31,26 @@ int countClashes(struct protein *prot, FILE * log, bool list_clashes)
 			if (prot->atoms[i].covalent_bondArray[j - i - 1] > 3) {
 				//if this condition is satisfied, check distance between atoms, and the difference of van der waals distances
 				double *bond_vector =
-				    vectorSubtract(prot->atoms[i].coordinates,
-						   prot->atoms[j].coordinates);
+					vectorSubtract(prot->atoms[i].coordinates,
+								   prot->atoms[j].coordinates);
 				distance = vectorMagnitude(bond_vector);
 				free(bond_vector);
-				double min_distance_allowed =
-				    getVDWRadii(&radii,
-						prot->atoms[i].atom_name,
-						prot->atoms[j].atom_name);
+				double min_distance_allowed = getVDWRadii(&radii,
+														  prot->
+														  atoms
+														  [i].atom_name,
+														  prot->
+														  atoms
+														  [j].atom_name);
 				if (distance < min_distance_allowed) {
 					if (list_clashes) {
 						fprintf(log,
-							"Clash: (%s%d)-(%s%d) [%f, %f]\n",
-							prot->
-							atoms[i].atom_name,
-							prot->
-							atoms[i].atom_number,
-							prot->
-							atoms[j].atom_name,
-							prot->
-							atoms[j].atom_number,
-							min_distance_allowed,
-							distance);
+								"Clash: (%s%d)-(%s%d) [%f, %f]\n",
+								prot->atoms[i].atom_name,
+								prot->atoms[i].atom_number,
+								prot->atoms[j].atom_name,
+								prot->atoms[j].atom_number,
+								min_distance_allowed, distance);
 					}
 					count += 1;
 				}

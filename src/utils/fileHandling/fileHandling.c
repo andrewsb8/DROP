@@ -24,8 +24,8 @@ void printArgv(FILE * log, int argc, char **argv)
 
 void
 processInput(struct protein *prot, char *input_file, FILE * log,
-	     bool calc_bond_matrix, bool print_bond_matrix, int argc,
-	     char **argv)
+			 bool calc_bond_matrix, bool print_bond_matrix, int argc,
+			 char **argv)
 {
 	//make a string of argv arguments for the log file output
 	printArgv(log, argc, argv);

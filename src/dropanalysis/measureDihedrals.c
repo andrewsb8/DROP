@@ -15,7 +15,8 @@ struct arguments {
 	bool bond_matrix;
 };
 
-static int measureDihedralsParse(int key, char *arg, struct argp_state *state)
+static int measureDihedralsParse(int key, char *arg,
+								 struct argp_state *state)
 {
 	struct arguments *a = state->input;
 	switch (key) {
@@ -51,21 +52,23 @@ static int measureDihedralsParse(int key, char *arg, struct argp_state *state)
 void measureDihedrals(int argc, char **argv)
 {
 	struct argp_option measureDihedralsOptions[] = {
-		{0, 0, 0, 0, "./drop measureDihedrals Options:\n"},
-		{"input", 'i', "[Input File]", 0, "Input pdb file"},
-		{"log", 'l', "[Log File]", 0, "Output log file"},
-		{"bond_matrix", 'b', "[Boolean]", 0,
-		 "Choose whether or not to print bond matrix to log file. Default: true"},
-		{"dihedral_list", 'd', "[Output File]", 0,
-		 "Optional output file name to print the dihedral information to a file that can be modified and used as an input file for setDihedralList."},
-		{0}
+		{ 0, 0, 0, 0, "./drop measureDihedrals Options:\n" },
+		{ "input", 'i', "[Input File]", 0, "Input pdb file" },
+		{ "log", 'l', "[Log File]", 0, "Output log file" },
+		{ "bond_matrix", 'b', "[Boolean]", 0,
+		 "Choose whether or not to print bond matrix to log file. Default: true"
+		 },
+		{ "dihedral_list", 'd', "[Output File]", 0,
+		 "Optional output file name to print the dihedral information to a file that can be modified and used as an input file for setDihedralList."
+		 },
+		{ 0 }
 	};
 
 	//DEFAULTS
 	struct arguments args = { NULL, "drop.log", NULL, 1 };
 	//parse options
 	struct argp measureDihedralsArgp =
-	    { measureDihedralsOptions, measureDihedralsParse, 0, 0 };
+		{ measureDihedralsOptions, measureDihedralsParse, 0, 0 };
 	argp_parse(&measureDihedralsArgp, argc, argv, 0, 0, &args);
 
 	fprintf(stderr, "%s\n", args.input_file);
@@ -79,10 +82,10 @@ void measureDihedrals(int argc, char **argv)
 		fprintf(dih_list, "#resnum residue dihedral-angle angle\n");
 		for (int i = 0; i < prot.number_of_dihedrals; i++) {
 			fprintf(dih_list, "%d %s %s %f\n",
-				prot.dihedrals[i].dihedral_resNum,
-				*prot.dihedrals[i].dihedral_resName,
-				*prot.dihedrals[i].dihedral_angType,
-				prot.dihedrals[i].dihedral_angle);
+					prot.dihedrals[i].dihedral_resNum,
+					*prot.dihedrals[i].dihedral_resName,
+					*prot.dihedrals[i].dihedral_angType,
+					prot.dihedrals[i].dihedral_angle);
 		}
 		fclose(dih_list);
 	}

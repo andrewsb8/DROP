@@ -61,8 +61,8 @@ double *matrixVectorMult(double matrix[3][3], double vector[3])
 
 	for (int n = 0; n < 3; n++) {
 		result[n] =
-		    (matrix[n][0] * vector[0]) + (matrix[n][1] * vector[1]) +
-		    (matrix[n][2] * vector[2]);
+			(matrix[n][0] * vector[0]) + (matrix[n][1] * vector[1]) +
+			(matrix[n][2] * vector[2]);
 	}
 
 	return result;
@@ -72,9 +72,9 @@ double *matrixVectorMult(double matrix[3][3], double vector[3])
 double *vectorRotate(double vector1[3], int axisOfRotation, double angle)
 {
 	double mat[3][3][3] = {
-		{{1, 0, 0}, {0, cosl(angle), -sinl(angle)}, {0, sinl(angle), cosl(angle)}},	//x
-		{{cosl(angle), 0, sinl(angle)}, {0, 1, 0}, {-sinl(angle), 0, cosl(angle)}},	//y
-		{{cosl(angle), -sinl(angle), 0}, {sinl(angle), cosl(angle), 0}, {0, 0, 1}}	//z
+		{ { 1, 0, 0}, { 0, cosl(angle), -sinl(angle)}, { 0, sinl(angle), cosl(angle)} },	//x
+		{ { cosl(angle), 0, sinl(angle)}, { 0, 1, 0}, { -sinl(angle), 0, cosl(angle)} },	//y
+		{ { cosl(angle), -sinl(angle), 0}, { sinl(angle), cosl(angle), 0}, { 0, 0, 1} }	//z
 	};
 
 	return matrixVectorMult(mat[axisOfRotation], vector1);
@@ -87,8 +87,8 @@ double *cartesianToPolar(double vector[3])
 	result[0] = vectorMagnitude(vector);
 	result[1] = atan(vector[1] / vector[0]);
 	result[2] =
-	    atan(sqrt((vector[0] * vector[0]) + (vector[1] * vector[1])) /
-		 vector[2]);
+		atan(sqrt((vector[0] * vector[0]) + (vector[1] * vector[1])) /
+			 vector[2]);
 
 	return result;
 }

@@ -10,7 +10,7 @@
 
 void
 readPDB(struct protein *prot, char *filename, FILE * log,
-	bool calc_bond_matrix, bool print_bond_matrix)
+		bool calc_bond_matrix, bool print_bond_matrix)
 {
 	FILE *fp;
 	char *line = NULL;
@@ -19,8 +19,8 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 	char *line_split;
 	int count;
 	const int numberOfEntries = 11;	//this is standard for PDB formats. 11 entries per line with delimiters between.
-	int line_number = 0;	//keep track of what line number I am on while reading the file
-	char *ptr;		//pointer to use for strtod (string to double) function later in this function
+	int line_number = 0;		//keep track of what line number I am on while reading the file
+	char *ptr;					//pointer to use for strtod (string to double) function later in this function
 
 	int lens;
 	int check = 1;
@@ -29,14 +29,14 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 
 	//allocate memory for the atoms struct to store information
 	size_t size = sizeof(struct _atoms);
-	prot->atoms = (struct _atoms *)malloc(size);
+	prot->atoms = (struct _atoms *) malloc(size);
 
 	//variable for keeping track of residue number for _residues
 	int res_num = 1;
 	int bb_atoms = 0;
 	int sc_atoms = 0;
 	size_t size_res = sizeof(struct _residues);
-	prot->residues = (struct _residues *)malloc(size_res);
+	prot->residues = (struct _residues *) malloc(size_res);
 
 	//read file line by line until EOF
 	while ((read = getline(&line, &len, fp)) != -1) {
@@ -45,9 +45,8 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 			//reallocate memory dynamically which allows for a flexible number of atoms from entry pdb
 			if (line_number > 0) {
 				prot->atoms =
-				    (struct _atoms *)realloc(prot->atoms,
-							     size *
-							     (line_number + 1));
+					(struct _atoms *) realloc(prot->atoms,
+											  size * (line_number + 1));
 			}
 			//since pdb files have a standard format, assignments are handled manually as opposed to using if/else if or switch cases to be concise
 			//structure of pdb file can be found here: https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html
@@ -57,61 +56,54 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 
 			char *atomType = substr(line, 12, 16);
 			strcpy(prot->atoms[line_number].atom_type,
-			       removeSpaces(atomType));
+				   removeSpaces(atomType));
 			free(atomType);
 
 			char *residueName = substr(line, 17, 20);
 			strcpy(prot->atoms[line_number].residue,
-			       removeSpaces(residueName));
+				   removeSpaces(residueName));
 			free(residueName);
 
 			char *residueNumber = substr(line, 22, 26);
-			prot->atoms[line_number].residue_number =
-			    atoi(residueNumber);
+			prot->atoms[line_number].residue_number = atoi(residueNumber);
 			free(residueNumber);
 
 			char *xPos = substr(line, 30, 38);
 			char *yPos = substr(line, 38, 46);
 			char *zPos = substr(line, 46, 54);
-			prot->atoms[line_number].coordinates[0] =
-			    strtod(xPos, &ptr);
-			prot->atoms[line_number].coordinates[1] =
-			    strtod(yPos, &ptr);
-			prot->atoms[line_number].coordinates[2] =
-			    strtod(zPos, &ptr);
+			prot->atoms[line_number].coordinates[0] = strtod(xPos, &ptr);
+			prot->atoms[line_number].coordinates[1] = strtod(yPos, &ptr);
+			prot->atoms[line_number].coordinates[2] = strtod(zPos, &ptr);
 			free(xPos);
 			free(yPos);
 			free(zPos);
 
 			char *atomName = substr(line, 77, 78);
 			strcpy(prot->atoms[line_number].atom_name,
-			       removeSpaces(atomName));
+				   removeSpaces(atomName));
 			free(atomName);
 
 			//the following blocks of code classify atoms into backbone and
 			//side chain groups on a per residue basis using _residues struct
 			if (prot->atoms[line_number].residue_number != res_num) {
-				prot->residues[res_num - 1].num_bb_atoms =
-				    bb_atoms;
-				prot->residues[res_num - 1].num_sc_atoms =
-				    sc_atoms;
+				prot->residues[res_num - 1].num_bb_atoms = bb_atoms;
+				prot->residues[res_num - 1].num_sc_atoms = sc_atoms;
 				//add residue
-				prot->residues = (struct _residues *)realloc(prot->residues, size_res * (res_num + 1));	//new residue
-				res_num =
-				    prot->atoms[line_number].residue_number;
+				prot->residues = (struct _residues *) realloc(prot->residues, size_res * (res_num + 1));	//new residue
+				res_num = prot->atoms[line_number].residue_number;
 				bb_atoms = 0;
 				sc_atoms = 0;
 			}
 
 			if (isBackbone(prot->atoms[line_number].atom_type)) {
 				prot->residues[res_num -
-					       1].backbone_atoms[bb_atoms] =
-				    prot->atoms[line_number].atom_number;
+							   1].backbone_atoms[bb_atoms] =
+					prot->atoms[line_number].atom_number;
 				bb_atoms += 1;
 			} else {
 				prot->residues[res_num -
-					       1].sidechain_atoms[sc_atoms] =
-				    prot->atoms[line_number].atom_number;
+							   1].sidechain_atoms[sc_atoms] =
+					prot->atoms[line_number].atom_number;
 				sc_atoms += 1;
 			}
 
@@ -125,7 +117,7 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 
 	if (line_number == 0) {
 		drop_fatal(log,
-			   "ERROR: No ATOM entries in the input file. Exiting.\n");
+				   "ERROR: No ATOM entries in the input file. Exiting.\n");
 		exit(1);
 	}
 
@@ -137,17 +129,17 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 
 	//log initial dihedral angle values
 	fprintf(log, "Number of dihedrals identified in structure: %d\n",
-		prot->number_of_dihedrals);
+			prot->number_of_dihedrals);
 	fprintf(log,
-		"Calculating initial dihedral angles.\nColumns: Angle, Angle Type (phi, psi, etc), Residue Name, Residue Number, Dihedral Number\n");
+			"Calculating initial dihedral angles.\nColumns: Angle, Angle Type (phi, psi, etc), Residue Name, Residue Number, Dihedral Number\n");
 
 	for (int i = 0; i < prot->number_of_dihedrals; i++) {
 		prot->dihedrals[i].dihedral_angle = calculateDihedral(prot, i);
 		fprintf(log, "%f %s %s %d %d\n",
-			prot->dihedrals[i].dihedral_angle,
-			*prot->dihedrals[i].dihedral_angType,
-			*prot->dihedrals[i].dihedral_resName,
-			prot->dihedrals[i].dihedral_resNum, i);
+				prot->dihedrals[i].dihedral_angle,
+				*prot->dihedrals[i].dihedral_angType,
+				*prot->dihedrals[i].dihedral_resName,
+				prot->dihedrals[i].dihedral_resNum, i);
 	}
 	fprintf(log, "\n");
 
@@ -197,7 +189,7 @@ char *removeSpaces(char *string)
 
 void
 readPDBbonds(struct protein *prot, char *filename, FILE * log,
-	     bool calc_bond_matrix, bool print_bond_matrix)
+			 bool calc_bond_matrix, bool print_bond_matrix)
 {
 	FILE *fp;
 	char *line = NULL;
@@ -206,7 +198,7 @@ readPDBbonds(struct protein *prot, char *filename, FILE * log,
 	char *line_split;
 	int count;
 	const int numberOfEntries = 3;	//this is standard for PDB formats. 3 entries for the CONECT lines.
-	int line_number = 0;	//keep track of what line number I am on while reading the file
+	int line_number = 0;		//keep track of what line number I am on while reading the file
 
 	int lens;
 	int check = 1;
@@ -215,7 +207,7 @@ readPDBbonds(struct protein *prot, char *filename, FILE * log,
 
 	//allocate memory for the bonds struct to store information
 	size_t size = sizeof(struct _bonds);
-	prot->bonds = (struct _bonds *)malloc(size);
+	prot->bonds = (struct _bonds *) malloc(size);
 
 	//read file line by line until EOF
 	while ((read = getline(&line, &len, fp)) != -1) {
@@ -240,15 +232,14 @@ readPDBbonds(struct protein *prot, char *filename, FILE * log,
 			//reallocate memory dynamically which allows for a flexible number of atoms from entry pdb
 			if (line_number > 0) {
 				prot->bonds =
-				    (struct _bonds *)realloc(prot->bonds,
-							     size *
-							     (line_number + 1));
+					(struct _bonds *) realloc(prot->bonds,
+											  size * (line_number + 1));
 			}
 			//the second and third entries of the line are the atom numbers in the bond
 			for (int k = 1; k < 3; k++) {
 				prot->bonds[line_number].bond_atomNumbers[k -
-									  1] =
-				    atoi(stringT[k]);
+														  1] =
+					atoi(stringT[k]);
 			}
 			line_number++;
 
@@ -260,7 +251,7 @@ readPDBbonds(struct protein *prot, char *filename, FILE * log,
 
 	if (line_number == 0) {
 		drop_fatal(log,
-			   "ERROR: No CONECT entries in the input file. No bonds were read or inferred from structure. Exiting.\n");
+				   "ERROR: No CONECT entries in the input file. No bonds were read or inferred from structure. Exiting.\n");
 		exit(1);
 	}
 
@@ -283,10 +274,10 @@ void makeBondMatrix(struct protein *prot)
 	//last atom will not be considered to avoid weird memory artifacts. It should not have any unique bonds anyway
 	for (int t = 0; t < prot->number_of_atoms - 1; t++) {
 		prot->atoms[t].len_covalent_bondArray =
-		    prot->number_of_atoms - (t + 1);
+			prot->number_of_atoms - (t + 1);
 		prot->atoms[t].covalent_bondArray =
-		    (int *)calloc(prot->atoms[t].len_covalent_bondArray,
-				  sizeof(int *));
+			(int *) calloc(prot->atoms[t].len_covalent_bondArray,
+						   sizeof(int *));
 
 		for (int u = 0; u < prot->number_of_bonds; u++) {
 			//if first atom in bond is the atom currently looking at, put a 1 in the location of the second atom in bond
@@ -301,7 +292,8 @@ void makeBondMatrix(struct protein *prot)
 
 //count covalent bonds between atoms i and j via recursive search using the CONECT records
 void
-countCovalentBonds(struct protein *prot, FILE * log, bool print_bond_matrix)
+countCovalentBonds(struct protein *prot, FILE * log,
+				   bool print_bond_matrix)
 {
 	int warning = 0;
 	static int covalentBondCount = 0;
@@ -310,22 +302,22 @@ countCovalentBonds(struct protein *prot, FILE * log, bool print_bond_matrix)
 			//only want to call search function for pairs of atoms that aren't directly covalently bonded to one another
 			if (prot->atoms[h].covalent_bondArray[p - h - 1] != 1) {
 				recursivePairSearch(prot, 0, h + 1, p + 1, 0,
-						    &covalentBondCount);
+									&covalentBondCount);
 				if (covalentBondCount == 0) {
 					warning = warning + 1;
 					char message[500];
 					sprintf(message,
-						"WARNING %d: There is a zero in your covalent bond matrix. "
-						"This means you either:\n\n1. Have at least one noncovalently bonded atyom "
-						"in your structure.\n2. Are missing or have incorrect CONECT records.\n\nPlease "
-						"check your pdb file as the results will not be accurate with this structure. "
-						"Dihedral angles may be unrecognized because bond information is missing. See "
-						"your log file for more details and your covalent bond matrix.\n\n",
-						warning);
+							"WARNING %d: There is a zero in your covalent bond matrix. "
+							"This means you either:\n\n1. Have at least one noncovalently bonded atyom "
+							"in your structure.\n2. Are missing or have incorrect CONECT records.\n\nPlease "
+							"check your pdb file as the results will not be accurate with this structure. "
+							"Dihedral angles may be unrecognized because bond information is missing. See "
+							"your log file for more details and your covalent bond matrix.\n\n",
+							warning);
 					drop_warning(log, message);
 				}
 				prot->atoms[h].covalent_bondArray[p - h - 1] =
-				    covalentBondCount;
+					covalentBondCount;
 				covalentBondCount = 0;
 			}
 		}
@@ -345,7 +337,7 @@ countCovalentBonds(struct protein *prot, FILE * log, bool print_bond_matrix)
 //for by actively checking both columns for the desired atom number.
 int
 recursivePairSearch(struct protein *prot, int previousAtom, int atom1,
-		    int atom2, int found, int *covalentBondCount)
+					int atom2, int found, int *covalentBondCount)
 {
 	for (int z = 0; z < prot->number_of_bonds; z++) {
 		if (prot->bonds[z].bond_atomNumbers[0] == atom1)	//atom is in first column of bonds list
@@ -361,13 +353,11 @@ recursivePairSearch(struct protein *prot, int previousAtom, int atom1,
 				return found;
 			}
 			found =
-			    recursivePairSearch(prot, atom1,
-						prot->
-						bonds[z].bond_atomNumbers[1],
-						atom2, found,
-						covalentBondCount);
+				recursivePairSearch(prot, atom1,
+									prot->bonds[z].bond_atomNumbers[1],
+									atom2, found, covalentBondCount);
 
-			if (found == 1)	//stops loop if search is completed
+			if (found == 1)		//stops loop if search is completed
 			{
 				break;
 			}
@@ -386,11 +376,9 @@ recursivePairSearch(struct protein *prot, int previousAtom, int atom1,
 				return found;
 			}
 			found =
-			    recursivePairSearch(prot, atom1,
-						prot->
-						bonds[z].bond_atomNumbers[0],
-						atom2, found,
-						covalentBondCount);
+				recursivePairSearch(prot, atom1,
+									prot->bonds[z].bond_atomNumbers[0],
+									atom2, found, covalentBondCount);
 
 			if (found == 1) {
 				break;
@@ -412,8 +400,7 @@ void printCovalentBondMatrix(struct protein *prot, FILE * log)
 	fprintf(log, "Covalent Bond Matrix:\n");
 	for (int u = 0; u < prot->number_of_atoms; u++) {
 		for (int v = 0; v < prot->atoms[u].len_covalent_bondArray; v++) {
-			fprintf(log, "%d ",
-				prot->atoms[u].covalent_bondArray[v]);
+			fprintf(log, "%d ", prot->atoms[u].covalent_bondArray[v]);
 		}
 		fprintf(log, "\n");
 	}
@@ -457,7 +444,7 @@ void identifyDihedrals(struct protein *prot)
 
 	//allocate memory for the dihedrals struct to store information
 	size_t size = sizeof(struct _dihedrals);
-	prot->dihedrals = (struct _dihedrals *)malloc(size);
+	prot->dihedrals = (struct _dihedrals *) malloc(size);
 
 	//check variable to compare strings
 	int check;
@@ -471,122 +458,77 @@ void identifyDihedrals(struct protein *prot)
 		for (int n = 0; n < prot->number_of_bonds; n++) {
 			//if two atoms bonded are the same as the first two of the dihedral definition, search for the second pair
 			if (strcmp
-			    (DihedralDefinitions[m][0],
-			     prot->atoms[prot->bonds[n].bond_atomNumbers[0] -
-					 1].atom_type) == 0
-			    && strcmp(DihedralDefinitions[m][1],
-				      prot->atoms[prot->
-						  bonds[n].bond_atomNumbers[1] -
-						  1].atom_type) == 0) {
+				(DihedralDefinitions[m][0],
+				 prot->atoms[prot->bonds[n].bond_atomNumbers[0] -
+							 1].atom_type) == 0
+				&& strcmp(DihedralDefinitions[m][1],
+						  prot->atoms[prot->bonds[n].bond_atomNumbers[1] -
+									  1].atom_type) == 0) {
 				pairOne_index = n;
 				for (int p = 0; p < prot->number_of_bonds; p++) {
 					//search for second pair
 					if (strcmp
-					    (DihedralDefinitions[m][2],
-					     prot->atoms[prot->
-							 bonds
-							 [p].bond_atomNumbers[0]
-							 - 1].atom_type) == 0
-					    && strcmp(DihedralDefinitions[m][3],
-						      prot->
-						      atoms[prot->bonds[p].
-							    bond_atomNumbers[1]
-							    - 1].atom_type) ==
-					    0) {
+						(DihedralDefinitions[m][2],
+						 prot->atoms[prot->bonds[p].bond_atomNumbers[0]
+									 - 1].atom_type) == 0
+						&& strcmp(DihedralDefinitions[m][3],
+								  prot->atoms[prot->bonds[p].
+											  bond_atomNumbers[1]
+											  - 1].atom_type) == 0) {
 						pairTwo_index = p;
 						//multiple other bonds satisfy the above condition. Need to check for bond between the two pairs of bonds
-						for (int r = 0;
-						     r < prot->number_of_bonds;
-						     r++) {
+						for (int r = 0; r < prot->number_of_bonds; r++) {
 							if (prot->bonds
-							    [pairOne_index].
-							    bond_atomNumbers[1]
-							    ==
-							    prot->
-							    bonds
-							    [r].bond_atomNumbers
-							    [0]
-							    &&
-							    prot->bonds
-							    [pairTwo_index].
-							    bond_atomNumbers[0]
-							    ==
-							    prot->
-							    bonds
-							    [r].bond_atomNumbers
-							    [1]) {
+								[pairOne_index].bond_atomNumbers[1]
+								== prot->bonds[r].bond_atomNumbers[0]
+								&&
+								prot->bonds
+								[pairTwo_index].bond_atomNumbers[0]
+								== prot->bonds[r].bond_atomNumbers[1]) {
 								prot->dihedrals
-								    [prot->number_of_dihedrals].
-								    dihedral_atomNumbers
-								    [0] =
-								    prot->bonds
-								    [n].bond_atomNumbers
-								    [0];
-								prot->dihedrals
-								    [prot->number_of_dihedrals].
-								    dihedral_atomNumbers
-								    [1] =
-								    prot->bonds
-								    [n].bond_atomNumbers
-								    [1];
-								prot->dihedrals
-								    [prot->number_of_dihedrals].
-								    dihedral_atomNumbers
-								    [2] =
-								    prot->bonds
-								    [p].bond_atomNumbers
-								    [0];
-								prot->dihedrals
-								    [prot->number_of_dihedrals].
-								    dihedral_atomNumbers
-								    [3] =
-								    prot->bonds
-								    [p].bond_atomNumbers
-								    [1];
+									[prot->number_of_dihedrals].
+									dihedral_atomNumbers[0] =
+									prot->bonds[n].bond_atomNumbers[0];
+								prot->dihedrals[prot->number_of_dihedrals].
+									dihedral_atomNumbers[1] =
+									prot->bonds[n].bond_atomNumbers[1];
+								prot->dihedrals[prot->number_of_dihedrals].
+									dihedral_atomNumbers[2] =
+									prot->bonds[p].bond_atomNumbers[0];
+								prot->dihedrals[prot->number_of_dihedrals].
+									dihedral_atomNumbers[3] =
+									prot->bonds[p].bond_atomNumbers[1];
 
 								*prot->dihedrals
-								    [prot->number_of_dihedrals].
-								    dihedral_angType
-								    =
-								    DihedralDefinitions
-								    [m][4];
+									[prot->number_of_dihedrals].
+									dihedral_angType =
+									DihedralDefinitions[m][4];
 
 								//residue is identified by third atom in dihedral because that will always be in the ith residue. Could have used second atom also.
 								//this will not work if omega is to be incorporated. but currently no plans to do so.
 								*prot->dihedrals
-								    [prot->number_of_dihedrals].
-								    dihedral_resName
-								    =
-								    prot->atoms
-								    [prot->
-								     dihedrals
-								     [prot->
-								      number_of_dihedrals].
-								     dihedral_atomNumbers
-								     [2] -
-								     1].residue;
-								prot->dihedrals
-								    [prot->number_of_dihedrals].
-								    dihedral_resNum
-								    =
-								    prot->atoms
-								    [prot->
-								     dihedrals
-								     [prot->
-								      number_of_dihedrals].
-								     dihedral_atomNumbers
-								     [2] -
-								     1].residue_number;
+									[prot->number_of_dihedrals].
+									dihedral_resName =
+									prot->atoms[prot->
+												dihedrals[prot->
+														  number_of_dihedrals].
+												dihedral_atomNumbers[2] -
+												1].residue;
+								prot->dihedrals[prot->number_of_dihedrals].
+									dihedral_resNum =
+									prot->atoms[prot->
+												dihedrals[prot->
+														  number_of_dihedrals].
+												dihedral_atomNumbers[2] -
+												1].residue_number;
 
-								prot->number_of_dihedrals
-								    += 1;
+								prot->number_of_dihedrals += 1;
 								if (prot->number_of_dihedrals > 0) {
-									prot->dihedrals
-									    =
-									    (struct
-									     _dihedrals
-									     *)
-									    realloc(prot->dihedrals, size * (prot->number_of_dihedrals + 1));
+									prot->dihedrals = (struct _dihedrals *)
+										realloc(prot->dihedrals,
+												size *
+												(prot->number_of_dihedrals
+												 + 1));
 								}
 							}
 						}
@@ -603,15 +545,15 @@ void printXYZ(struct protein *prot)
 {
 	for (int i = 0; i < prot->number_of_atoms; i++) {
 		size_t bufsz =
-		    snprintf(NULL, 0, "%s %f %f %f", prot->atoms[i].atom_type,
-			     prot->atoms[i].coordinates[0],
-			     prot->atoms[i].coordinates[1],
-			     prot->atoms[i].coordinates[2]);
+			snprintf(NULL, 0, "%s %f %f %f", prot->atoms[i].atom_type,
+					 prot->atoms[i].coordinates[0],
+					 prot->atoms[i].coordinates[1],
+					 prot->atoms[i].coordinates[2]);
 		char *line = malloc(bufsz + 1);
 		sprintf(line, "%s %f %f %f", prot->atoms[i].atom_type,
-			prot->atoms[i].coordinates[0],
-			prot->atoms[i].coordinates[1],
-			prot->atoms[i].coordinates[2]);
+				prot->atoms[i].coordinates[0],
+				prot->atoms[i].coordinates[1],
+				prot->atoms[i].coordinates[2]);
 
 		printf("%s\n", line);
 		free(line);
@@ -622,7 +564,7 @@ void printXYZ(struct protein *prot)
 
 void
 writeXYZ(struct protein *prot, char *filename, char *comment, char type,
-	 int frame, int rank)
+		 int frame, int rank)
 {
 	//use type variable to decide if writing a multiframe or single frame xyz
 	switch (type) {
@@ -634,12 +576,12 @@ writeXYZ(struct protein *prot, char *filename, char *comment, char type,
 		fprintf(stderr, "Writing single-structure xyz file.\n");
 		writeXYZsingleframe(prot, filename, comment, rank);
 		fprintf(stderr,
-			"Completed XYZ structure generation. Filename: %s.\n",
-			filename);
+				"Completed XYZ structure generation. Filename: %s.\n",
+				filename);
 		break;
 	default:
 		printf
-		    ("Please specify single-structure (s) or multi-frame (m) xyz option.\n");
+			("Please specify single-structure (s) or multi-frame (m) xyz option.\n");
 		break;
 	}
 	return;
@@ -647,7 +589,7 @@ writeXYZ(struct protein *prot, char *filename, char *comment, char type,
 
 void
 writeXYZsingleframe(struct protein *prot, char *filename, char *comment,
-		    int rank)
+					int rank)
 {
 	FILE *fp;
 	fp = fopen(filename, "w");
@@ -656,15 +598,15 @@ writeXYZsingleframe(struct protein *prot, char *filename, char *comment,
 	fprintf(fp, "Comment: %s\n", comment);
 	for (int i = 0; i < prot->number_of_atoms; i++) {
 		size_t bufsz =
-		    snprintf(NULL, 0, "%s %f %f %f", prot->atoms[i].atom_type,
-			     prot->atoms[i].coordinates[0],
-			     prot->atoms[i].coordinates[1],
-			     prot->atoms[i].coordinates[2]);
+			snprintf(NULL, 0, "%s %f %f %f", prot->atoms[i].atom_type,
+					 prot->atoms[i].coordinates[0],
+					 prot->atoms[i].coordinates[1],
+					 prot->atoms[i].coordinates[2]);
 		char *line = malloc(bufsz + 1);
 		sprintf(line, "%s %f %f %f", prot->atoms[i].atom_type,
-			prot->atoms[i].coordinates[0],
-			prot->atoms[i].coordinates[1],
-			prot->atoms[i].coordinates[2]);
+				prot->atoms[i].coordinates[0],
+				prot->atoms[i].coordinates[1],
+				prot->atoms[i].coordinates[2]);
 
 		fprintf(fp, "%s\n", line);
 		free(line);
@@ -674,7 +616,7 @@ writeXYZsingleframe(struct protein *prot, char *filename, char *comment,
 
 void
 writeXYZmultiframe(struct protein *prot, char *filename, char *comment,
-		   int frame, int rank)
+				   int frame, int rank)
 {
 	FILE *fp;
 	if (frame > 0) {
@@ -688,15 +630,15 @@ writeXYZmultiframe(struct protein *prot, char *filename, char *comment,
 	char line[100];
 	for (int i = 0; i < prot->number_of_atoms; i++) {
 		size_t bufsz =
-		    snprintf(NULL, 0, "%s %f %f %f", prot->atoms[i].atom_type,
-			     prot->atoms[i].coordinates[0],
-			     prot->atoms[i].coordinates[1],
-			     prot->atoms[i].coordinates[2]);
+			snprintf(NULL, 0, "%s %f %f %f", prot->atoms[i].atom_type,
+					 prot->atoms[i].coordinates[0],
+					 prot->atoms[i].coordinates[1],
+					 prot->atoms[i].coordinates[2]);
 		char *line = malloc(bufsz + 1);
 		sprintf(line, "%s %f %f %f", prot->atoms[i].atom_type,
-			prot->atoms[i].coordinates[0],
-			prot->atoms[i].coordinates[1],
-			prot->atoms[i].coordinates[2]);
+				prot->atoms[i].coordinates[0],
+				prot->atoms[i].coordinates[1],
+				prot->atoms[i].coordinates[2]);
 
 		fprintf(fp, "%s\n", line);
 		fflush(fp);
@@ -708,7 +650,7 @@ writeXYZmultiframe(struct protein *prot, char *filename, char *comment,
 
 void
 writePDB(struct protein *prot, char *filename, char type, int frame,
-	 bool conect)
+		 bool conect)
 {
 	FILE *fp;
 	fp = fopen(filename, "w");
@@ -725,7 +667,7 @@ writePDB(struct protein *prot, char *filename, char type, int frame,
 		break;
 	default:
 		printf
-		    ("Please specify single-structure (s) or multi-frame (m) pdb option.\n");
+			("Please specify single-structure (s) or multi-frame (m) pdb option.\n");
 		break;
 	}
 
@@ -751,11 +693,11 @@ void writePDBsingleframe(struct protein *prot, FILE * fp)
 	for (int i = 0; i < prot->number_of_atoms; i++) {
 		char line[81];
 		sprintf(line, "%-6s%5d %-4.4s%c%4.4s%c%4d%c   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n", "ATOM", prot->atoms[i].atom_number, prot->atoms[i].atom_type, ' ',	//alternate location
-			prot->atoms[i].residue, ' ',	//chain id
-			prot->atoms[i].residue_number, ' ',	//residue insertion code
-			prot->atoms[i].coordinates[0], prot->atoms[i].coordinates[1], prot->atoms[i].coordinates[2], 0.0,	//occupancy
-			0.0,	//b_factor
-			prot->atoms[i].atom_name);
+				prot->atoms[i].residue, ' ',	//chain id
+				prot->atoms[i].residue_number, ' ',	//residue insertion code
+				prot->atoms[i].coordinates[0], prot->atoms[i].coordinates[1], prot->atoms[i].coordinates[2], 0.0,	//occupancy
+				0.0,			//b_factor
+				prot->atoms[i].atom_name);
 
 		fprintf(fp, "%s", line);
 	}
@@ -770,8 +712,8 @@ void writePDBConect(struct protein *prot, FILE * fp)
 {
 	for (int i = 0; i < prot->number_of_bonds; i++) {
 		fprintf(fp, "CONECT%5d%5d\n",
-			prot->bonds[i].bond_atomNumbers[0],
-			prot->bonds[i].bond_atomNumbers[1]);
+				prot->bonds[i].bond_atomNumbers[0],
+				prot->bonds[i].bond_atomNumbers[1]);
 	}
 
 	return;

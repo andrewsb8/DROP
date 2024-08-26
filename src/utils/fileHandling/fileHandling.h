@@ -3,8 +3,8 @@
 
 int fileExists(char *filename);
 void processInput(struct protein *prot, char *input_file, FILE * log,
-		  bool calc_bond_matrix, bool print_bond_matrix,
-		  int argc, char **argv);
+				  bool calc_bond_matrix, bool print_bond_matrix,
+				  int argc, char **argv);
 void printArgv(FILE * log, int argc, char **argv);
 void writeFileLine(FILE * file, char *message);
 
