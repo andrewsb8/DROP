@@ -17,7 +17,7 @@ You can compile DROP with ```make``` in the parent directory.
 
 ### Usage
 
-- See commands ```./drop --help```
+- See commands: ```./drop --help```
 
 - See command options: ```./drop [command] --help```
 
