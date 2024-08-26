@@ -46,3 +46,9 @@ If you use this work for research or presentations, please consider citing this 
   year = {2024}
 }
 ```
+
+### Formatting
+
+The ```indent``` package is used to format this code with the following command:
+
+```indent -linux [input file]```
