@@ -17,14 +17,9 @@ You can compile DROP with ```make``` in the parent directory.
 
 ### Usage
 
-The tool is organized as follows:
-- There are "parent" options (-c, -f, --help, etc) consisting of the main executable and the first option. Ex: ```./drop -c``` or ```./drop -f ```. Everything after the "parent" option are "child" options for commands.
+- See commands: ```./drop --help```
 
-- See the "parent" options: ```./drop --help```
-
-- See different commands for ```-f```: ```./drop -c```
-
-- See "child" options for the different commands: ```./drop -f [command string from -c] --help```
+- See command options: ```./drop [command] --help```
 
 After compilation, you can export the path to the DROP executable to use the tool without the ```./```.
 
@@ -32,15 +27,11 @@ After compilation, you can export the path to the DROP executable to use the too
 
 To measure the dihedral angles of a given structure, use ```measureDihedrals```. To manipulate protein structures, you can use ```setDihedral``` or ```setDihedralList```. The former allows for the modification of one dihedral angle and the latter allows the user to provide a list of dihedral angles in a file to change in the structure. First example for ```setDihedral```:
 
-```./drop -f setDihedral -i example_files/ILE_conect_110.pdb -n 2 -d phi -a -60 -o output.pdb```
+```./drop setDihedral -i example_files/ILE_conect_110.pdb -n 2 -d phi -a -60 -o output.pdb```
 
 which changes the dihedral angle phi of residue 2 to -60 degrees. You can visualize ```output.pdb``` with your favorite visualization tool like VMD or PyMol. ```setDihedralList``` has examples in ```examples/setDihedralList/README.md```, but here's an example command:
 
-```./drop -f setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/beta-to-helix.txt -o poly-R-helix.pdb```
-
-### Known Issues
-
-- "Parent" option ```-f``` or ```-c``` must come first after the executable. See Issue #10 for more details.
+```./drop setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/beta-to-helix.txt -o poly-R-helix.pdb```
 
 ### Citation
 
@@ -55,3 +46,9 @@ If you use this work for research or presentations, please consider citing this 
   year = {2024}
 }
 ```
+
+### Formatting
+
+The ```indent``` package is used to format this code with the following command:
+
+```indent -kr -ts4 [input file]```

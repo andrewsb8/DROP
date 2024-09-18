@@ -10,7 +10,7 @@ First, let's take a 5-mer polyarginine in a beta sheet configuration and convert
 
 ![polyRbeta](Polyarginine/poly-R-beta.png)
 
-Then we will run the following command from the parent directory: ```./drop -f setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/beta-to-helix.txt -o poly-R-helix.pdb```
+Then we will run the following command from the parent directory: ```./drop setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/beta-to-helix.txt -o poly-R-helix.pdb```
 
 Here is a visualization of ```Polyarginine/poly-R-helix.pdb```:
 
@@ -18,7 +18,7 @@ Here is a visualization of ```Polyarginine/poly-R-helix.pdb```:
 
 Both images have the peptide oriented with the N-terminus and C-terminus at the top and bottom center, respectively. You can also do this with side chain torsions or combinations of backbone and side chain torsions in the file provided to ```-d```.
 
-As an example with side chain angles, you can run this command: ```./drop -f setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/side-chain.txt -o poly-R-beta-SC.pdb```
+As an example with side chain angles, you can run this command: ```./drop setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/side-chain.txt -o poly-R-beta-SC.pdb```
 
 Here is a visualization of (the broken) modified structure ```Polyarginine/poly-R-beta-SC.png```:
 
