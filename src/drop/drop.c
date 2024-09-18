@@ -20,8 +20,9 @@ int main(int argc, char *argv[])
 	} else if (strcmp(argv[1], "-?") == 0
 			   || strcmp(argv[1], "--help") == 0) {
 		fprintf(stderr, "Welcome to %s\n", program_version);
+		fprintf(stderr, "%s\n\n", doc);
 		printCommandList();
-		fprintf(stderr, "Use drop command -? for more information.\n");
+		fprintf(stderr, "For more information: drop [command] -?\n");
 		fprintf(stderr, "Report bugs to: %s\n", program_bug_address);
 	} else if (strcmp(argv[1], "-v") == 0
 			   || strcmp(argv[1], "--version") == 0) {

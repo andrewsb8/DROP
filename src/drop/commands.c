@@ -36,8 +36,8 @@ const int commandListLen = sizeof(commandList) / sizeof(commandList[0]);
 void printCommandList()
 {
 
-	fprintf(stderr, "These are the commands available:\n");
-	fprintf(stderr, "EXAMPLE > #: function - description -\n");
+	fprintf(stderr, "Available Commands:\n");
+	fprintf(stderr, "EXAMPLE > #: command - description -\n");
 
 	for (int i = 0; i < commandListLen; i++) {
 		fprintf(stderr, "%d: ", i + 1);
@@ -47,6 +47,7 @@ void printCommandList()
 		}
 		fprintf(stderr, "\n");
 	}
+	fprintf(stderr, "\n");
 }
 
 bool findCommand(int argc, char **argv)
