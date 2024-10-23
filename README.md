@@ -9,7 +9,7 @@ The repository contains a work-in-progress command line tool which can manipulat
 
 ### What this tool is not:
 
-This is not a pdb (or any structure file) preprocessing tool. It requires a sanitized pdb file and currently require CONECT records for covalent bonds. I personally use [GROMACS](https://www.gromacs.org/) ([gitlab](https://gitlab.com/gromacs/gromacs)) to produce ordered pdb files and CONECT records. See ```scripts/generate-conect/``` for more details. The requirement for CONECT records will be removed for some modules in the future (see Issue #15 for more details).
+This is not a pdb (or any structure file) preprocessing tool. It requires a sanitized pdb file and currently requires CONECT records for covalent bonds. I personally use [GROMACS](https://www.gromacs.org/) ([gitlab](https://gitlab.com/gromacs/gromacs)) to produce ordered pdb files and CONECT records. See ```scripts/generate-conect/``` for more details. The requirement for CONECT records will be removed for some modules in the future (see Issue #15 for more details).
 
 ### Installation
 
@@ -35,6 +35,8 @@ which changes the dihedral angle phi of residue 2 to -60 degrees. You can visual
 
 ### Papers Featuring DROP
 
+If trying to reproduce results from a specific paper below, you may find past versions, scripts, and raw data in the Releases tab.
+
 - B. Andrews. Amino Acid Residue-Specific Ramachandran Distributions Derived from a Simple Mean Field Potential. Physical Chemistry Au. 2024. 10.1021/acsphyschemau.4c00064.
 
 ### Citation
@@ -46,7 +48,6 @@ If you use this work for research or presentations, please consider citing this 
   author = {Andrews, Brian},
   title = {{Dihedral Rotation of Proteins (DROP)}},
   url = {https://github.com/andrewsb8/DROP/tree/main},
-  version = {0.0.1},
   year = {2024}
 }
 ```
