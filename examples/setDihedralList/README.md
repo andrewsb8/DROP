@@ -2,7 +2,7 @@
 
 This example shows how DROP can manipulate a protein structure by providing a list of dihedral angles to DROP.
 
-NOTE: There are no dynamics happening here. The dihedral angles of the Villin Headpiece crystal structure are known and DROP is being told to change the backbone dihedral angles to the correct orientations. This is not an example of "solved" protein folding.
+NOTE: There are no dynamics happening here.
 
 ### Polyarginine
 
