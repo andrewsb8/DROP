@@ -33,6 +33,10 @@ which changes the dihedral angle phi of residue 2 to -60 degrees. You can visual
 
 ```./drop setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/beta-to-helix.txt -o poly-R-helix.pdb```
 
+### Papers Featuring DROP
+
+- B. Andrews. Amino Acid Residue-Specific Ramachandran Distributions Derived from a Simple Mean Field Potential. Physical Chemistry Au. 2024. 10.1021/acsphyschemau.4c00064.
+
 ### Citation
 
 If you use this work for research or presentations, please consider citing this repository.
