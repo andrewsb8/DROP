@@ -3,6 +3,7 @@ SHELL := /bin/bash
 buildDir = $(pwd)
 
 compile:
+	gcc -c src/dropinfo/dropinfo.c
 	gcc -c src/drop/drop.c
 	gcc -c src/drop/commands.c
 	gcc -c src/utils/logging/logging.c
@@ -18,7 +19,7 @@ compile:
 	gcc -c src/dropanalysis/stericClashes.c
 	gcc -c src/dropanalysis/stericScan.c
 	gcc -c src/dropanalysis/vdwScan.c
-	gcc -o drop drop.o commands.o logging.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o dihedralRotation.o vectorCalculus.o fileHandling.o vdwEnergy.o stericClashes.o stericClash.o stericScan.o vdwScan.o -lm
+	gcc -o drop dropinfo.o drop.o commands.o logging.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o dihedralRotation.o vectorCalculus.o fileHandling.o vdwEnergy.o stericClashes.o stericClash.o stericScan.o vdwScan.o -lm
 	rm *.o
 
 all: compile
