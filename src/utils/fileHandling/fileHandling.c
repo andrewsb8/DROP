@@ -19,6 +19,7 @@ void printArgv(FILE * log, int argc, char **argv)
 		fprintf(log, "%s ", argv[i]);
 	}
 	fprintf(log, "\n\n");
+	fflush(log);
 	return;
 }
 
@@ -38,10 +39,12 @@ processInput(struct protein *prot, char *input_file, FILE * log,
 	readPDB(prot, input_file, log, calc_bond_matrix, print_bond_matrix);
 
 	fprintf(log, "Done reading structure file: %s\n\n", input_file);
+	fflush(log);
 	return;
 }
 
 void writeFileLine(FILE * file, char *message)
 {
 	fprintf(file, "%s", message);
+	fflush(file);
 }

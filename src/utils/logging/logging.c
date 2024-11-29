@@ -14,10 +14,12 @@ void drop_warning(FILE * log, char *message)
 {
 	fprintf(log, "%s", message);
 	fprintf(stderr, "%s", message);
+	fflush(log);
 }
 
 void drop_info(FILE * log, char *message)
 {
 	fprintf(log, "%s", message);
 	fprintf(stderr, "%s", message);
+	fflush(log);
 }
