@@ -10,8 +10,9 @@ const char *usage_messg =
 const char *program_bug_address =
 	"https://github.com/andrewsb8/DROP/issues";
 const char *program_version = "DROP Version 2024.1";
-static char doc[] =
+const char *doc =
 	"DROP (Dihedral Rotation Of Proteins) -- A command line tool to investigate protein structures via direct manipulation of dihedral angles.";
+
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +20,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "%s", usage_messg);
 	} else if (strcmp(argv[1], "-?") == 0
 			   || strcmp(argv[1], "--help") == 0) {
-		fprintf(stderr, "Welcome to %s\n", program_version);
+		fprintf(stderr, "%s\n", program_version);
 		fprintf(stderr, "%s\n\n", doc);
 		printCommandList();
 		fprintf(stderr, "For more information: drop [command] -?\n");
