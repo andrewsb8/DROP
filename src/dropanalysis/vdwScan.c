@@ -88,7 +88,7 @@ void vdwScan(int argc, char **argv)
 		{ "bond_matrix", 'b', "[Boolean]", 0,
 		 "Choose whether or not to print bond matrix to log file. Default: true"
 		 },
-		{ "gamma", 'g', "[Boolean]", 0,
+		{ "gamma", 'g', "[Float]", 0,
 		 "Factor for cutoff for allowed states based on steric cutoffs. Default: 1.0"
 		 },
 		{ 0 }

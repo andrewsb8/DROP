@@ -7,7 +7,6 @@
 #include "../readProtein/readProtein.h"
 #include "vdwEnergy.h"
 #include "../vectorCalculus/vectorCalculus.h"
-#include "../stericClash/stericClash.h"
 
 //atom order: C, N, O, H
 //atom types from CHARMM36m: carbonyl C (peptide backbone), amide Nitrogen, carbonyl oxygen, nonpolar H
@@ -16,9 +15,6 @@ struct VDW_params sigma = { 3.56359, 3.29632, 3.02905, 2.35197 };
 
 //units: kJ/mol
 struct VDW_params epsilon = { 0.46024, 0.83680, 0.50208, 0.09204 };
-
-//copied from stericClash.c, inner radii for steric clashes
-//struct VDW radii2 = {3.0, 2.7, 2.8, 2.2, 2.7, 2.6, 2.2, 2.6, 2.2, 1.9};
 
 double getParam(struct VDW_params *param, char *atom_name)
 {
@@ -79,19 +75,17 @@ double calculateVDWEnergy(struct protein *prot, double gamma)
 								   prot->atoms[j].coordinates);
 				distance = vectorMagnitude(bond_vector);
 				free(bond_vector);
+				mixed_sigma =
+					mixedSigma(prot->atoms[i].atom_name,
+							   prot->atoms[j].atom_name);
 				if (distance <
-					gamma * getVDWRadii(&radii,
-										prot->atoms[i].atom_name,
-										prot->atoms[j].atom_name)
+					gamma * mixed_sigma
 					&& ((isBackbone(prot->atoms[i].atom_type)
 						 && !isBackbone(prot->atoms[j].atom_type))
 						|| (!isBackbone(prot->atoms[i].atom_type)
 							&& isBackbone(prot->atoms[j].atom_type)))) {
 					return NAN;
 				}
-				mixed_sigma =
-					mixedSigma(prot->atoms[i].atom_name,
-							   prot->atoms[j].atom_name);
 				mixed_epsilon =
 					mixedEpsilon(prot->atoms[i].atom_name,
 								 prot->atoms[j].atom_name);
