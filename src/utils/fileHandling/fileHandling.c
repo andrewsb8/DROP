@@ -16,7 +16,7 @@ processInput(struct protein *prot, char *input_file, FILE * log,
 			 bool calc_bond_matrix, bool print_bond_matrix, int argc,
 			 char **argv)
 {
-    logWelcome(log);
+	logWelcome(log);
 	//make a string of argv arguments for the log file output
 	logArgv(log, argc, argv);
 	if (fileExists(input_file) == -1) {

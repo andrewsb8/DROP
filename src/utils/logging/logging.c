@@ -7,10 +7,10 @@
 
 void logWelcome(FILE * log)
 {
-    fprintf(log, "%s - %s\n", program_name, program_version);
+	fprintf(log, "%s - %s\n", program_name, program_version);
 	fprintf(log, "%s\n", program_desc);
 	fprintf(log, "Report bugs to: %s\n\n", program_bug_address);
-    fflush(log);
+	fflush(log);
 }
 
 void logArgv(FILE * log, int argc, char **argv)

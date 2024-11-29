@@ -78,7 +78,6 @@ double calculateVDWEnergy(struct protein *prot, double gamma)
 				mixed_sigma =
 					mixedSigma(prot->atoms[i].atom_name,
 							   prot->atoms[j].atom_name);
-				fprintf(stderr, "%f %f\n", distance, mixed_sigma);
 				if (distance <
 					gamma * mixed_sigma
 					&& ((isBackbone(prot->atoms[i].atom_type)

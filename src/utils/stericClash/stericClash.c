@@ -13,7 +13,8 @@
 //Values:           C-C, C-O, C-N, C-H, O-O, O-N, O-H, N-N, N-H, H-H
 //struct VDW radii = {3.2, 2.8, 2.9, 2.4, 2.8, 2.7, 2.4, 2.7, 2.4, 2.0};
 //inner limit allowed via Ramachandran JMB 1963 in Angstroms
-struct stericRadii radii = { 3.0, 2.7, 2.8, 2.2, 2.7, 2.6, 2.2, 2.6, 2.2, 1.9 };
+struct stericRadii radii =
+	{ 3.0, 2.7, 2.8, 2.2, 2.7, 2.6, 2.2, 2.6, 2.2, 1.9 };
 
 int countClashes(struct protein *prot, FILE * log, bool list_clashes)
 {
@@ -36,12 +37,10 @@ int countClashes(struct protein *prot, FILE * log, bool list_clashes)
 				distance = vectorMagnitude(bond_vector);
 				free(bond_vector);
 				double min_distance_allowed = getRadius(&radii,
-														  prot->
-														  atoms
-														  [i].atom_name,
-														  prot->
-														  atoms
-														  [j].atom_name);
+														prot->atoms
+														[i].atom_name,
+														prot->atoms
+														[j].atom_name);
 				if (distance < min_distance_allowed) {
 					if (list_clashes) {
 						fprintf(log,
@@ -61,7 +60,8 @@ int countClashes(struct protein *prot, FILE * log, bool list_clashes)
 	return count;
 }
 
-double getRadius(struct stericRadii *radii, char *atom_name, char *atom_name_2)
+double getRadius(struct stericRadii *radii, char *atom_name,
+				 char *atom_name_2)
 {
 	switch (*atom_name) {
 	case 'N':

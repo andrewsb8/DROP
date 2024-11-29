@@ -18,6 +18,7 @@ struct stericRadii {
 };
 
 int countClashes(struct protein *prot, FILE * log, bool list_clashes);
-double getRadius(struct stericRadii *radii, char *atom_name, char *atom_name_2);
+double getRadius(struct stericRadii *radii, char *atom_name,
+				 char *atom_name_2);
 
 #endif

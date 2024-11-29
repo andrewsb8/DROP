@@ -472,8 +472,8 @@ void identifyDihedrals(struct protein *prot)
 						 prot->atoms[prot->bonds[p].bond_atomNumbers[0]
 									 - 1].atom_type) == 0
 						&& strcmp(DihedralDefinitions[m][3],
-								  prot->atoms[prot->bonds[p].
-											  bond_atomNumbers[1]
+								  prot->atoms[prot->
+											  bonds[p].bond_atomNumbers[1]
 											  - 1].atom_type) == 0) {
 						pairTwo_index = p;
 						//multiple other bonds satisfy the above condition. Need to check for bond between the two pairs of bonds
@@ -486,41 +486,45 @@ void identifyDihedrals(struct protein *prot)
 								[pairTwo_index].bond_atomNumbers[0]
 								== prot->bonds[r].bond_atomNumbers[1]) {
 								prot->dihedrals
-									[prot->number_of_dihedrals].
-									dihedral_atomNumbers[0] =
+									[prot->
+									 number_of_dihedrals].dihedral_atomNumbers
+									[0] =
 									prot->bonds[n].bond_atomNumbers[0];
-								prot->dihedrals[prot->number_of_dihedrals].
-									dihedral_atomNumbers[1] =
+								prot->dihedrals[prot->
+												number_of_dihedrals].dihedral_atomNumbers
+									[1] =
 									prot->bonds[n].bond_atomNumbers[1];
-								prot->dihedrals[prot->number_of_dihedrals].
-									dihedral_atomNumbers[2] =
+								prot->dihedrals[prot->
+												number_of_dihedrals].dihedral_atomNumbers
+									[2] =
 									prot->bonds[p].bond_atomNumbers[0];
-								prot->dihedrals[prot->number_of_dihedrals].
-									dihedral_atomNumbers[3] =
+								prot->dihedrals[prot->
+												number_of_dihedrals].dihedral_atomNumbers
+									[3] =
 									prot->bonds[p].bond_atomNumbers[1];
 
 								*prot->dihedrals
-									[prot->number_of_dihedrals].
-									dihedral_angType =
-									DihedralDefinitions[m][4];
+									[prot->
+									 number_of_dihedrals].dihedral_angType
+									= DihedralDefinitions[m][4];
 
 								//residue is identified by third atom in dihedral because that will always be in the ith residue. Could have used second atom also.
 								//this will not work if omega is to be incorporated. but currently no plans to do so.
 								*prot->dihedrals
-									[prot->number_of_dihedrals].
-									dihedral_resName =
-									prot->atoms[prot->
-												dihedrals[prot->
-														  number_of_dihedrals].
-												dihedral_atomNumbers[2] -
-												1].residue;
-								prot->dihedrals[prot->number_of_dihedrals].
-									dihedral_resNum =
-									prot->atoms[prot->
-												dihedrals[prot->
-														  number_of_dihedrals].
-												dihedral_atomNumbers[2] -
-												1].residue_number;
+									[prot->
+									 number_of_dihedrals].dihedral_resName
+									=
+									prot->
+									atoms[prot->dihedrals
+										  [prot->number_of_dihedrals].dihedral_atomNumbers
+										  [2] - 1].residue;
+								prot->dihedrals[prot->
+												number_of_dihedrals].dihedral_resNum
+									=
+									prot->
+									atoms[prot->dihedrals
+										  [prot->number_of_dihedrals].dihedral_atomNumbers
+										  [2] - 1].residue_number;
 
 								prot->number_of_dihedrals += 1;
 								if (prot->number_of_dihedrals > 0) {
