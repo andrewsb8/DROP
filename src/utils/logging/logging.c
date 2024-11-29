@@ -2,13 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../../dropinfo/dropinfo.h"
 #include "logging.h"
 
 void logWelcome(FILE * log)
 {
-    fprintf(log, "%s\n", argp_program_version);
-    //fprintf(log, "%s\n", doc);
-    fprintf(log, "%s\n", argp_program_bug_address);
+    fprintf(log, "%s - %s\n", program_name, program_version);
+	fprintf(log, "%s\n", program_desc);
+	fprintf(log, "Report bugs to: %s\n\n", program_bug_address);
     fflush(log);
 }
 
