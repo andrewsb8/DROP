@@ -19,24 +19,30 @@ double calculateDihedral(struct protein *prot, int dihedralNumber)
 
 	double *vec1 =
 		vectorSubtract(prot->atoms
-					   [prot->dihedrals[dihedralNumber].
-						dihedral_atomNumbers[0] - 1].coordinates,
-					   prot->atoms[prot->dihedrals[dihedralNumber].
-								   dihedral_atomNumbers[1]
+					   [prot->
+						dihedrals[dihedralNumber].dihedral_atomNumbers[0] -
+						1].coordinates,
+					   prot->atoms[prot->
+								   dihedrals
+								   [dihedralNumber].dihedral_atomNumbers[1]
 								   - 1].coordinates);
 	double *vec2 =
 		vectorSubtract(prot->atoms
-					   [prot->dihedrals[dihedralNumber].
-						dihedral_atomNumbers[1] - 1].coordinates,
-					   prot->atoms[prot->dihedrals[dihedralNumber].
-								   dihedral_atomNumbers[2]
+					   [prot->
+						dihedrals[dihedralNumber].dihedral_atomNumbers[1] -
+						1].coordinates,
+					   prot->atoms[prot->
+								   dihedrals
+								   [dihedralNumber].dihedral_atomNumbers[2]
 								   - 1].coordinates);
 	double *vec3 =
 		vectorSubtract(prot->atoms
-					   [prot->dihedrals[dihedralNumber].
-						dihedral_atomNumbers[2] - 1].coordinates,
-					   prot->atoms[prot->dihedrals[dihedralNumber].
-								   dihedral_atomNumbers[3]
+					   [prot->
+						dihedrals[dihedralNumber].dihedral_atomNumbers[2] -
+						1].coordinates,
+					   prot->atoms[prot->
+								   dihedrals
+								   [dihedralNumber].dihedral_atomNumbers[3]
 								   - 1].coordinates);
 
 	double *cross1 = crossProduct(vec1, vec2);
@@ -182,9 +188,8 @@ rotateDihedral(struct protein *prot, int dihedralNumber,
 
 		for (int k = 0;
 			 k <
-			 prot->residues[prot->
-							dihedrals[dihedralNumber].dihedral_resNum -
-							1].num_sc_atoms; k++) {
+			 prot->residues[prot->dihedrals[dihedralNumber].
+							dihedral_resNum - 1].num_sc_atoms; k++) {
 			//residue/dihedral is identified by third atom in dihedral, consistent with readProtein.c
 			if (prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] ==
 				prot->residues[prot->dihedrals
@@ -203,9 +208,9 @@ rotateDihedral(struct protein *prot, int dihedralNumber,
 								 (M_PI / 180.0) * dihedralAngleChange);
 				updatePositions(prot, tmp,
 								prot->residues[prot->dihedrals
-											   [dihedralNumber].
-											   dihedral_resNum -
-											   1].sidechain_atoms[k] - 1);
+											   [dihedralNumber].dihedral_resNum
+											   - 1].sidechain_atoms[k] -
+								1);
 				free(tmp);
 			}
 		}

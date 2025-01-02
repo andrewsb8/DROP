@@ -1,7 +1,7 @@
 #ifndef STERICCLASH_H_
 #define STERICCLASH_H_
 
-struct VDW {
+struct stericRadii {
 	double CC;
 	double CO;
 	double CN;
@@ -17,9 +17,8 @@ struct VDW {
 	double HH;
 };
 
-extern struct VDW radii;
-
 int countClashes(struct protein *prot, FILE * log, bool list_clashes);
-double getVDWRadii(struct VDW *radii, char *atom_name, char *atom_name_2);
+double getRadius(struct stericRadii *radii, char *atom_name,
+				 char *atom_name_2);
 
 #endif

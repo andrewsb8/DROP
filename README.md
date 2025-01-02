@@ -3,17 +3,11 @@ Dihedral Rotation Of Proteins (DROP)
 
 Copyright 2023- Brian Andrews.
 
-### What this tool is:
-
-The repository contains a work-in-progress command line tool which can manipulate protein structures by rotating dihedral angles. It has tools which will be useful for preparing protein structures for visualizations in presentations, lectures, or papers and preparing protein structures for simulation. This tool will be used to investigate accessible regions of the high-dimensional conformation space of proteins based on atomic overlaps. The scope of this project will continue to expand over time with additional modules for analyzing and manipulating molecular structures.
-
-### What this tool is not:
-
-This is not a pdb (or any structure file) preprocessing tool. It requires a sanitized pdb file and currently require CONECT records for covalent bonds. I personally use [GROMACS](https://www.gromacs.org/) ([gitlab](https://gitlab.com/gromacs/gromacs)) to produce ordered pdb files and CONECT records. See ```scripts/generate-conect/``` for more details. The requirement for CONECT records will be removed for some modules in the future (see Issue #15 for more details).
+The repository contains a work-in-progress molecular mechanics command line tool which can manipulate protein structures by rotating dihedral angles and perform various analyses on the manipulated structures. It contains tools which are useful for preparing protein structures for visualizations in presentations, lectures, or papers and preparing protein structures for simulation. This tool will be used to investigate accessible regions of the high-dimensional conformation space of proteins based on atomic overlaps and generating mean fields from which dynamics simulations may be performed. The scope of this project will continue to expand over time with additional modules for analyzing and manipulating molecular structures. This is not a pdb (or any structure file) preprocessing tool. It requires a sanitized pdb file and currently requires CONECT records for covalent bonds for many functionalities. I personally use [GROMACS](https://www.gromacs.org/) ([gitlab](https://gitlab.com/gromacs/gromacs)) to produce ordered pdb files and CONECT records. See ```scripts/generate-conect/``` for more details. CONECT records are required for any calculation which requires knowledge of how many covalent bonds are between atoms in a chain.
 
 ### Installation
 
-You can compile DROP with ```make``` in the parent directory.
+After cloning the directory or downloading and unzipping a release, you can compile DROP with ```make``` in the parent directory.
 
 ### Usage
 
@@ -33,16 +27,21 @@ which changes the dihedral angle phi of residue 2 to -60 degrees. You can visual
 
 ```./drop setDihedralList -i examples/setDihedralList/Polyarginine/poly-R-beta.pdb -d examples/setDihedralList/Polyarginine/beta-to-helix.txt -o poly-R-helix.pdb```
 
+### Papers Featuring DROP
+
+If trying to reproduce results from a specific paper below, you may find past versions, scripts, and raw data in the Releases tab.
+
+- B. Andrews. Amino Acid Residue-Specific Ramachandran Distributions Derived from a Simple Mean Field Potential. Physical Chemistry Au. 2024. 10.1021/acsphyschemau.4c00064.
+
 ### Citation
 
-If you use this work for research or presentations, please consider citing this repository.
+If you use this work for research or presentations, please consider citing this repository with the version indicated.
 
 ```
 @software{Andrews_DROP_2024,
   author = {Andrews, Brian},
   title = {{Dihedral Rotation of Proteins (DROP)}},
   url = {https://github.com/andrewsb8/DROP/tree/main},
-  version = {0.0.1},
   year = {2024}
 }
 ```
