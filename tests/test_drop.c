@@ -6,14 +6,14 @@ START_TEST(test_version_output) {
     FILE *fp;
     char path[1035];
 
-    fp = popen("./drop --version", "r");
+    fp = popen("./drop --version 2>&1", "r");
     if (fp == NULL) {
         ck_abort_msg("Failed to run drop");
     }
 
     fgets(path, sizeof(path)-1, fp);
     pclose(fp);
-    ck_assert_str_eq(path, "DROP Version 0.0.1\n");
+    ck_assert_str_eq(path, "DROP Version 2025.1-dev\n");
 }
 END_TEST
 

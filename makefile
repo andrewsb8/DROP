@@ -24,11 +24,6 @@ compile:
 	gcc -o drop dropinfo.o drop.o commands.o logging.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o dihedralRotation.o vectorCalculus.o fileHandling.o vdwEnergy.o stericClashes.o stericClash.o stericScan.o vdwScan.o -lm
 	rm *.o
 
-
-TESTFLAGS=-Iinclude -Wall -Wextra -g -lcheck -lm
-
 test:
-	gcc $(TESTFLAGS) -c tests/test_drop.c
-	gcc test_drop.o -o test_binary
-	-./test_binary
-	rm *.o test_binary
+	gcc -o test_drop tests/test_drop.c -lcheck -lm -lrt -lsubunit
+	-./test_drop
