@@ -46,7 +46,7 @@ struct _residues {
 	int num_bb_atoms;
 	int num_sc_atoms;
 	int backbone_atoms[8];		//backbone atom numbers for a residue. 8 is the most backbone atoms possible (N- (NH3) or C-terminal (COOH) glycine with 8 atoms)
-	int sidechain_atoms[19];	//side chain atom numbers for a residue. 18 is the most side chain atoms possible (Arg or Trp)
+	int sidechain_atoms[19];	//side chain atom numbers for a residue. 19 is the most side chain atoms possible (Arg or Trp)
 };
 
 struct protein {
