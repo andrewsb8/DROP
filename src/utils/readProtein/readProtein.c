@@ -87,6 +87,9 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 			//the following blocks of code classify atoms into backbone and
 			//side chain groups on a per residue basis using _residues struct
 			if (prot->atoms[line_number].residue_number != res_num) {
+			    if (res_num - prot->atoms[line_number].residue_number != 1) {
+					drop_fatal(log, "ERROR: DROP currently does not support nonsequential residue numbers. Please renumber your input pdb.\n");
+				}
 				prot->residues[res_num - 1].num_bb_atoms = bb_atoms;
 				prot->residues[res_num - 1].num_sc_atoms = sc_atoms;
 				//add residue
