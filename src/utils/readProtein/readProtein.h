@@ -107,6 +107,7 @@ static int numberDihedralDefinitions =
 
 void readPDB(struct protein *prot, char *filename, FILE * log,
 			 bool calc_bond_matrix, bool print_bond_matrix);
+void readPDBAtom(struct protein *prot, char *line, int line_number);
 bool isBackbone(char *atomtype);
 char *substr(char *s, int x, int y);
 char *removeSpaces(char *string);
