@@ -41,7 +41,7 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 	//read file line by line until EOF
 	while ((read = getline(&line, &len, fp)) != -1) {
 		//Quantities to get for ATOM entries: Atom Number, Atom name, Atom type, residue number, residue (all in a struct), Atom poitions (own array/table within the struct)
-		if (strcmp(substr(line, 0, 4), "ATOM") == 0) {
+		if (strcmp(substr(line, 0, 3), "ATOM") == 0) {
 			//reallocate memory dynamically which allows for a flexible number of atoms from entry pdb
 			if (line_number > 0) {
 				prot->atoms =
@@ -50,27 +50,28 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 			}
 			//since pdb files have a standard format, assignments are handled manually as opposed to using if/else if or switch cases to be concise
 			//structure of pdb file can be found here: https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html
-			char *atomNum = substr(line, 6, 12);
+			char *atomNum = substr(line, 6, 10);
 			prot->atoms[line_number].atom_number = atoi(atomNum);
 			free(atomNum);
 
-			char *atomType = substr(line, 12, 16);
+			char *atomType = substr(line, 12, 15);
 			strcpy(prot->atoms[line_number].atom_type,
 				   removeSpaces(atomType));
 			free(atomType);
 
-			char *residueName = substr(line, 17, 20);
+			//extra char here to account for special 4-char residue names
+			char *residueName = substr(line, 17, 21);
 			strcpy(prot->atoms[line_number].residue,
 				   removeSpaces(residueName));
 			free(residueName);
 
-			char *residueNumber = substr(line, 22, 26);
+			char *residueNumber = substr(line, 22, 25);
 			prot->atoms[line_number].residue_number = atoi(residueNumber);
 			free(residueNumber);
 
-			char *xPos = substr(line, 30, 38);
-			char *yPos = substr(line, 38, 46);
-			char *zPos = substr(line, 46, 54);
+			char *xPos = substr(line, 30, 37);
+			char *yPos = substr(line, 38, 45);
+			char *zPos = substr(line, 46, 53);
 			prot->atoms[line_number].coordinates[0] = strtod(xPos, &ptr);
 			prot->atoms[line_number].coordinates[1] = strtod(yPos, &ptr);
 			prot->atoms[line_number].coordinates[2] = strtod(zPos, &ptr);
@@ -156,16 +157,16 @@ bool isBackbone(char *atomtype)
 }
 
 //function to return a portion of a string with user defined indices
-//taken from here: https://stackoverflow.com/a/10375855
-//need to brush up on how pointers work *shrug*
+//ex inputs: "small", 0, 2 returns "sma" (indices 0,1,2)
+//modified from here: https://stackoverflow.com/a/10375855
 char *substr(char *s, int x, int y)
 {
-	size_t size_str = y - x;
-	char *ret = malloc(size_str + 1);
+	size_t size_str = y - x + 1; //plus 1 bc x=0, y=3 includes 4 chars
+	char *ret = malloc(size_str + 1); //plus 1 for termination character
 	char *p = ret;
 	char *q = &s[x];
 	assert(ret != NULL);
-	while (x < y) {
+	while (x < y + 1) { //again, plus one
 		*p++ = *q++;
 		x++;
 	}
