@@ -71,7 +71,7 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 					prot->atoms[line_number].atom_number;
 				bb_atoms += 1;
 			} else {
-				prot->residues[res_num -
+			    prot->residues[res_num -
 							   1].sidechain_atoms[sc_atoms] =
 					prot->atoms[line_number].atom_number;
 				sc_atoms += 1;
