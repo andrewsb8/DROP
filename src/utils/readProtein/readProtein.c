@@ -41,19 +41,20 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 	while ((read = getline(&line, &len, fp)) != -1) {
 		//Quantities to get for ATOM entries: Atom Number, Atom name, Atom type, residue number, residue (all in a struct), Atom poitions (own array/table within the struct)
 		if (strcmp(substr(line, 0, 3), "ATOM") == 0) {
-		    //reallocate memory dynamically which allows for a flexible number of atoms from entry pdb
-            if (line_number > 0) {
-                prot->atoms =
-               	(struct _atoms *) realloc(prot->atoms,
-               							  size * (line_number + 1));
-            }
-		    readPDBAtom(prot, line, line_number);
+			//reallocate memory dynamically which allows for a flexible number of atoms from entry pdb
+			if (line_number > 0) {
+				prot->atoms =
+					(struct _atoms *) realloc(prot->atoms,
+											  size * (line_number + 1));
+			}
+			readPDBAtom(prot, line, line_number);
 
 			//the following blocks of code classify atoms into backbone and
 			//side chain groups on a per residue basis using _residues struct
 			if (prot->atoms[line_number].residue_number != res_num) {
-			    if (prot->atoms[line_number].residue_number - res_num != 1) {
-					drop_fatal(log, "ERROR: DROP currently does not support nonsequential residue numbers. Please renumber your input pdb.\n");
+				if (prot->atoms[line_number].residue_number - res_num != 1) {
+					drop_fatal(log,
+							   "ERROR: DROP currently does not support nonsequential residue numbers. Please renumber your input pdb.\n");
 				}
 				prot->residues[res_num - 1].num_bb_atoms = bb_atoms;
 				prot->residues[res_num - 1].num_sc_atoms = sc_atoms;
@@ -123,21 +124,19 @@ void readPDBAtom(struct protein *prot, char *line, int line_number)
 	free(atomNum);
 
 	char *atomType = substr(line, 12, 15);
-	strcpy(prot->atoms[line_number].atom_type,
-		   removeSpaces(atomType));
+	strcpy(prot->atoms[line_number].atom_type, removeSpaces(atomType));
 	free(atomType);
 
 	//extra char here to account for special 4-char residue names
 	char *residueName = substr(line, 17, 21);
-	strcpy(prot->atoms[line_number].residue,
-		   removeSpaces(residueName));
+	strcpy(prot->atoms[line_number].residue, removeSpaces(residueName));
 	free(residueName);
 
 	char *residueNumber = substr(line, 22, 25);
 	prot->atoms[line_number].residue_number = atoi(residueNumber);
 	free(residueNumber);
 
-	char *ptr; // for strtod
+	char *ptr;					// for strtod
 	char *xPos = substr(line, 30, 37);
 	char *yPos = substr(line, 38, 45);
 	char *zPos = substr(line, 46, 53);
@@ -149,8 +148,7 @@ void readPDBAtom(struct protein *prot, char *line, int line_number)
 	free(zPos);
 
 	char *atomName = substr(line, 77, 78);
-	strcpy(prot->atoms[line_number].atom_name,
-		   removeSpaces(atomName));
+	strcpy(prot->atoms[line_number].atom_name, removeSpaces(atomName));
 	free(atomName);
 	return;
 }
@@ -170,12 +168,12 @@ bool isBackbone(char *atomtype)
 //modified from here: https://stackoverflow.com/a/10375855
 char *substr(char *s, int x, int y)
 {
-	size_t size_str = y - x + 1; //plus 1 bc x=0, y=3 includes 4 chars
-	char *ret = malloc(size_str + 1); //plus 1 for termination character
+	size_t size_str = y - x + 1;	//plus 1 bc x=0, y=3 includes 4 chars
+	char *ret = malloc(size_str + 1);	//plus 1 for termination character
 	char *p = ret;
 	char *q = &s[x];
 	assert(ret != NULL);
-	while (x < y + 1) { //again, plus one
+	while (x < y + 1) {			//again, plus one
 		*p++ = *q++;
 		x++;
 	}
@@ -482,8 +480,8 @@ void identifyDihedrals(struct protein *prot)
 						 prot->atoms[prot->bonds[p].bond_atomNumbers[0]
 									 - 1].atom_type) == 0
 						&& strcmp(DihedralDefinitions[m][3],
-								  prot->atoms[prot->
-											  bonds[p].bond_atomNumbers[1]
+								  prot->atoms[prot->bonds[p].
+											  bond_atomNumbers[1]
 											  - 1].atom_type) == 0) {
 						pairTwo_index = p;
 						//multiple other bonds satisfy the above condition. Need to check for bond between the two pairs of bonds
@@ -496,45 +494,41 @@ void identifyDihedrals(struct protein *prot)
 								[pairTwo_index].bond_atomNumbers[0]
 								== prot->bonds[r].bond_atomNumbers[1]) {
 								prot->dihedrals
-									[prot->
-									 number_of_dihedrals].dihedral_atomNumbers
-									[0] =
+									[prot->number_of_dihedrals].
+									dihedral_atomNumbers[0] =
 									prot->bonds[n].bond_atomNumbers[0];
-								prot->dihedrals[prot->
-												number_of_dihedrals].dihedral_atomNumbers
-									[1] =
+								prot->dihedrals[prot->number_of_dihedrals].
+									dihedral_atomNumbers[1] =
 									prot->bonds[n].bond_atomNumbers[1];
-								prot->dihedrals[prot->
-												number_of_dihedrals].dihedral_atomNumbers
-									[2] =
+								prot->dihedrals[prot->number_of_dihedrals].
+									dihedral_atomNumbers[2] =
 									prot->bonds[p].bond_atomNumbers[0];
-								prot->dihedrals[prot->
-												number_of_dihedrals].dihedral_atomNumbers
-									[3] =
+								prot->dihedrals[prot->number_of_dihedrals].
+									dihedral_atomNumbers[3] =
 									prot->bonds[p].bond_atomNumbers[1];
 
 								*prot->dihedrals
-									[prot->
-									 number_of_dihedrals].dihedral_angType
-									= DihedralDefinitions[m][4];
+									[prot->number_of_dihedrals].
+									dihedral_angType =
+									DihedralDefinitions[m][4];
 
 								//residue is identified by third atom in dihedral because that will always be in the ith residue. Could have used second atom also.
 								//this will not work if omega is to be incorporated. but currently no plans to do so.
 								*prot->dihedrals
-									[prot->
-									 number_of_dihedrals].dihedral_resName
-									=
-									prot->
-									atoms[prot->dihedrals
-										  [prot->number_of_dihedrals].dihedral_atomNumbers
-										  [2] - 1].residue;
-								prot->dihedrals[prot->
-												number_of_dihedrals].dihedral_resNum
-									=
-									prot->
-									atoms[prot->dihedrals
-										  [prot->number_of_dihedrals].dihedral_atomNumbers
-										  [2] - 1].residue_number;
+									[prot->number_of_dihedrals].
+									dihedral_resName =
+									prot->atoms[prot->
+												dihedrals[prot->
+														  number_of_dihedrals].
+												dihedral_atomNumbers[2] -
+												1].residue;
+								prot->dihedrals[prot->number_of_dihedrals].
+									dihedral_resNum =
+									prot->atoms[prot->
+												dihedrals[prot->
+														  number_of_dihedrals].
+												dihedral_atomNumbers[2] -
+												1].residue_number;
 
 								prot->number_of_dihedrals += 1;
 								if (prot->number_of_dihedrals > 0) {
