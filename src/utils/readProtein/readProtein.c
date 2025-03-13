@@ -128,7 +128,7 @@ void readPDBAtom(struct protein *prot, char *line, int line_number)
 	free(atomType);
 
 	//extra char here to account for special 4-char residue names
-	char *residueName = substr(line, 17, 21);
+	char *residueName = substr(line, 17, 20);
 	strcpy(prot->atoms[line_number].residue, removeSpaces(residueName));
 	free(residueName);
 
