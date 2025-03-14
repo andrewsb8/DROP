@@ -46,7 +46,7 @@ struct _residues {
 	int num_bb_atoms;
 	int num_sc_atoms;
 	int backbone_atoms[8];		//backbone atom numbers for a residue. 8 is the most backbone atoms possible (N- (NH3) or C-terminal (COOH) glycine with 8 atoms)
-	int sidechain_atoms[18];	//side chain atom numbers for a residue. 18 is the most side chain atoms possible (Arg or Trp)
+	int sidechain_atoms[19];	//side chain atom numbers for a residue. 19 is the most side chain atoms possible (Arg or Trp)
 };
 
 struct protein {
@@ -62,10 +62,10 @@ struct protein {
 };
 
 //list of backbone atoms including NH3 and COOH termini atoms
-static char *backbone_atom_list[15] =
-	{ "N", "H1", "H2", "H3", "HN", "HA", "HA1", "HA2", "CA", "C", "O",
-	"OT",
-	"OT1", "OT2", "HT2"
+static char *backbone_atom_list[18] =
+	{ "N", "H", "H1", "H2", "H3", "HN", "HA", "HA1", "HA2", "CA", "C", "O",
+	"OT", "OT1", "OT2", "HT2", // c-terminus
+	"OC1", "OC2" // more c-terminus options
 };
 
 static int size_bb_atom_list =
