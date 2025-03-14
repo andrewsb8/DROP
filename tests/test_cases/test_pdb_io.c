@@ -10,6 +10,7 @@
 // - four letter atom types
 // - four character residues (special or nonstandard residues)
 // - two letter atom names at end
+// - the chain identifier is ignored
 START_TEST(test_pdb_atom_parse) {
     char *line = "ATOM  99999 xCNH GLYNX9999      19.593  19.795  21.155  1.00  0.00           CN";
     struct protein prot;
