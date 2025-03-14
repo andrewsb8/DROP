@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "test_cases/test_pdb_io.c"
+
 START_TEST(test_version_output) {
     FILE *fp;
     char path[1035];
@@ -34,11 +36,12 @@ Suite *drop_test_suite(void)
 int main(void)
 {
     int num_failed;
-    Suite *s;
-    SRunner *sr;
 
-    s = drop_test_suite();
-    sr = srunner_create(s);
+    Suite *s = drop_test_suite();
+    SRunner *sr = srunner_create(s);
+
+    Suite *s1 = pdb_io();
+    srunner_add_suite(sr, s1);
 
     srunner_run_all(sr, CK_NORMAL);
     num_failed = srunner_ntests_failed(sr);

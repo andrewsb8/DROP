@@ -25,5 +25,12 @@ compile:
 	rm *.o
 
 test:
-	gcc -o test_drop tests/test_drop.c -lcheck -lm -lrt -lsubunit
+	gcc -c src/dropinfo/dropinfo.c
+	gcc -c src/utils/vectorCalculus/vectorCalculus.c
+	gcc -c src/utils/readProtein/readProtein.c
+	gcc -c src/utils/logging/logging.c
+	gcc -c src/utils/dihedralRotation/dihedralRotation.c
+	gcc -o test_drop tests/test_drop.c readProtein.o logging.o dihedralRotation.o vectorCalculus.o dropinfo.o -lcheck -lm -lrt -lsubunit
+	rm *.o
 	-./test_drop
+	rm test_drop
