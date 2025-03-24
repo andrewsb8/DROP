@@ -191,7 +191,7 @@ rotateDihedral(struct protein *prot, int dihedralNumber,
 			 prot->residues[prot->dihedrals[dihedralNumber].
 							dihedral_resNum - 1].num_sc_atoms; k++) {
 			//residue/dihedral is identified by third atom in dihedral, consistent with readProtein.c
-			if (prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] ==
+			if (found == 0 && prot->dihedrals[dihedralNumber].dihedral_atomNumbers[2] ==
 				prot->residues[prot->dihedrals
 							   [dihedralNumber].dihedral_resNum -
 							   1].sidechain_atoms[k]) {

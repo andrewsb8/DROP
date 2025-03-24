@@ -83,6 +83,10 @@ readPDB(struct protein *prot, char *filename, FILE * log,
 
 	}
 
+	// for last residue
+	prot->residues[res_num - 1].num_bb_atoms = bb_atoms;
+	prot->residues[res_num - 1].num_sc_atoms = sc_atoms;
+
 	fclose(fp);
 
 	if (line_number == 0) {
