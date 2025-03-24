@@ -147,7 +147,7 @@ void readPDBAtom(struct protein *prot, char *line, int line_number)
 	free(yPos);
 	free(zPos);
 
-	char *atomName = substr(line, 77, 78);
+	char *atomName = substr(line, 76, 77);
 	strcpy(prot->atoms[line_number].atom_name, removeSpaces(atomName));
 	free(atomName);
 	return;
