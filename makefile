@@ -2,6 +2,8 @@ SHELL := /bin/bash
 #PATH  := node_modules/.bin:$(PATH)
 buildDir = $(pwd)
 
+all: compile
+
 compile:
 	gcc -c src/dropinfo/dropinfo.c
 	gcc -c src/drop/drop.c
@@ -22,4 +24,13 @@ compile:
 	gcc -o drop dropinfo.o drop.o commands.o logging.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o dihedralRotation.o vectorCalculus.o fileHandling.o vdwEnergy.o stericClashes.o stericClash.o stericScan.o vdwScan.o -lm
 	rm *.o
 
-all: compile
+test:
+	gcc -c src/dropinfo/dropinfo.c
+	gcc -c src/utils/vectorCalculus/vectorCalculus.c
+	gcc -c src/utils/readProtein/readProtein.c
+	gcc -c src/utils/logging/logging.c
+	gcc -c src/utils/dihedralRotation/dihedralRotation.c
+	gcc -o test_drop tests/test_drop.c readProtein.o logging.o dihedralRotation.o vectorCalculus.o dropinfo.o -lcheck -lm -lrt -lsubunit
+	rm *.o
+	-./test_drop
+	rm test_drop
