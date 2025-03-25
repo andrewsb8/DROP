@@ -21,7 +21,8 @@ compile:
 	gcc -c src/dropanalysis/stericClashes.c
 	gcc -c src/dropanalysis/stericScan.c
 	gcc -c src/dropanalysis/vdwScan.c
-	gcc -o drop dropinfo.o drop.o commands.o logging.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o dihedralRotation.o vectorCalculus.o fileHandling.o vdwEnergy.o stericClashes.o stericClash.o stericScan.o vdwScan.o -lm
+	gcc -c src/dropanalysis/vdwScanSC.c
+	gcc -o drop dropinfo.o drop.o commands.o logging.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o dihedralRotation.o vectorCalculus.o fileHandling.o vdwEnergy.o stericClashes.o stericClash.o stericScan.o vdwScan.o vdwScanSC.o -lm
 	rm *.o
 
 test:
