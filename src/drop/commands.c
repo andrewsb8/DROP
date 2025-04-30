@@ -10,6 +10,7 @@
 #include "../dropanalysis/stericClashes.h"
 #include "../dropanalysis/stericScan.h"
 #include "../dropanalysis/vdwScan.h"
+#include "../dropanalysis/vdwScanSC.h"
 
 const char *commandList[][2] = {
 	{ "measureDihedrals",
@@ -28,7 +29,9 @@ const char *commandList[][2] = {
 	 "Calculates the average number of steric clashes in amino acid structures in Ramachandran Space."
 	 },
 	{ "vdwScan",
-	 "Calculates the average Lennard-Jones energy in amino acid structures in Ramachandran Space." }
+	 "Calculates the average Lennard-Jones energy in amino acid structures in Ramachandran Space." },
+	{ "vdwScanSC",
+	 "Calculates the average Lennard-Jones energy in amino acid structures for all side chain configurations in a single backbone configuration." }
 };
 
 const int commandListLen = sizeof(commandList) / sizeof(commandList[0]);
@@ -67,6 +70,8 @@ bool findCommand(int argc, char **argv)
 		stericScan(argc, argv);
 	} else if (strcmp(argv[1], commandList[5][0]) == 0) {
 		vdwScan(argc, argv);
+	} else if (strcmp(argv[1], commandList[6][0]) == 0) {
+	    vdwScanSC(argc, argv);
 	} else {
 		found = false;
 	}

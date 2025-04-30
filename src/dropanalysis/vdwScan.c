@@ -73,7 +73,7 @@ static int vdwScanParse(int key, char *arg, struct argp_state *state)
 void vdwScan(int argc, char **argv)
 {
 	struct argp_option vdwScanOptions[] = {
-		{ 0, 0, 0, 0, "./drop stericScan Options:\n" },
+		{ 0, 0, 0, 0, "./drop vdwScan Options:\n" },
 		{ "input", 'i', "[Input File]", 0, "Input pdb file" },
 		{ "output", 'o', "[Output File]", 0,
 		 "Output .txt file with three columns: phi, psi, average Lennard-Jones energy in kJ/mol"
