@@ -17,12 +17,13 @@ compile:
 	gcc -c src/utils/fileHandling/fileHandling.c
 	gcc -c src/dropanalysis/setDihedral.c
 	gcc -c src/dropanalysis/setDihedralList.c
+	gcc -c src/dropanalysis/measureDihedral.c
 	gcc -c src/dropanalysis/measureDihedrals.c
 	gcc -c src/dropanalysis/stericClashes.c
 	gcc -c src/dropanalysis/stericScan.c
 	gcc -c src/dropanalysis/vdwScan.c
 	gcc -c src/dropanalysis/vdwScanSC.c
-	gcc -o drop dropinfo.o drop.o commands.o logging.o readProtein.o setDihedral.o setDihedralList.o measureDihedrals.o dihedralRotation.o vectorCalculus.o fileHandling.o vdwEnergy.o stericClashes.o stericClash.o stericScan.o vdwScan.o vdwScanSC.o -lm
+	gcc -o drop dropinfo.o drop.o commands.o logging.o readProtein.o setDihedral.o setDihedralList.o measureDihedral.o measureDihedrals.o dihedralRotation.o vectorCalculus.o fileHandling.o vdwEnergy.o stericClashes.o stericClash.o stericScan.o vdwScan.o vdwScanSC.o -lm
 	rm *.o
 
 test:

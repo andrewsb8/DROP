@@ -4,6 +4,7 @@
 #include <argp.h>
 
 #include "commands.h"
+#include "../dropanalysis/measureDihedral.h"
 #include "../dropanalysis/measureDihedrals.h"
 #include "../dropanalysis/setDihedral.h"
 #include "../dropanalysis/setDihedralList.h"
@@ -13,7 +14,10 @@
 #include "../dropanalysis/vdwScanSC.h"
 
 const char *commandList[][2] = {
-	{ "measureDihedrals",
+    { "measureDihedral",
+	 "Parses structure and provides dihedral measurement for specific dihedral."
+	 },
+    { "measureDihedrals",
 	 "Parses structure and provides log with structure and dihedral information."
 	 },
 	{ "setDihedral",
@@ -59,18 +63,20 @@ bool findCommand(int argc, char **argv)
 
 	//search available commands or functions
 	if (strcmp(argv[1], commandList[0][0]) == 0) {
-		measureDihedrals(argc, argv);
+		measureDihedral(argc, argv);
 	} else if (strcmp(argv[1], commandList[1][0]) == 0) {
-		setDihedral(argc, argv);
+		measureDihedrals(argc, argv);
 	} else if (strcmp(argv[1], commandList[2][0]) == 0) {
-		setDihedralList(argc, argv);
+		setDihedral(argc, argv);
 	} else if (strcmp(argv[1], commandList[3][0]) == 0) {
-		stericClashes(argc, argv);
+		setDihedralList(argc, argv);
 	} else if (strcmp(argv[1], commandList[4][0]) == 0) {
-		stericScan(argc, argv);
+		stericClashes(argc, argv);
 	} else if (strcmp(argv[1], commandList[5][0]) == 0) {
-		vdwScan(argc, argv);
+		stericScan(argc, argv);
 	} else if (strcmp(argv[1], commandList[6][0]) == 0) {
+		vdwScan(argc, argv);
+	} else if (strcmp(argv[1], commandList[7][0]) == 0) {
 	    vdwScanSC(argc, argv);
 	} else {
 		found = false;
