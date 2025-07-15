@@ -21,7 +21,7 @@ struct arguments {
 	bool conect;
 	bool bond_matrix;
 	bool incremental;
-	bool interval;
+	int interval;
 };
 
 static int setDihedralParse(int key, char *arg, struct argp_state *state)
@@ -78,9 +78,9 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
 			a->incremental = arg;
 			break;
 		}
-	case 1:
+	case 't':
 		{
-			a->interval = atof(arg);
+			a->interval = atoi(arg);
 			break;
 		}
 	case 'f':
@@ -116,15 +116,15 @@ void setDihedral(int argc, char **argv)
 		{ "incremental", 0, "BOOL", 0,
 		 "Choose whether or not to rotate dihedral incrementally. Default: false"
 		 },
-		{ "interval", 1, "FLOAT", 0,
-		 "If using --incremental, choose rotation interval. Default: 2 deg"
+		{ "interval", 't', "INT", 0,
+		 "If using --incremental, determine number of smaller rotations of equal magnitude to perform. Default: 10"
 		 },
 		{ 0 }
 	};
 
 	//DEFAULTS
 	struct arguments args =
-		{ NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 0, 0, 2 };
+		{ NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 0, 0, 10 };
 	//parse options
 	struct argp setDihedralArgp =
 		{ setDihedralOptions, setDihedralParse, 0, 0 };
@@ -155,13 +155,32 @@ void setDihedral(int argc, char **argv)
 	//calculate the angle change based on current angle and angle defined by command line
 	double dih_angle_change =
 		args.angle - prot.dihedrals[index].dihedral_angle;
-	fprintf(log,
-			"Changing dihedral angle %s in residue number %d by %f degrees.\n\n",
-			args.dih_type, args.res_number, dih_angle_change);
 
-	//rotate the dihedral
-	rotateDihedral(&prot, index, dih_angle_change, backbone);
-	prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
+	if (args.incremental) {
+	    if (args.interval < 1) {
+			char message[70];
+			sprintf(message,
+					"ERROR: Cannot have interval less than 1. Exiting.\n");
+			drop_fatal(log, message);
+		}
+	    double dih_angle_interval = dih_angle_change/args.interval;
+        fprintf(log,
+     			"Changing dihedral angle %s in residue number %d by %f degrees in %d increments of %f degrees.\n\n",
+     			args.dih_type, args.res_number, dih_angle_change, args.interval, dih_angle_interval);
+        for (int i = 0; i < args.interval; i++) {
+            //rotate the dihedral
+           	rotateDihedral(&prot, index, dih_angle_interval, backbone);
+           	prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
+        }
+	} else {
+    	fprintf(log,
+    			"Changing dihedral angle %s in residue number %d by %f degrees.\n\n",
+    			args.dih_type, args.res_number, dih_angle_change);
+
+    	//rotate the dihedral
+    	rotateDihedral(&prot, index, dih_angle_change, backbone);
+    	prot.dihedrals[index].dihedral_angle = calculateDihedral(&prot, index);
+	}
 
 	fprintf(log,
 			"Rotation complete. Please check the accuracy of the operation.\nUser input angle: %f\nAngle after rotation: %f\n\n",
