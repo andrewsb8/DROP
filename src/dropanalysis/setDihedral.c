@@ -20,6 +20,8 @@ struct arguments {
 	char *extension;
 	bool conect;
 	bool bond_matrix;
+	bool incremental;
+	bool interval;
 };
 
 static int setDihedralParse(int key, char *arg, struct argp_state *state)
@@ -71,6 +73,16 @@ static int setDihedralParse(int key, char *arg, struct argp_state *state)
 			a->bond_matrix = atoi(arg);
 			break;
 		}
+	case 0:
+		{
+			a->incremental = arg;
+			break;
+		}
+	case 1:
+		{
+			a->interval = atof(arg);
+			break;
+		}
 	case 'f':
 		{
 			break;
@@ -98,15 +110,21 @@ void setDihedral(int argc, char **argv)
 		{ "conect", 'c', "BOOL", 0,
 		 "Include CONECT records in PDB. 0 does not print conect. Default: 0."
 		 },
-		{ "bond_matrix", 'b', "[Boolean]", 0,
-		 "Choose whether or not to print bond matrix to log file. Default: true"
+		{ "bond_matrix", 'b', "BOOL", 0,
+		 "Choose whether or not to print bond matrix to log file. Default: false"
+		 },
+		{ "incremental", 0, "BOOL", 0,
+		 "Choose whether or not to rotate dihedral incrementally. Default: false"
+		 },
+		{ "interval", 1, "FLOAT", 0,
+		 "If using --incremental, choose rotation interval. Default: 2 deg"
 		 },
 		{ 0 }
 	};
 
 	//DEFAULTS
 	struct arguments args =
-		{ NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 1 };
+		{ NULL, "output.pdb", "drop.log", 1, "phi", 0, "pdb", 0, 0, 0, 2 };
 	//parse options
 	struct argp setDihedralArgp =
 		{ setDihedralOptions, setDihedralParse, 0, 0 };
