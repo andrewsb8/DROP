@@ -703,8 +703,16 @@ void writePDBsingleframe(struct protein *prot, FILE * fp)
 {
 	fprintf(fp, "MODEL\t1\n");
 	for (int i = 0; i < prot->number_of_atoms; i++) {
+        // if length of atom type is < 4, need to add a space at the beginning
+        char tmp_atom_type[5] = "";
+        if (strlen(prot->atoms[i].atom_type) < 4) {
+            strncat(tmp_atom_type, " ", 2);
+        }
+        strncat(tmp_atom_type, prot->atoms[i].atom_type, 5);
+
 		char line[81];
-		sprintf(line, "%-6s%5d %-4.4s%c%-4.4s%c%4d%c   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n", "ATOM", prot->atoms[i].atom_number, prot->atoms[i].atom_type, ' ',	//alternate location
+		//            "%-6s%5d %-4.4s%c%4.4s%c%4d%c   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n"
+		sprintf(line, "%-6s%5d %-4.4s%c%4.4s%c%4d%c   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n", "ATOM", prot->atoms[i].atom_number, tmp_atom_type, ' ',	//alternate location
 				prot->atoms[i].residue, ' ',	//chain id
 				prot->atoms[i].residue_number, ' ',	//residue insertion code
 				prot->atoms[i].coordinates[0], prot->atoms[i].coordinates[1], prot->atoms[i].coordinates[2], 0.0,	//occupancy
