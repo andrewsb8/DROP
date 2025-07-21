@@ -703,20 +703,15 @@ void writePDBsingleframe(struct protein *prot, FILE * fp)
 {
 	fprintf(fp, "MODEL\t1\n");
 	for (int i = 0; i < prot->number_of_atoms; i++) {
-        // if length of atom type is < 4, need to add a space at the beginning
+        // if length of atom type is < 4, need to add a space at the beginning to be consistent with GROMACS and VMD
         char tmp_atom_type[5] = "\0";
         if (strlen(prot->atoms[i].atom_type) < 4) {
             strncat(tmp_atom_type, " ", 2);
         }
         strncat(tmp_atom_type, prot->atoms[i].atom_type, 4);
-        tmp_atom_type[4] = '\0';
-        // force termination of residue and add space to residue to print right-justified.
-        prot->atoms[i].residue[4] = '\0';
-        strcat(prot->atoms[i].residue, " ");
 
 		char line[81];
-		//            "%-6s%5d %-4.4s%c%4.4s%c%4d%c   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n"
-		sprintf(line, "%-6s%5d %-4.4s%c%4.4s%c%4d%c   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n", "ATOM", prot->atoms[i].atom_number, tmp_atom_type, ' ',	//alternate location
+		sprintf(line, "%-6s%5d %-4.4s%c%-4.4s%c%4d%c   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n", "ATOM", prot->atoms[i].atom_number, tmp_atom_type, ' ',	//alternate location
 				prot->atoms[i].residue, ' ',	//chain id
 				prot->atoms[i].residue_number, ' ',	//residue insertion code
 				prot->atoms[i].coordinates[0], prot->atoms[i].coordinates[1], prot->atoms[i].coordinates[2], 0.0,	//occupancy
